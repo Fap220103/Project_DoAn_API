@@ -11,7 +11,7 @@ using System.Web.Mvc;
 
 namespace Domain.Entities
 {
-    public class Product : BaseEntityAdvance, IAggregateRoot
+    public class Product : BaseEntityAdvance
     {   
         public string? Alias { get; set; }
         public string? ProductCode { get; set; }   
@@ -27,7 +27,8 @@ namespace Domain.Entities
         public bool IsFeature { get; set; }
         public bool IsHot { get; set; }
         public bool IsActive { get; set; }
-        public int ProductCategoryID { get; set; }
+        public string? ProductCategoryId { get; set; }
+        public ProductCategory ProductCategory { get; set; }
         public ICollection<ProductImage> ProductImage { get; set; } = new Collection<ProductImage>();
         public ICollection<OrderDetail> OrderDetails { get; set; } = new Collection<OrderDetail>();
         public ICollection<ProductColor> ProductColor { get; set; } = new Collection<ProductColor>();

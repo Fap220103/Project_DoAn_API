@@ -21,11 +21,9 @@ namespace Infrastructure.DataAccessManagers.EFCores.Contexts
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
         }
-        
+        public DbSet<Color> Color { get; set; }
         public DbSet<Config> Config { get; set; }
-        public DbSet<Token> Token { get; set; }
-        public DbSet<Color> Color { get ; set ; }
-        public DbSet<Inventory> Inventory { get ; set ; }
+        public DbSet<Inventory> Inventory { get; set; }
         public DbSet<Order> Order { get ; set ; }
         public DbSet<OrderDetail> OrderDetail { get ; set ; }
         public DbSet<Product> Product { get ; set ; }
@@ -34,25 +32,25 @@ namespace Infrastructure.DataAccessManagers.EFCores.Contexts
         public DbSet<ProductImage> ProductImage { get ; set ; }
         public DbSet<ProductSize> ProductSize { get ; set ; }
         public DbSet<Size> Size { get ; set ; }
+        public DbSet<Token> Token { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfiguration(new ApplicationUserConfiguration());
-            modelBuilder.ApplyConfiguration(new TokenConfiguration());
+            modelBuilder.ApplyConfiguration(new ColorConfiguration());
             modelBuilder.ApplyConfiguration(new ConfigConfiguration());
-            //modelBuilder.ApplyConfiguration(new ColorConfiguration());
-            //modelBuilder.ApplyConfiguration(new TokenConfiguration());
-            //modelBuilder.ApplyConfiguration(new ConfigConfiguration());
-            //modelBuilder.ApplyConfiguration(new ApplicationUserConfiguration());
-            //modelBuilder.ApplyConfiguration(new TokenConfiguration());
-            //modelBuilder.ApplyConfiguration(new ConfigConfiguration());
-            //modelBuilder.ApplyConfiguration(new ApplicationUserConfiguration());
-            //modelBuilder.ApplyConfiguration(new TokenConfiguration());
-            //modelBuilder.ApplyConfiguration(new ConfigConfiguration());
-            //modelBuilder.ApplyConfiguration(new ApplicationUserConfiguration());
-            //modelBuilder.ApplyConfiguration(new TokenConfiguration());
-            //modelBuilder.ApplyConfiguration(new ConfigConfiguration());
+            modelBuilder.ApplyConfiguration(new InventoryConfiguration());
+            modelBuilder.ApplyConfiguration(new OrderConfiguration());
+            modelBuilder.ApplyConfiguration(new OrderDetailConfiguration());
+            modelBuilder.ApplyConfiguration(new ProductConfiguration());
+            modelBuilder.ApplyConfiguration(new ProductCategoryConfiguration());
+            modelBuilder.ApplyConfiguration(new ProductColorConfiguration());
+            modelBuilder.ApplyConfiguration(new ProductImageConfiguration());
+            modelBuilder.ApplyConfiguration(new ProductSizeConfiguration());
+            modelBuilder.ApplyConfiguration(new SizeConfiguration());
+            modelBuilder.ApplyConfiguration(new TokenConfiguration());
+
         }
     }
 }

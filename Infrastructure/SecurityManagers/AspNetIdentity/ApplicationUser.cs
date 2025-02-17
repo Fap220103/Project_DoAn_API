@@ -14,14 +14,11 @@ namespace Infrastructure.SecurityManagers.AspNetIdentity
         public bool IsBlocked { get; set; }
         public bool IsDeleted { get; set; }
         public DateTime? CreatedAt { get; set; }
-        public string? CreatedById { get; set; }
         public DateTime? UpdatedAt { get; set; }
-        public string? UpdatedById { get; set; }
 
 
         public ApplicationUser(
-            string email,            
-            string? createdById
+            string email         
             )
         {
             EmailConfirmed = true;
@@ -30,7 +27,6 @@ namespace Infrastructure.SecurityManagers.AspNetIdentity
             CreatedAt = DateTime.UtcNow;
             Email = email.Trim();
             UserName = Email;         
-            CreatedById = createdById?.Trim();
         }
 
     }

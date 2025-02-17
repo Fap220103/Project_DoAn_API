@@ -6,16 +6,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Domain.Bases;
+using Domain.Interfaces;
 
 namespace Domain.Entities
 {
-    public class OrderDetail 
+    public class OrderDetail
     {
-        public string OrderID { get; set; } = null!;
-        public string ProductID { get; set; } = null!;
+        public string OrderId { get; set; } = null!;
+        public string ProductId { get; set; } = null!;
         public decimal Price { get; set; }
         public int Quantity { get; set; }
-        //public virtual Order Order { get; set; }
-        //public virtual Product Product { get; set; }
+        public Order Order { get; set; }
+        public Product Product { get; set; }
     }
 }

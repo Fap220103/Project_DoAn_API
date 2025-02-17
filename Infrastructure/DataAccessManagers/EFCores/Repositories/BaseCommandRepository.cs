@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.DataAccessManagers.EFCores.Repositories
 {
-    public class BaseCommandRepository<T> : IBaseCommandRepository<T> where T : BaseEntity, IAggregateRoot
+    public class BaseCommandRepository<T> : IBaseCommandRepository<T> where T : BaseEntity
     {
         protected readonly CommandContext _context;
         public BaseCommandRepository(CommandContext context)

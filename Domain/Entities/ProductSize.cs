@@ -11,5 +11,7 @@ namespace Domain.Entities
     {
         public string ProductId { get; set; } = null!;
         public string SizeId { get; set; } = null!;
+        public Product Product { get; set; }
+        public Size Size { get; set; }
     }
 }

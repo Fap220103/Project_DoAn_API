@@ -11,7 +11,7 @@ namespace Application.Services.Externals
     public interface IIdentityService
     {
         Task<GetUsersResult> GetUsersAsync(int page = 1, int limit = 10, string sortBy = "Email", string sortDirection = "asc", string searchValue = "", CancellationToken cancellationToken = default);
-        Task<CreateUserResult> CreateUserAsync(string email, string password, string createdById, CancellationToken cancellationToken = default);
+        Task<CreateUserResult> CreateUserAsync(string email, string password, CancellationToken cancellationToken = default);
         Task<DeleteUserResult> DeleteUserAsync(string userId, CancellationToken cancellationToken = default);
         Task<LoginUserResult> LoginAsync(string email, string password, CancellationToken cancellationToken = default);
         Task<LogoutUserResult> LogoutAsync(string userId, CancellationToken cancellationToken = default);

@@ -1,4 +1,5 @@
 ﻿using Domain.Bases;
+using Domain.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -19,7 +20,6 @@ namespace Domain.Entities
         public decimal TotalAmount { get; set; }
         public int Quantity { get; set; }
         public int TypePayment { get; set; }
-        public string? CustomerId { get; set; }
         public int Status { get; set; }
         public ICollection<OrderDetail> OrderDetails { get; set; } = new Collection<OrderDetail>();
         public Order() : base() { } //for EF Core
@@ -33,7 +33,6 @@ namespace Domain.Entities
             decimal totalAmount,
             int quantity,
             int typePayment,
-            string customerId,
             int status
             ) : base(userId)
         {
@@ -45,7 +44,6 @@ namespace Domain.Entities
             TotalAmount = totalAmount;
             Quantity = quantity;
             TypePayment = typePayment;
-            CustomerId = customerId.Trim();
             Status = status;
             OrderDetails = new Collection<OrderDetail>();
         }
@@ -71,7 +69,6 @@ namespace Domain.Entities
             TotalAmount = totalAmount;
             Quantity = quantity;
             TypePayment = typePayment;
-            CustomerId = customerId.Trim();
             Status = status;
 
             SetAudit(userId);

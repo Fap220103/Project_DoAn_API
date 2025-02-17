@@ -4,6 +4,7 @@ using Infrastructure.DataAccessManagers.EFCores.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20250217063544_fixRelationship")]
+    partial class fixRelationship
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -360,16 +362,10 @@ namespace Infrastructure.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
-
-                    b.Property<string>("ParentId")
-                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("SeoDescription")
                         .IsRequired()
@@ -398,8 +394,6 @@ namespace Infrastructure.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ParentId");
 
                     b.HasIndex("Title")
                         .HasDatabaseName("IX_ProductCategory_Title");
@@ -764,16 +758,6 @@ namespace Infrastructure.Migrations
                     b.Navigation("ProductCategory");
                 });
 
-            modelBuilder.Entity("Domain.Entities.ProductCategory", b =>
-                {
-                    b.HasOne("Domain.Entities.ProductCategory", "ParentCategory")
-                        .WithMany("ChildCategories")
-                        .HasForeignKey("ParentId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.Navigation("ParentCategory");
-                });
-
             modelBuilder.Entity("Domain.Entities.ProductColor", b =>
                 {
                     b.HasOne("Domain.Entities.Color", "Color")
@@ -908,8 +892,6 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.ProductCategory", b =>
                 {
-                    b.Navigation("ChildCategories");
-
                     b.Navigation("Products");
                 });
 
