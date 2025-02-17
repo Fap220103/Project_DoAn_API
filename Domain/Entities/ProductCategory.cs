@@ -14,8 +14,11 @@ namespace Domain.Entities
     {
         public string? Alias { get; set; }
         public string? Icon { get; set; }
+        public string? ParentId { get; set; }
+        public bool IsActive { get; set; }
         public ICollection<Product> Products { get; set; } = new Collection<Product>();
-
+        public ProductCategory? ParentCategory { get; set; }
+        public ICollection<ProductCategory> ChildCategories { get; set; } = new List<ProductCategory>();
 
     }
 }

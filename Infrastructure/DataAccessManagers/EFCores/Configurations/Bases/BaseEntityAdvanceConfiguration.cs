@@ -32,22 +32,12 @@ namespace Infrastructure.DataAccessManagers.EFCores.Configurations.Bases
                 .IsRequired(false)
                 .HasMaxLength(UserIdConsts.MaxLength);
 
-            builder.HasOne<ApplicationUser>()
-                .WithMany()
-                .HasForeignKey(e => e.CreatedById)
-                .OnDelete(DeleteBehavior.Restrict);
-
             builder.Property(e => e.UpdatedAt)
                 .IsRequired(false);
 
             builder.Property(e => e.UpdatedById)
                 .HasMaxLength(UserIdConsts.MaxLength)
                 .IsRequired(false);
-
-            builder.HasOne<ApplicationUser>()
-                .WithMany()
-                .HasForeignKey(e => e.UpdatedById)
-                .OnDelete(DeleteBehavior.Restrict);
 
             //BaseEntityCommon
             builder.Property(e => e.Title)

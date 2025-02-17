@@ -4,6 +4,7 @@ using Infrastructure.DataAccessManagers.EFCores.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20250217035715_addentity")]
+    partial class addentity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -128,12 +130,17 @@ namespace Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<string>("ProductId1")
+                        .HasColumnType("nvarchar(50)");
+
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ProductId");
+
+                    b.HasIndex("ProductId1");
 
                     b.ToTable("Inventory");
                 });
@@ -213,15 +220,25 @@ namespace Infrastructure.Migrations
                     b.Property<string>("ProductId")
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<string>("OrderId1")
+                        .HasColumnType("nvarchar(50)");
+
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("ProductId1")
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
                     b.HasKey("OrderId", "ProductId");
 
+                    b.HasIndex("OrderId1");
+
                     b.HasIndex("ProductId");
+
+                    b.HasIndex("ProductId1");
 
                     b.ToTable("OrderDetail");
                 });
@@ -285,7 +302,9 @@ namespace Infrastructure.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("ProductCategoryId")
-                        .IsRequired()
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("ProductCategoryId1")
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("ProductCode")
@@ -329,6 +348,8 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("ProductCategoryId");
 
+                    b.HasIndex("ProductCategoryId1");
+
                     b.HasIndex("Title")
                         .HasDatabaseName("IX_Product_Title");
 
@@ -360,16 +381,10 @@ namespace Infrastructure.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
-
-                    b.Property<string>("ParentId")
-                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("SeoDescription")
                         .IsRequired()
@@ -399,8 +414,6 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ParentId");
-
                     b.HasIndex("Title")
                         .HasDatabaseName("IX_ProductCategory_Title");
 
@@ -415,9 +428,14 @@ namespace Infrastructure.Migrations
                     b.Property<string>("ColorId")
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<string>("ProductId1")
+                        .HasColumnType("nvarchar(50)");
+
                     b.HasKey("ProductId", "ColorId");
 
                     b.HasIndex("ColorId");
+
+                    b.HasIndex("ProductId1");
 
                     b.ToTable("ProductColor");
                 });
@@ -454,7 +472,12 @@ namespace Infrastructure.Migrations
                     b.Property<string>("SizeId")
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<string>("ProductId1")
+                        .HasColumnType("nvarchar(50)");
+
                     b.HasKey("ProductId", "SizeId");
+
+                    b.HasIndex("ProductId1");
 
                     b.HasIndex("SizeId");
 
@@ -725,102 +748,97 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Inventory", b =>
                 {
-                    b.HasOne("Domain.Entities.Product", "Product")
-                        .WithMany("Inventory")
+                    b.HasOne("Domain.Entities.Product", null)
+                        .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Product");
+                    b.HasOne("Domain.Entities.Product", null)
+                        .WithMany("Inventory")
+                        .HasForeignKey("ProductId1");
                 });
 
             modelBuilder.Entity("Domain.Entities.OrderDetail", b =>
                 {
-                    b.HasOne("Domain.Entities.Order", "Order")
-                        .WithMany("OrderDetails")
+                    b.HasOne("Domain.Entities.Order", null)
+                        .WithMany()
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.Product", "Product")
+                    b.HasOne("Domain.Entities.Order", null)
                         .WithMany("OrderDetails")
+                        .HasForeignKey("OrderId1");
+
+                    b.HasOne("Domain.Entities.Product", null)
+                        .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("Order");
-
-                    b.Navigation("Product");
+                    b.HasOne("Domain.Entities.Product", null)
+                        .WithMany("OrderDetails")
+                        .HasForeignKey("ProductId1");
                 });
 
             modelBuilder.Entity("Domain.Entities.Product", b =>
                 {
-                    b.HasOne("Domain.Entities.ProductCategory", "ProductCategory")
-                        .WithMany("Products")
+                    b.HasOne("Domain.Entities.ProductCategory", null)
+                        .WithMany()
                         .HasForeignKey("ProductCategoryId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("ProductCategory");
-                });
-
-            modelBuilder.Entity("Domain.Entities.ProductCategory", b =>
-                {
-                    b.HasOne("Domain.Entities.ProductCategory", "ParentCategory")
-                        .WithMany("ChildCategories")
-                        .HasForeignKey("ParentId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.Navigation("ParentCategory");
+                    b.HasOne("Domain.Entities.ProductCategory", null)
+                        .WithMany("Products")
+                        .HasForeignKey("ProductCategoryId1");
                 });
 
             modelBuilder.Entity("Domain.Entities.ProductColor", b =>
                 {
-                    b.HasOne("Domain.Entities.Color", "Color")
-                        .WithMany("ProductColor")
+                    b.HasOne("Domain.Entities.Color", null)
+                        .WithMany()
                         .HasForeignKey("ColorId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.Product", "Product")
-                        .WithMany("ProductColor")
+                    b.HasOne("Domain.Entities.Product", null)
+                        .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("Color");
-
-                    b.Navigation("Product");
+                    b.HasOne("Domain.Entities.Product", null)
+                        .WithMany("ProductColor")
+                        .HasForeignKey("ProductId1");
                 });
 
             modelBuilder.Entity("Domain.Entities.ProductImage", b =>
                 {
-                    b.HasOne("Domain.Entities.Product", "Product")
+                    b.HasOne("Domain.Entities.Product", null)
                         .WithMany("ProductImage")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("Domain.Entities.ProductSize", b =>
                 {
-                    b.HasOne("Domain.Entities.Product", "Product")
-                        .WithMany("ProductSize")
+                    b.HasOne("Domain.Entities.Product", null)
+                        .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.Size", "Size")
+                    b.HasOne("Domain.Entities.Product", null)
                         .WithMany("ProductSize")
+                        .HasForeignKey("ProductId1");
+
+                    b.HasOne("Domain.Entities.Size", null)
+                        .WithMany()
                         .HasForeignKey("SizeId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
-
-                    b.Navigation("Product");
-
-                    b.Navigation("Size");
                 });
 
             modelBuilder.Entity("Domain.Entities.Token", b =>
@@ -883,11 +901,6 @@ namespace Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Domain.Entities.Color", b =>
-                {
-                    b.Navigation("ProductColor");
-                });
-
             modelBuilder.Entity("Domain.Entities.Order", b =>
                 {
                     b.Navigation("OrderDetails");
@@ -908,14 +921,7 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.ProductCategory", b =>
                 {
-                    b.Navigation("ChildCategories");
-
                     b.Navigation("Products");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Size", b =>
-                {
-                    b.Navigation("ProductSize");
                 });
 #pragma warning restore 612, 618
         }

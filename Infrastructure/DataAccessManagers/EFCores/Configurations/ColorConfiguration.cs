@@ -12,6 +12,16 @@ namespace Infrastructure.DataAccessManagers.EFCores.Configurations
 {
     public class ColorConfiguration : BaseEntityConfiguration<Color>
     {
-        
+        public override void Configure(EntityTypeBuilder<Color> builder)
+        {
+            base.Configure(builder);
+
+            builder.Property(x => x.ColorCode)
+                   .IsRequired()
+                   .HasMaxLength(LengthConsts.S);
+            builder.Property(x => x.ColorName)
+                  .IsRequired()
+                  .HasMaxLength(LengthConsts.S);
+        }
     }
 }

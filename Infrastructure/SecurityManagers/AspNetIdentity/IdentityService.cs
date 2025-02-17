@@ -65,13 +65,12 @@ namespace Infrastructure.SecurityManagers.AspNetIdentity
             _queryContext = queryContext;
         }
 
-        public async Task<CreateUserResult> CreateUserAsync(string email, string password, string createdById, CancellationToken cancellationToken = default)
+        public async Task<CreateUserResult> CreateUserAsync(string email, string password, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             var user = new ApplicationUser(
-                email,
-                createdById
+                email
             );
 
             var result = await _userManager.CreateAsync(user, password);
@@ -208,8 +207,7 @@ namespace Infrastructure.SecurityManagers.AspNetIdentity
             cancellationToken.ThrowIfCancellationRequested();
 
             var user = new ApplicationUser(
-                email,
-                null
+                email
             );
             user.UserName = email;
             var sendEmailConfirmation = false;

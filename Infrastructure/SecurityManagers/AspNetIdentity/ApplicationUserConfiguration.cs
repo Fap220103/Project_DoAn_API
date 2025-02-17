@@ -23,14 +23,8 @@ namespace Infrastructure.SecurityManagers.AspNetIdentity
             builder.Property(u => u.CreatedAt)
                 .IsRequired(false);
 
-            builder.Property(u => u.CreatedById)
-                .HasMaxLength(UserIdConsts.MaxLength);
-
             builder.Property(u => u.UpdatedAt)
                 .IsRequired(false);
-
-            builder.Property(u => u.UpdatedById)
-                .HasMaxLength(UserIdConsts.MaxLength);
 
             builder.HasIndex(u => u.IsDeleted);
         }

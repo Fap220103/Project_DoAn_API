@@ -8,12 +8,11 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
-    public class ProductImage : BaseEntity, IEntity
+    public class ProductImage : BaseEntity
     {
         public string ProductId { get; set; } = null!;
         public string Image { get; set; } = null!;
         public bool IsDefault { get; set; }
-
-        //public virtual Product Product { get; set; }
+        public Product Product { get; set; }
     }
 }

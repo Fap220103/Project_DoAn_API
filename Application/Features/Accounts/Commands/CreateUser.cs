@@ -61,7 +61,6 @@ namespace Application.Features.Accounts.Commands
             var result = await _identityService.CreateUserAsync(
                 request.Email,
                 request.Password,
-                request.CreatedById,
                 cancellationToken
                 );
 

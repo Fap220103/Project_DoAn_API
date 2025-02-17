@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Application.Services.Repositories
 {
-    public interface IBaseCommandRepository<T> where T : BaseEntity, IAggregateRoot
+    public interface IBaseCommandRepository<T> where T : BaseEntity
     {
         Task CreateAsync(T entity, CancellationToken cancellationToken = default);
 
