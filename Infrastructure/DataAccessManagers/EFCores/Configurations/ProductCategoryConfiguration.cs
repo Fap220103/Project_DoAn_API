@@ -17,6 +17,10 @@ namespace Infrastructure.DataAccessManagers.EFCores.Configurations
         {
             base.Configure(builder);
 
+            builder.Property(x => x.ParentId)
+                    .IsRequired(false);
+
+
             builder.Property(x => x.Alias)
                 .HasMaxLength(NameConsts.MaxLength);
 

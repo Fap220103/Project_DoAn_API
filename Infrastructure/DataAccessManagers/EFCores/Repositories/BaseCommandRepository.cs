@@ -46,7 +46,7 @@ namespace Infrastructure.DataAccessManagers.EFCores.Repositories
             _context.Remove(entity);
         }
 
-        public virtual async Task<T?> GetAsync(string id, CancellationToken cancellationToken = default)
+        public virtual async Task<T?> GetByIdAsync(string id, CancellationToken cancellationToken = default)
         {
             var entity = await _context.Set<T>()
                 .ApplyIsDeletedFilter()

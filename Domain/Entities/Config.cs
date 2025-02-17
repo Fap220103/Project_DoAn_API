@@ -49,7 +49,7 @@ namespace Domain.Entities
             int smtpPort,
             string smtpUserName,
             string? smtpPassword,
-        bool smtpUseSSL,
+            bool smtpUseSSL,
             bool active
             )
         {

@@ -19,6 +19,55 @@ namespace Domain.Entities
         public ICollection<Product> Products { get; set; } = new Collection<Product>();
         public ProductCategory? ParentCategory { get; set; }
         public ICollection<ProductCategory> ChildCategories { get; set; } = new List<ProductCategory>();
+        public ProductCategory() : base() { } //for EF Core
+        public ProductCategory(
+            string? userId,
+            string title,
+            string? description,
+            string seoTitle,
+            string seoDescription,
+            string seoKeywords,
+            string? icon,
+            string parentId
+            ) : base(seoTitle, seoDescription, seoKeywords,userId, title, description)
+        {
+            Icon = icon;
+            ParentId = parentId.Trim();
+            Alias = Common.Helper.FilterChar(title);
+            IsActive = true;
+        }
 
+
+        public void Update(
+            string? userId,
+            string title,
+            string? description,
+            string seoTitle,
+            string seoDescription,
+            string seoKeywords,
+            string icon,
+            string parentId,
+            bool isActive
+            )
+        {
+            Title = title.Trim();
+            Description = description?.Trim();
+            Icon = icon;
+            Alias = Common.Helper.FilterChar(title);
+            ParentId = parentId;
+            IsActive = isActive;
+            SeoTitle = seoTitle?.Trim();
+            SeoDescription = seoDescription?.Trim();
+            SeoKeywords = seoKeywords?.Trim();
+            SetAudit(userId);
+        }
+
+        public void Delete(
+            string? userId
+            )
+        {
+            SetAsDeleted();
+            SetAudit(userId);
+        }
     }
 }
