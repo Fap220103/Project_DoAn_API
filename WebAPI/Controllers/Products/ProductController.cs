@@ -1,4 +1,5 @@
 ﻿using Application.Features.ProductCategories.Commands;
+using Application.Features.Products.Commands;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
