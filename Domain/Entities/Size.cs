@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Domain.Entities
@@ -11,6 +12,7 @@ namespace Domain.Entities
     public class Size : BaseEntity
     {
         public string SizeName { get; set; } = null!;
+        [JsonIgnore]
         public ICollection<ProductSize> ProductSize { get; set; } = new Collection<ProductSize>();
         public Size() : base() { } //for EF Core
         public Size(
@@ -19,8 +21,11 @@ namespace Domain.Entities
         {
             SizeName = sizeName.Trim();
         }
-
-
-    
+        public void Update(
+           string sizeName
+        )
+        {
+            SizeName = sizeName.Trim();
+        }
     }
 }

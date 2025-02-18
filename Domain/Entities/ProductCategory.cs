@@ -32,7 +32,7 @@ namespace Domain.Entities
             ) : base(seoTitle, seoDescription, seoKeywords,userId, title, description)
         {
             Icon = icon;
-            ParentId = parentId.Trim();
+            ParentId = string.IsNullOrWhiteSpace(parentId) ? null : parentId.Trim();
             Alias = Common.Helper.FilterChar(title);
             IsActive = true;
         }
@@ -46,7 +46,7 @@ namespace Domain.Entities
             string seoDescription,
             string seoKeywords,
             string icon,
-            string parentId,
+            string? parentId,
             bool isActive
             )
         {

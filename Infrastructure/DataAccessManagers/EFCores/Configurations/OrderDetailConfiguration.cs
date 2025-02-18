@@ -26,6 +26,9 @@ namespace Infrastructure.DataAccessManagers.EFCores.Configurations
                    .WithMany(od => od.OrderDetails)
                    .HasForeignKey(od => od.OrderId)
                    .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Property(o => o.Price)
+                    .HasPrecision(18, 2);
         }
     }
 }

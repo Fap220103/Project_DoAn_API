@@ -1,17 +1,22 @@
 ﻿using Application.Services.Repositories;
+using Domain.Entities;
 using FluentValidation;
 using MediatR;
-using Domain.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Application.Features.ProductCategories.Commands
+namespace Application.Features.Products.Commands
 {
-    public class CreateProductCategoryResult
+    public class CreateProductResult
     {
         public string Id { get; init; } = null!;
         public string Message { get; init; } = null!;
     }
 
-    public class CreateProductCategoryRequest : IRequest<CreateProductCategoryResult>
+    public class CreateProductRequest : IRequest<CreateProductResult>
     {
         public string? UserId { get; init; }
         public string Title { get; init; } = null!;
@@ -23,9 +28,9 @@ namespace Application.Features.ProductCategories.Commands
         public string ParentId { get; init; } = null!;
     }
 
-    public class CreateProductCategoryValidator : AbstractValidator<CreateProductCategoryRequest>
+    public class CreateProductValidator : AbstractValidator<CreateProductRequest>
     {
-        public CreateProductCategoryValidator()
+        public CreateProductValidator()
         {
             RuleFor(x => x.Title)
                 .NotEmpty();
@@ -33,13 +38,13 @@ namespace Application.Features.ProductCategories.Commands
     }
 
 
-    public class CreateProductCategoryHandler : IRequestHandler<CreateProductCategoryRequest, CreateProductCategoryResult>
+    public class CreateProductHandler : IRequestHandler<CreateProductRequest, CreateProductResult>
     {
-        private readonly IBaseCommandRepository<ProductCategory> _repository;
+        private readonly IBaseCommandRepository<Product> _repository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public CreateProductCategoryHandler(
-            IBaseCommandRepository<ProductCategory> repository,
+        public CreateProductHandler(
+            IBaseCommandRepository<Product> repository,
             IUnitOfWork unitOfWork
             )
         {
@@ -47,7 +52,7 @@ namespace Application.Features.ProductCategories.Commands
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<CreateProductCategoryResult> Handle(CreateProductCategoryRequest request, CancellationToken cancellationToken = default)
+        public async Task<CreateProductResult> Handle(CreateProductRequest request, CancellationToken cancellationToken = default)
         {
             ProductCategory? parentCategory = null;
 
@@ -72,13 +77,13 @@ namespace Application.Features.ProductCategories.Commands
             if (parentCategory != null)
             {
                 entity.ParentCategory = parentCategory;
-                parentCategory.ChildCategories.Add(entity); 
+                parentCategory.ChildCategories.Add(entity);
             }
 
             await _repository.CreateAsync(entity, cancellationToken);
             await _unitOfWork.SaveAsync(cancellationToken);
 
-            return new CreateProductCategoryResult
+            return new CreateProductResult
             {
                 Id = entity.Id,
                 Message = "Success"

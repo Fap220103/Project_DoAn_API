@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using WebAPI.Common.Filters;
 using WebAPI.Common.Models;
 
-namespace WebAPI.Controllers.Config
+namespace WebAPI.Controllers.Configs
 {
     public class ConfigController : BaseApiController
     {

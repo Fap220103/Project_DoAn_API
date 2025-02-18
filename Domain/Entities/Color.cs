@@ -22,7 +22,13 @@ namespace Domain.Entities
             ColorName = colorName.Trim();
             ColorCode = colorCode.Trim();
         }
-
-
+        public void Update(
+         string colorName,
+         string colorCode
+         )
+        {
+            ColorName = colorName.Trim();
+            ColorCode = colorCode.Trim();
+        }
     }
 }

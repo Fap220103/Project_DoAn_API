@@ -17,6 +17,14 @@ namespace Infrastructure.DataAccessManagers.EFCores.Configurations
         {
             base.Configure(builder);
 
+            builder.Property(o => o.OriginalPrice)
+                   .HasPrecision(18, 2);
+
+            builder.Property(o => o.Price)
+                   .HasPrecision(18, 2);
+
+            builder.Property(o => o.PriceSale)
+                    .HasPrecision(18, 2);
 
             builder.Property(x => x.Alias)
                 .HasMaxLength(NameConsts.MaxLength);
