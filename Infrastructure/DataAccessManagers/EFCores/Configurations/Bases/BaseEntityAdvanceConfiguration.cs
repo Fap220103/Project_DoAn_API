@@ -52,11 +52,9 @@ namespace Infrastructure.DataAccessManagers.EFCores.Configurations.Bases
 
             //BaseEntityAdvance
             builder.Property(e => e.SeoTitle)
-                .IsRequired()
                 .HasMaxLength(TitleConsts.MaxLength);
 
             builder.Property(e => e.SeoDescription)
-                .IsRequired()
                 .HasMaxLength(DescriptionConsts.MaxLength);
 
             builder.Property(e => e.SeoKeywords)

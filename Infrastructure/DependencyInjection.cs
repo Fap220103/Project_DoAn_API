@@ -1,6 +1,9 @@
-﻿using Infrastructure.DataAccessManagers.EFCores;
+﻿using Infrastructure.CommonManagers;
+using Infrastructure.DataAccessManagers.EFCores;
 using Infrastructure.EmailManagers;
 using Infrastructure.EncryptionManagers;
+using Infrastructure.LoggingManagers.Serilogs;
+using Infrastructure.PhotoManagers;
 using Infrastructure.SecurityManagers.AspNetIdentity;
 using Infrastructure.SecurityManagers.Navigations;
 using Infrastructure.SecurityManagers.RoleClaims;
@@ -29,7 +32,7 @@ namespace Infrastructure
             services.RegisterPolicy(configuration);
 
             ////>>> Serilog
-            //services.RegisterSerilog(configuration);
+            services.RegisterSerilog(configuration);
 
             ////>>> RegisterImageManager
             //services.RegisterImageManager(configuration);
@@ -51,6 +54,12 @@ namespace Infrastructure
 
             //>>> EncryptionManager
             services.RegisterEncryptionManager(configuration);
+
+            //>>> CommonManager
+            services.RegisterCommonManager(configuration);
+
+            //>>> PhotoManager
+            services.RegisterPhotoManager(configuration);
             return services;
         }
     }

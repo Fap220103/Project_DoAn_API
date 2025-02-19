@@ -19,15 +19,12 @@ namespace Domain.Entities
         [AllowHtml]
         public string? Detail { get; set; }
         public string? Image { get; set; }
-        public decimal? OriginalPrice { get; set; }
+        public decimal OriginalPrice { get; set; }
         public decimal Price { get; set; }
         public int SalePercent { get; set; }
-        public decimal? PriceSale { get; set; }
-        public int? ViewCount { get; set; }
-        //public bool IsHome { get; set; }
+        public decimal PriceSale { get; set; }
+        public int ViewCount { get; set; }
         public bool IsSale { get; set; }
-        //public bool IsFeature { get; set; }
-        //public bool IsHot { get; set; }
         public bool IsActive { get; set; }
         public string? ProductCategoryId { get; set; }
         public ProductCategory ProductCategory { get; set; }
@@ -36,16 +33,15 @@ namespace Domain.Entities
         public ICollection<ProductColor> ProductColor { get; set; } = new Collection<ProductColor>();
         public ICollection<ProductSize> ProductSize { get; set; } = new Collection<ProductSize>();
         public ICollection<Inventory> Inventory { get; set; } = new Collection<Inventory>();
-        //public virtual ICollection<ReviewProduct> ReviewProducts { get; set; }
-        //public virtual ICollection<WishList> WishLists { get; set; }
         public Product() : base() { } //for EF Core
         public Product(
             string? userId,
             string title,
+            string? alias,
             string? description,
-            string seoTitle,
-            string seoDescription,
-            string seoKeywords,
+            string? seoTitle,
+            string? seoDescription,
+            string? seoKeywords,
             string? image,
             string detail,
             decimal originalPrice,
@@ -54,7 +50,7 @@ namespace Domain.Entities
             string? productCategoryId
             ) : base(seoTitle, seoDescription, seoKeywords, userId, title, description)
         {
-            Alias = Common.Helper.FilterChar(title);
+            Alias = alias;
             Image = image;
             Detail = detail;
             OriginalPrice = originalPrice;

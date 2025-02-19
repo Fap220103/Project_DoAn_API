@@ -23,6 +23,7 @@ namespace Domain.Entities
         public ProductCategory(
             string? userId,
             string title,
+            string? alias,
             string? description,
             string seoTitle,
             string seoDescription,
@@ -33,7 +34,7 @@ namespace Domain.Entities
         {
             Icon = icon;
             ParentId = string.IsNullOrWhiteSpace(parentId) ? null : parentId.Trim();
-            Alias = Common.Helper.FilterChar(title);
+            Alias = alias;
             IsActive = true;
         }
 
@@ -41,6 +42,7 @@ namespace Domain.Entities
         public void Update(
             string? userId,
             string title,
+            string? alias,
             string? description,
             string seoTitle,
             string seoDescription,
@@ -53,7 +55,7 @@ namespace Domain.Entities
             Title = title.Trim();
             Description = description?.Trim();
             Icon = icon;
-            Alias = Common.Helper.FilterChar(title);
+            Alias = alias;
             ParentId = parentId;
             IsActive = isActive;
             SeoTitle = seoTitle?.Trim();

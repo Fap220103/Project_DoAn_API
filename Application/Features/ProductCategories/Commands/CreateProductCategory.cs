@@ -2,6 +2,7 @@
 using FluentValidation;
 using MediatR;
 using Domain.Entities;
+using Application.Services.Externals;
 
 namespace Application.Features.ProductCategories.Commands
 {
@@ -15,6 +16,7 @@ namespace Application.Features.ProductCategories.Commands
     {
         public string? UserId { get; init; }
         public string Title { get; init; } = null!;
+        public string Alias { get; set; } = null!;
         public string? Description { get; init; }
         public string? Icon { get; init; }
         public string SeoTitle { get; init; } = null!;
@@ -37,14 +39,17 @@ namespace Application.Features.ProductCategories.Commands
     {
         private readonly IBaseCommandRepository<ProductCategory> _repository;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ICommonService _commonService;
 
         public CreateProductCategoryHandler(
             IBaseCommandRepository<ProductCategory> repository,
-            IUnitOfWork unitOfWork
+            IUnitOfWork unitOfWork,
+            ICommonService commonService
             )
         {
             _repository = repository;
             _unitOfWork = unitOfWork;
+            _commonService = commonService;
         }
 
         public async Task<CreateProductCategoryResult> Handle(CreateProductCategoryRequest request, CancellationToken cancellationToken = default)
@@ -59,9 +64,14 @@ namespace Application.Features.ProductCategories.Commands
                     throw new ApplicationException("Parent category not found.");
                 }
             }
+            if (string.IsNullOrEmpty(request.Alias))
+            {
+                request.Alias = _commonService.FilterChar(request.Title);
+            }
             var entity = new ProductCategory(
                     request.UserId,
                     request.Title,
+                    request.Alias,
                     request.Description,
                     request.SeoTitle,
                     request.SeoDescription,

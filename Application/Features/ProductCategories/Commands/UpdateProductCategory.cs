@@ -21,6 +21,7 @@ namespace Application.Features.ProductCategories.Commands
     {
         public string Id { get; init; } = null!;
         public string Title { get; init; } = null!;
+        public string Alias { get; init; } = null!;
         public string Description { get; init; } = null!;
         public string Icon { get; init; } = null!;
         public string SeoTitle { get; init; } = null!;
@@ -74,6 +75,7 @@ namespace Application.Features.ProductCategories.Commands
             entity.Update(
                     request.Id,
                     request.Title,
+                    request.Alias,
                     request.Description,
                     request.SeoTitle,
                     request.SeoDescription,
