@@ -1,5 +1,7 @@
 ﻿using Application.Features.ProductCategories.Commands;
 using Application.Features.ProductCategories.Queries;
+using Application.Features.ProductImages.Commands;
+using Application.Features.ProductImages.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,53 +15,68 @@ namespace WebAPI.Controllers.ProductImages
         {
         }
         [HttpPost("AddImage")]
-        public async Task<ActionResult<ApiSuccessResult<CreateProductCategoryResult>>> CreateProductCategoryAsync(CreateProductCategoryRequest request, CancellationToken cancellationToken)
+        public async Task<ActionResult<ApiSuccessResult<AddImageResult>>> AddImageAsync([FromForm] AddImageRequest request, CancellationToken cancellationToken)
         {
             var response = await _sender.Send(request, cancellationToken);
 
-            return Ok(new ApiSuccessResult<CreateProductCategoryResult>
+            return Ok(new ApiSuccessResult<AddImageResult>
             {
                 Code = StatusCodes.Status200OK,
-                Message = $"Success executing {nameof(CreateProductCategoryAsync)}",
+                Message = $"Success executing {nameof(AddImageAsync)}",
                 Content = response
             });
         }
-        //[HttpDelete("DeleteImage")]
-        //public async Task<ActionResult<ApiSuccessResult<UpdateProductCategoryResult>>> UpdateProductCategoryAsync(UpdateProductCategoryRequest request, CancellationToken cancellationToken)
-        //{
-        //    var response = await _sender.Send(request, cancellationToken);
-
-        //    return Ok(new ApiSuccessResult<UpdateProductCategoryResult>
-        //    {
-        //        Code = StatusCodes.Status200OK,
-        //        Message = $"Success executing {nameof(UpdateProductCategoryAsync)}",
-        //        Content = response
-        //    });
-        //}
-
-        //[HttpPost("ChangeDefault")]
-        //public async Task<ActionResult<ApiSuccessResult<DeleteProductCategoryResult>>> DeleteProductCategoryAsync(DeleteProductCategoryRequest request, CancellationToken cancellationToken)
-        //{
-        //    var response = await _sender.Send(request, cancellationToken);
-
-        //    return Ok(new ApiSuccessResult<DeleteProductCategoryResult>
-        //    {
-        //        Code = StatusCodes.Status200OK,
-        //        Message = $"Success executing {nameof(DeleteProductCategoryAsync)}",
-        //        Content = response
-        //    });
-        //}
-
-        [HttpGet("GetImages")]
-        public async Task<ActionResult<ApiSuccessResult<GetProductCategoryResult>>> GetAllProductCategoryAsync(CancellationToken cancellationToken)
+        [HttpDelete("DeleteImage")]
+        public async Task<ActionResult<ApiSuccessResult<DeleteImageResult>>> DeleteImageAsync([FromQuery] string ImageId, CancellationToken cancellationToken)
         {
-            var request = new GetProductCategoryRequest();
+            var request = new DeleteImageRequest
+            {
+                ImageId = ImageId
+            };
             var response = await _sender.Send(request, cancellationToken);
 
-            return Ok(new ApiSuccessResult<GetProductCategoryResult>
+            return Ok(new ApiSuccessResult<DeleteImageResult>
             {
                 Code = StatusCodes.Status200OK,
-                Message = $"Success executing {nameof(GetAllProductCategoryAsync)}",
+                Message = $"Success executing {nameof(DeleteImageAsync)}",
+                Content = response
+            });
+        }
+
+        [HttpPost("ChangeDefault")]
+        public async Task<ActionResult<ApiSuccessResult<ChangeDefaultResult>>> ChangeDefaultAsync(
+            [FromQuery] string ImageId, 
+            [FromQuery] string IdDefault, 
+            CancellationToken cancellationToken)
+        {
+            var request = new ChangeDefaultRequest
+            {
+                ImageId = ImageId,
+                IdDefault = IdDefault
+            };
+            var response = await _sender.Send(request, cancellationToken);
+
+            return Ok(new ApiSuccessResult<ChangeDefaultResult>
+            {
+                Code = StatusCodes.Status200OK,
+                Message = $"Success executing {nameof(ChangeDefaultAsync)}",
+                Content = response
+            });
+        }
+
+        [HttpGet("GetImagesByProductId")]
+        public async Task<ActionResult<ApiSuccessResult<GetImagesByProductIdResult>>> GetImagesByProductIdAsync([FromQuery] string ProductId,CancellationToken cancellationToken)
+        {
+            var request = new GetImagesByProductIdRequest 
+            {
+                ProductId = ProductId
+            };
+            var response = await _sender.Send(request, cancellationToken);
+
+            return Ok(new ApiSuccessResult<GetImagesByProductIdResult>
+            {
+                Code = StatusCodes.Status200OK,
+                Message = $"Success executing {nameof(GetImagesByProductIdAsync)}",
                 Content = response
             });
         }
