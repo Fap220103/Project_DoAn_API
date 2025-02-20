@@ -43,12 +43,12 @@ namespace Application.Features.ProductCategories.Commands
     }
 
 
-    public class UpdateCustomerHandler : IRequestHandler<UpdateProductCategoryRequest, UpdateProductCategoryResult>
+    public class UpdateProductCategoryHandler : IRequestHandler<UpdateProductCategoryRequest, UpdateProductCategoryResult>
     {
         private readonly IBaseCommandRepository<ProductCategory> _repository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public UpdateCustomerHandler(
+        public UpdateProductCategoryHandler(
             IBaseCommandRepository<ProductCategory> repository,
             IUnitOfWork unitOfWork
             )

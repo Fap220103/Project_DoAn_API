@@ -7,6 +7,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 
@@ -60,36 +61,39 @@ namespace Domain.Entities
             IsSale = salePercent > 0;
             IsActive = true;
             ProductCategoryId = productCategoryId;
-
         }
-
-
-        //public void Update(
-        //    string? userId,
-        //    string title,
-        //    string? description,
-        //    string smtpHost,
-        //    int smtpPort,
-        //    string smtpUserName,
-        //    string? smtpPassword,
-        //    bool smtpUseSSL,
-        //    bool active
-        //    )
-        //{
-        //    Title = title.Trim();
-        //    Description = description?.Trim();
-        //    SmtpHost = smtpHost.Trim();
-        //    SmtpPort = smtpPort;
-        //    SmtpUserName = smtpUserName.Trim();
-        //    if (!string.IsNullOrEmpty(smtpPassword?.Trim()))
-        //    {
-        //        SmtpPassword = smtpPassword!.Trim();
-        //    }
-        //    SmtpUseSSL = smtpUseSSL;
-        //    Active = active;
-
-        //    SetAudit(userId);
-        //}
+        public void Update(
+            string? userId,
+            string title,
+            string? alias,
+            string? description,
+            string? seoTitle,
+            string? seoDescription,
+            string? seoKeywords,
+            string detail,
+            decimal originalPrice,
+            decimal price,
+            int salePercent,
+            bool isActive,
+            string? productCategoryId
+            )
+        {
+            Alias = alias;
+            Detail = detail;
+            Title = title.Trim();
+            Description = description?.Trim();
+            OriginalPrice = originalPrice;
+            Price = price;
+            SalePercent = salePercent;
+            PriceSale = price - (price * salePercent / 100);
+            IsSale = salePercent > 0;
+            IsActive = isActive;
+            ProductCategoryId = productCategoryId;
+            SeoTitle = seoTitle?.Trim();
+            SeoDescription = seoDescription?.Trim();
+            SeoKeywords = seoKeywords?.Trim();
+            SetAudit(userId);
+        }
 
         public void Delete(
             string? userId
