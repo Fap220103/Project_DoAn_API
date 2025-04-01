@@ -87,5 +87,18 @@ namespace WebAPI.Controllers.Products
                 Content = response
             });
         }
+        [HttpGet("GetProductByName")]
+        public async Task<ActionResult<ApiSuccessResult<GetProductByNameResult>>> GetProductByNameAsync([FromQuery] string ProductName, [FromQuery] string Type, CancellationToken cancellationToken)
+        {
+            var request = new GetProductByNameRequest { ProductName = ProductName, Type = Type };
+            var response = await _sender.Send(request, cancellationToken);
+
+            return Ok(new ApiSuccessResult<GetProductByNameResult>
+            {
+                Code = StatusCodes.Status200OK,
+                Message = $"Success executing {nameof(GetProductByNameAsync)}",
+                Content = response
+            });
+        }
     }
 }

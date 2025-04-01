@@ -158,8 +158,7 @@ namespace Infrastructure.SecurityManagers.AspNetIdentity
 
 
             var mainNavs = await _navigationService.GenerateMainNavAsync(user.Id, cancellationToken);
-            var userClaims = await _roleClaimService.GetClaimListByUserAsync(user.Id);
-            var accessToken = _tokenService.GenerateToken(user, userClaims);
+            var accessToken = await _tokenService.GenerateToken(user);
             var refreshToken = _tokenService.GenerateRefreshToken();
 
             var tokens = await _tokenRepository.GetByUserIdAsync(user.Id, cancellationToken);
@@ -178,7 +177,6 @@ namespace Infrastructure.SecurityManagers.AspNetIdentity
                 RefreshToken = refreshToken,
                 UserId = user.Id,
                 Email = user.Email,
-                UserClaims = userClaims.Select(x => x.Value).ToList(),
                 MainNavigations = mainNavs.MainNavigations
             };
         }
@@ -282,8 +280,7 @@ namespace Infrastructure.SecurityManagers.AspNetIdentity
 
 
             var mainNavs = await _navigationService.GenerateMainNavAsync(user.Id, cancellationToken);
-            var userClaims = await _roleClaimService.GetClaimListByUserAsync(user.Id);
-            var newAccessToken = _tokenService.GenerateToken(user, userClaims);
+            var newAccessToken = await _tokenService.GenerateToken(user);
             var newRefreshToken = _tokenService.GenerateRefreshToken();
 
             _tokenRepository.Purge(token);
@@ -299,7 +296,6 @@ namespace Infrastructure.SecurityManagers.AspNetIdentity
                 RefreshToken = newRefreshToken,
                 UserId = user.Id,
                 Email = user.Email,
-                UserClaims = userClaims.Select(x => x.Value).ToList(),
                 MainNavigations = mainNavs.MainNavigations
             };
         }

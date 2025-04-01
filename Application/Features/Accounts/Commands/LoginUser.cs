@@ -16,7 +16,6 @@ namespace Application.Features.Accounts.Commands
         public string? RefreshToken { get; init; }
         public string? UserId { get; init; }
         public string? Email { get; init; }
-        public List<string>? UserClaims { get; init; }
         public List<MainNavDto>? MainNavigations { get; init; }
     }
 

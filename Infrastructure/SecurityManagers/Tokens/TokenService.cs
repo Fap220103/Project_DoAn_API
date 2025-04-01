@@ -1,4 +1,5 @@
 ﻿using Infrastructure.SecurityManagers.AspNetIdentity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -14,18 +15,21 @@ namespace Infrastructure.SecurityManagers.Tokens
 {
     public interface ITokenService
     {
-        string GenerateToken(ApplicationUser user, List<Claim> userClaims);
+        Task<string> GenerateToken(ApplicationUser user);
         string GenerateRefreshToken();
     }
     public class TokenService : ITokenService
     {
         private readonly TokenSettings _tokenSettings;
+        private readonly UserManager<ApplicationUser> _userManager;
 
         public TokenService(
-            IOptions<TokenSettings> tokenSettings
+            IOptions<TokenSettings> tokenSettings,
+            UserManager<ApplicationUser> userManager
             )
         {
             _tokenSettings = tokenSettings.Value;
+            _userManager = userManager;
         }
 
         private SymmetricSecurityKey GetSymmetricSecurityKey()
@@ -34,7 +38,7 @@ namespace Infrastructure.SecurityManagers.Tokens
             return new SymmetricSecurityKey(keyBytes);
         }
 
-        public string GenerateToken(ApplicationUser user, List<Claim> userClaims)
+        public async Task<string> GenerateToken(ApplicationUser user)
         {
             var claims = new List<Claim>
         {
@@ -45,8 +49,8 @@ namespace Infrastructure.SecurityManagers.Tokens
             new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName ?? ""),
         };
 
-            claims.AddRange(userClaims);
-
+            var roles = await _userManager.GetRolesAsync(user);
+            claims.AddRange(roles.Select(role => new Claim("roles", role)));
             var key = GetSymmetricSecurityKey();
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 

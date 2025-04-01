@@ -64,5 +64,18 @@ namespace WebAPI.Controllers.ProductCategories
                 Content = response
             });
         }
+        [HttpGet("GetProductCategoryName")]
+        public async Task<ActionResult<ApiSuccessResult<GetProductCategoryNameResult>>> GetProductCategoryNameAsync([FromQuery] string parentId, CancellationToken cancellationToken)
+        {
+            var request = new GetProductCategoryNameRequest { parentId = parentId };
+            var response = await _sender.Send(request, cancellationToken);
+
+            return Ok(new ApiSuccessResult<GetProductCategoryNameResult>
+            {
+                Code = StatusCodes.Status200OK,
+                Message = $"Success executing {nameof(GetProductCategoryNameAsync)}",
+                Content = response
+            });
+        }
     }
 }

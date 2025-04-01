@@ -21,7 +21,7 @@ namespace Application.Features.ProductCategories.Queries
         public string Description { get; init; } = null!;
         public string? Alias { get; set; }
         public string? Icon { get; set; }
-        public string? ParentId { get; set; }
+        public string? ParentName { get; set; }
         public bool IsActive { get; set; }
         public string SeoTitle { get; set; } = null!;
         public string SeoDescription { get; set; } = null!;
@@ -30,9 +30,9 @@ namespace Application.Features.ProductCategories.Queries
     }
 
 
-    public class GetCustomerContactProfile : Profile
+    public class GetProductCategoryProfile : Profile
     {
-        public GetCustomerContactProfile()
+        public GetProductCategoryProfile()
         {
             CreateMap<ProductCategory, ProductCategoryDto>();
         }
@@ -73,24 +73,68 @@ namespace Application.Features.ProductCategories.Queries
 
         public async Task<GetProductCategoryResult> Handle(GetProductCategoryRequest request, CancellationToken cancellationToken)
         {
+            //var allCategories = await _context.ProductCategory.ApplyIsDeletedFilter().ToListAsync(cancellationToken);
+
+            //var lookup = allCategories.ToLookup(c => c.ParentId);
+
+            //foreach (var category in allCategories)
+            //{
+            //    category.ChildCategories = lookup[category.Id].ToList();
+            //}
+
+            //var rootCategories = allCategories.Where(c => c.ParentId == null).ToList();
+
+            //var dto = _mapper.Map<IEnumerable<ProductCategoryDto>>(rootCategories);
+
+
+            //return new GetProductCategoryResult
+            //{
+            //    Data = dto,
+            //    Message = "Success"
+            //};
             var allCategories = await _context.ProductCategory.ApplyIsDeletedFilter().ToListAsync(cancellationToken);
 
-            var lookup = allCategories.ToLookup(c => c.ParentId);
+            // Tạo lookup để ánh xạ Id với danh mục
+            var categoryDict = allCategories.ToDictionary(c => c.Id, c => c);
 
+            // Gán ChildCategories
+            var lookup = allCategories.ToLookup(c => c.ParentId);
             foreach (var category in allCategories)
             {
                 category.ChildCategories = lookup[category.Id].ToList();
             }
 
+            // Lấy danh mục gốc
             var rootCategories = allCategories.Where(c => c.ParentId == null).ToList();
 
+            // Chuyển đổi sang DTO và gán ParentName
             var dto = _mapper.Map<IEnumerable<ProductCategoryDto>>(rootCategories);
+            foreach (var categoryDto in dto)
+            {
+                SetParentName(categoryDto, categoryDict);
+            }
 
             return new GetProductCategoryResult
             {
                 Data = dto,
                 Message = "Success"
             };
+        }
+        private void SetParentName(ProductCategoryDto dto, Dictionary<string, ProductCategory> categoryDict)
+        {
+            if (dto.Id != null && categoryDict.ContainsKey(dto.Id))
+            {
+                var parentId = categoryDict[dto.Id].ParentId;
+                if (parentId != null && categoryDict.ContainsKey(parentId))
+                {
+                    dto.ParentName = categoryDict[parentId].Title;
+                }
+            }
+
+            foreach (var child in dto.ChildCategories)
+            {
+                SetParentName(child, categoryDict);
+            }
         }
     }
 }

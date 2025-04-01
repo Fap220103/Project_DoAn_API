@@ -1,4 +1,5 @@
-using Application;
+﻿using Application;
+using AspNetCoreRateLimit;
 using Infrastructure;
 using Infrastructure.DataAccessManagers.EFCores;
 using Infrastructure.SecurityManagers.AspNetIdentity;
@@ -16,17 +17,27 @@ namespace WebAPI
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
-            // Add services to the container.
+            var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
             //>>> Infrastructure Layer
             builder.Services.AddInfrastructureServices(builder.Configuration);
-          
+
             //>>> Application Layer
             builder.Services.AddApplicationServices();
 
             builder.Services.RegisterExceptionManagers();
 
+            //>>>  Thêm CORS vào dịch vụ
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy(name: MyAllowSpecificOrigins,
+                    policy =>
+                    {
+                        policy.WithOrigins("http://localhost:4200") // Angular chạy trên cổng 4200
+                              .AllowAnyMethod()
+                              .AllowAnyHeader();
+                    });
+            });
 
 
             builder.Services.AddControllers();
@@ -47,6 +58,9 @@ namespace WebAPI
             builder.Services.AddSingleton<Microsoft.AspNetCore.Authentication.ISystemClock, Microsoft.AspNetCore.Authentication.SystemClock>();
             var app = builder.Build();
 
+            // Sử dụng CORS trước khi định tuyến API
+            app.UseCors(MyAllowSpecificOrigins);
+
             //craete database
             app.CreateDatabase();
 
@@ -61,7 +75,7 @@ namespace WebAPI
 
             app.UseExceptionHandler(options => { });
             app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
-           
+
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -69,12 +83,12 @@ namespace WebAPI
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-
+      
             app.UseHttpsRedirection();
 
             app.UseAuthentication();
             app.UseAuthorization();
-
+            app.UseSession();
             app.MapControllers();
 
             app.Run();

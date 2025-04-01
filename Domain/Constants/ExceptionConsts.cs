@@ -10,5 +10,6 @@ namespace Domain.Constants
     {
         public const string EntitiyNotFound = "Entity Not Found";
         public const string EntitiyAlreadyExists = "Entitiy Already Exists";
+        public const string CartNotFound = "Cart Not Found";
     }
 }
