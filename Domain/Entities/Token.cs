@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
-    public class Token : BaseEntity, IAggregateRoot
+    public class Token : BaseEntity
     {
 
         public string UserId { get; set; } = null!;

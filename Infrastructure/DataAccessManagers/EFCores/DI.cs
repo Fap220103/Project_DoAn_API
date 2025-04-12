@@ -71,17 +71,17 @@ namespace Infrastructure.DataAccessManagers.EFCores
                     services.AddDbContext<DataContext>(options =>
                         options.UseSqlServer(connectionString)
                         .LogTo(Log.Information, LogLevel.Information)
-                        .EnableSensitiveDataLogging()
+                        .EnableSensitiveDataLogging(false)
                     );
                     services.AddDbContext<CommandContext>(options =>
                         options.UseSqlServer(connectionString)
                         .LogTo(Log.Information, LogLevel.Information)
-                        .EnableSensitiveDataLogging()
+                        .EnableSensitiveDataLogging(false)
                     );
                     services.AddDbContext<QueryContext>(options =>
                         options.UseSqlServer(connectionString)
                         .LogTo(Log.Information, LogLevel.Information)
-                        .EnableSensitiveDataLogging()
+                        .EnableSensitiveDataLogging(false)
                     );
                     break;
             }

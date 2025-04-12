@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Application.Services.Repositories
 {
-    public interface IBaseCommandRepository<T> where T : BaseEntity, IAggregateRoot
+    public interface IBaseCommandRepository<T> where T : BaseEntity
     {
         Task CreateAsync(T entity, CancellationToken cancellationToken = default);
 
@@ -20,7 +20,7 @@ namespace Application.Services.Repositories
 
         void Purge(T entity);
 
-        Task<T?> GetAsync(string id, CancellationToken cancellationToken = default);
+        Task<T?> GetByIdAsync(string id, CancellationToken cancellationToken = default);
 
         T? Get(string id);
 

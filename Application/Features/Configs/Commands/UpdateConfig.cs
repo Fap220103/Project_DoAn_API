@@ -80,7 +80,7 @@ namespace Application.Features.Configs.Commands
         public async Task<UpdateConfigResult> Handle(UpdateConfigRequest request, CancellationToken cancellationToken = default)
         {
 
-            var entity = await _repository.GetAsync(request.Id, cancellationToken);
+            var entity = await _repository.GetByIdAsync(request.Id, cancellationToken);
 
             if (entity == null)
             {

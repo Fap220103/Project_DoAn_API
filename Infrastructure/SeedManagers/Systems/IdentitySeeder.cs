@@ -28,12 +28,10 @@ namespace Infrastructure.SeedManagers.Systems
             var adminPassword = _identitySettings.DefaultAdmin.Password;
 
             var adminRole = "Admin";
-            var basicRole = "Basic";
             if (await _userManager.FindByEmailAsync(adminEmail) == null)
             {
                 var applicationUser = new ApplicationUser(
-                    adminEmail,
-                    null
+                    adminEmail
                     );
                 applicationUser.UserName = "Admin";
                 applicationUser.EmailConfirmed = true;

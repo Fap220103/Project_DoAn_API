@@ -9,7 +9,7 @@ using System.Xml.Linq;
 
 namespace Domain.Entities
 {
-    public class Config : BaseEntityCommon , IAggregateRoot
+    public class Config : BaseEntityCommon
     {
         public string SmtpHost { get; set; } = null!;   
         public int SmtpPort { get; set; }
@@ -49,7 +49,7 @@ namespace Domain.Entities
             int smtpPort,
             string smtpUserName,
             string? smtpPassword,
-        bool smtpUseSSL,
+            bool smtpUseSSL,
             bool active
             )
         {

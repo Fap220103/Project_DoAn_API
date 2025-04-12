@@ -36,9 +36,11 @@ namespace Infrastructure.SeedManagers
 
                 var configSeeder = serviceProvider.GetRequiredService<ConfigSeeder>();
                 configSeeder.GenerateDataAsync().GetAwaiter().GetResult();
+
+                var ClaimSeeder = serviceProvider.GetRequiredService<RoleClaimSeeder>();
+                ClaimSeeder.GenerateDataAsync_v2().GetAwaiter().GetResult();
             }
-            var ClaimSeeder = serviceProvider.GetRequiredService<RoleClaimSeeder>();
-            ClaimSeeder.GenerateDataAsync_v2().GetAwaiter().GetResult();
+       
             
             return host;
         }

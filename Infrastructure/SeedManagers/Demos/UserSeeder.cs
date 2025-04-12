@@ -46,8 +46,7 @@ namespace Infrastructure.SeedManagers.Demos
                 if (await _userManager.FindByEmailAsync(email) == null)
                 {
                     var applicationUser = new ApplicationUser(
-                        email,
-                        null
+                        email
                     );
 
                     applicationUser.EmailConfirmed = true;
@@ -71,8 +70,7 @@ namespace Infrastructure.SeedManagers.Demos
             if (await _userManager.FindByEmailAsync(adminEmail) == null)
             {
                 var applicationUser = new ApplicationUser(
-                    adminEmail,
-                    null
+                    adminEmail
                     );
                 applicationUser.UserName = "Admin";
                 applicationUser.EmailConfirmed = true;

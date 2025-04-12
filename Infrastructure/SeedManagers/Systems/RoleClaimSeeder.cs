@@ -75,10 +75,10 @@ namespace Infrastructure.SeedManagers.Systems
                     await _roleManager.AddClaimAsync(role, new Claim("Permission", $"Messenger:Read"));
                     await _roleManager.AddClaimAsync(role, new Claim("Permission", $"Messenger:Update"));
                     await _roleManager.AddClaimAsync(role, new Claim("Permission", $"Messenger:Delete"));
-                    await _roleManager.AddClaimAsync(role, new Claim("Permission", $"OrderList:Create"));
-                    await _roleManager.AddClaimAsync(role, new Claim("Permission", $"OrderList:Read"));
-                    await _roleManager.AddClaimAsync(role, new Claim("Permission", $"OrderList:Update"));
-                    await _roleManager.AddClaimAsync(role, new Claim("Permission", $"OrderList:Delete"));
+                    await _roleManager.AddClaimAsync(role, new Claim("Permission", $"Order:Create"));
+                    await _roleManager.AddClaimAsync(role, new Claim("Permission", $"Order:Read"));
+                    await _roleManager.AddClaimAsync(role, new Claim("Permission", $"Order:Update"));
+                    await _roleManager.AddClaimAsync(role, new Claim("Permission", $"Order:Delete"));
                     await _roleManager.AddClaimAsync(role, new Claim("Permission", $"Inventory:Create"));
                     await _roleManager.AddClaimAsync(role, new Claim("Permission", $"Inventory:Read"));
                     await _roleManager.AddClaimAsync(role, new Claim("Permission", $"Inventory:Update"));

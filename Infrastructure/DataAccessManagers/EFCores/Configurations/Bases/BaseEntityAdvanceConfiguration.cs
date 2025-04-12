@@ -32,22 +32,12 @@ namespace Infrastructure.DataAccessManagers.EFCores.Configurations.Bases
                 .IsRequired(false)
                 .HasMaxLength(UserIdConsts.MaxLength);
 
-            builder.HasOne<ApplicationUser>()
-                .WithMany()
-                .HasForeignKey(e => e.CreatedById)
-                .OnDelete(DeleteBehavior.Restrict);
-
             builder.Property(e => e.UpdatedAt)
                 .IsRequired(false);
 
             builder.Property(e => e.UpdatedById)
                 .HasMaxLength(UserIdConsts.MaxLength)
                 .IsRequired(false);
-
-            builder.HasOne<ApplicationUser>()
-                .WithMany()
-                .HasForeignKey(e => e.UpdatedById)
-                .OnDelete(DeleteBehavior.Restrict);
 
             //BaseEntityCommon
             builder.Property(e => e.Title)
@@ -62,11 +52,9 @@ namespace Infrastructure.DataAccessManagers.EFCores.Configurations.Bases
 
             //BaseEntityAdvance
             builder.Property(e => e.SeoTitle)
-                .IsRequired()
                 .HasMaxLength(TitleConsts.MaxLength);
 
             builder.Property(e => e.SeoDescription)
-                .IsRequired()
                 .HasMaxLength(DescriptionConsts.MaxLength);
 
             builder.Property(e => e.SeoKeywords)

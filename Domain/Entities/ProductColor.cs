@@ -11,5 +11,7 @@ namespace Domain.Entities
     {
         public string ProductId { get; set; } = null!;
         public string ColorId { get; set; } = null!;
+        public Color Color { get; set; }
+        public Product Product { get; set; }
     }
 }
