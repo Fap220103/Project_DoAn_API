@@ -63,44 +63,33 @@ namespace Infrastructure.SecurityManagers.Navigations
             var navItems = new List<NavigationItem>();
             var claims = await _roleClaimService.GetClaimListByUserAsync(userId);
             var finalNavigations = NavigationBuilder.BuildFinalNavigations();
-            int parentIndex = 1;
             foreach (var navigation in finalNavigations)
             {
                 var parentNav = new NavigationItem(
                     navigation.ParentName,
                     navigation.ParentCaption,
                     navigation.ParentUrl
-                    )
-                {
-                    ParentIndex = 0,
-                    Index = parentIndex
-                };
-                int childIndex = 1;
+                    );
                 foreach (var child in navigation.Children)
                 {
                     var isAuthorized = CheckAuthorization(claims, child.Name);
 
-                    parentNav.AddChild(new NavigationItem(
-                        child.Name,
-                        child.Caption,
-                        child.Url,
-                        isAuthorized
-                        )
+                    if (isAuthorized) 
                     {
-                        ParentIndex = parentIndex,
-                        Index = childIndex
-                    });
-
-                    childIndex++;
+                        parentNav.AddChild(new NavigationItem(
+                            child.Name,
+                            child.Caption,
+                            child.Url,
+                            isAuthorized
+                        ));
+                    }
                 }
 
                 parentNav.IsAuthorized = parentNav.Children.Any(x => x.IsAuthorized);
                 navItems.Add(parentNav);
-
-                parentIndex++;
             }
 
-            return navItems;
+            return navItems.Where(x => x.IsAuthorized).ToList();
         }
 
         public async Task<GetMainNavResult> GenerateMainNavAsync(string userId, CancellationToken cancellationToken = default)
@@ -117,7 +106,7 @@ namespace Infrastructure.SecurityManagers.Navigations
 
             var results = MapResult(
                     navItems,
-                    item => new MainNavDto(item.Name, item.Caption, item.Url, item.IsAuthorized, item.Index, item.ParentIndex),
+                    item => new MainNavDto(item.Name, item.Caption, item.Url, item.IsAuthorized),
                     item => item.Children,
                     (parent, children) => parent.Children = children
                 );

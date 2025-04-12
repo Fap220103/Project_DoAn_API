@@ -14,39 +14,7 @@ namespace Application.Common.Models
         public int PageSize { get; } // page size
         public int TotalPages => (int)Math.Ceiling(TotalRecords / (double)PageSize);
         public int Count => Items.Count;
-        public bool HasNext => PageNumber < TotalPages;
-        public bool HasPrev => PageNumber > 1;
-
-        public int[] Pages
-        {
-            get
-            {
-                var pages = new List<int>();
-           
-                if (TotalPages <= 10)
-                {
-                    for (int i = 1; i <= TotalPages; i++)
-                    {
-                        pages.Add(i);
-                    }
-                }
-                else
-                {                
-                    pages.Add(1);
-                    int start = Math.Max(2, PageNumber - 2); 
-                    int end = Math.Min(PageNumber + 2, TotalPages); 
-
-                    for (int i = start; i <= end; i++)
-                    {
-                        pages.Add(i);
-                    }
-
-                    pages.Add(TotalPages);
-                }
-                return pages.Distinct().ToArray();
-            }
-        }
-
+   
         public PagedList(List<T> items, int totalRecords, int pageNumber = 1, int pageSize = 10)
         {
             if (pageNumber < 1)

@@ -48,15 +48,6 @@ namespace Application.Features.ProductCategories.Queries
     {
     }
 
-    public class GetProductCategoryValidator : AbstractValidator<GetProductCategoryRequest>
-    {
-        public GetProductCategoryValidator()
-        {
-
-        }
-    }
-
-
     public class GetProductCategoryHandler : IRequestHandler<GetProductCategoryRequest, GetProductCategoryResult>
     {
         private readonly IQueryContext _context;
@@ -73,25 +64,7 @@ namespace Application.Features.ProductCategories.Queries
 
         public async Task<GetProductCategoryResult> Handle(GetProductCategoryRequest request, CancellationToken cancellationToken)
         {
-            //var allCategories = await _context.ProductCategory.ApplyIsDeletedFilter().ToListAsync(cancellationToken);
-
-            //var lookup = allCategories.ToLookup(c => c.ParentId);
-
-            //foreach (var category in allCategories)
-            //{
-            //    category.ChildCategories = lookup[category.Id].ToList();
-            //}
-
-            //var rootCategories = allCategories.Where(c => c.ParentId == null).ToList();
-
-            //var dto = _mapper.Map<IEnumerable<ProductCategoryDto>>(rootCategories);
-
-
-            //return new GetProductCategoryResult
-            //{
-            //    Data = dto,
-            //    Message = "Success"
-            //};
+            
             var allCategories = await _context.ProductCategory.ApplyIsDeletedFilter().ToListAsync(cancellationToken);
 
             // Tạo lookup để ánh xạ Id với danh mục

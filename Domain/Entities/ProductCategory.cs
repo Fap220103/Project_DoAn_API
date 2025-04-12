@@ -16,6 +16,7 @@ namespace Domain.Entities
         public string? Icon { get; set; }
         public string? ParentId { get; set; }
         public bool IsActive { get; set; }
+        public int Level { get; set; }
         public ICollection<Product> Products { get; set; } = new Collection<Product>();
         public ProductCategory? ParentCategory { get; set; }
         public ICollection<ProductCategory> ChildCategories { get; set; } = new List<ProductCategory>();
@@ -29,9 +30,11 @@ namespace Domain.Entities
             string seoDescription,
             string seoKeywords,
             string? icon,
+            int level,
             string parentId
             ) : base(seoTitle, seoDescription, seoKeywords,userId, title, description)
         {
+            Level = level;
             Icon = icon;
             ParentId = string.IsNullOrWhiteSpace(parentId) ? null : parentId.Trim();
             Alias = alias;
@@ -48,6 +51,7 @@ namespace Domain.Entities
             string seoDescription,
             string seoKeywords,
             string icon,
+            int level,
             string? parentId,
             bool isActive
             )
@@ -57,6 +61,7 @@ namespace Domain.Entities
             Icon = icon;
             Alias = alias;
             ParentId = parentId;
+            Level = level;
             IsActive = isActive;
             SeoTitle = seoTitle?.Trim();
             SeoDescription = seoDescription?.Trim();

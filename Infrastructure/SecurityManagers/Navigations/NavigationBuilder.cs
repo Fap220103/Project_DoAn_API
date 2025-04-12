@@ -10,19 +10,7 @@ namespace Infrastructure.SecurityManagers.Navigations
     public static class NavigationBuilder
     {
         private static readonly string jsonNavigation = @"
-        [
-          {
-            ""ParentName"": ""Dashboard"",
-            ""ParentCaption"": ""Dashboard"",
-            ""ParentUrl"": ""#"",
-            ""Children"": [
-              {
-                ""Name"": ""Dashboard"",
-                ""Caption"": ""Dashboard"",
-                ""Url"": ""/Dashboards""
-              }
-            ]
-          },
+        [   
           {
             ""ParentName"": ""Product"",
             ""ParentCaption"": ""Sản phẩm"",
@@ -30,18 +18,18 @@ namespace Infrastructure.SecurityManagers.Navigations
             ""Children"": [
               {
                 ""Name"": ""ProductList"",
-                ""Caption"": ""Danh sách sản phẩm"",
-                ""Url"": ""/danh-sach-san-pham""
+                ""Caption"": ""Sản phẩm"",
+                ""Url"": ""/admin/product""
               },
               {
                 ""Name"": ""ProductCategory"",
-                ""Caption"": ""Danh mục sản phẩm"",
-                ""Url"": ""/danh-muc-san-pham""
+                ""Caption"": ""Danh mục"",
+                ""Url"": ""/admin/productcategory""
               },
               {
                 ""Name"": ""Inventory"",
                 ""Caption"": ""Tồn kho"",
-                ""Url"": ""/ton-kho""
+                ""Url"": ""/admin/inventory""
               }
             ]
           },
@@ -51,9 +39,9 @@ namespace Infrastructure.SecurityManagers.Navigations
             ""ParentUrl"": ""#"",
             ""Children"": [
               {
-                ""Name"": ""OrderList"",
-                ""Caption"": ""Danh sách đơn hàng"",
-                ""Url"": ""/danh-sach-don-hang""
+                ""Name"": ""Order"",
+                ""Caption"": ""Đơn hàng"",
+                ""Url"": ""/admin/order""
               }
             ]
           },
@@ -65,13 +53,13 @@ namespace Infrastructure.SecurityManagers.Navigations
             ""Children"": [
               {
                 ""Name"": ""UserProfile"",
-                ""Caption"": ""Thông tin người dùng"",
-                ""Url"": ""/thong-tin-nguoi-dung""
+                ""Caption"": ""Khách hàng"",
+                ""Url"": ""/admin/userprofile""
               },
               {
                 ""Name"": ""StaffProfile"",
-                ""Caption"": ""Thông tin nhân viên"",
-                ""Url"": ""/thong-tin-nhan-vien""
+                ""Caption"": ""Nhân viên"",
+                ""Url"": ""/admin/staffprofile""
               }
             ]
           },
@@ -79,16 +67,11 @@ namespace Infrastructure.SecurityManagers.Navigations
             ""ParentName"": ""Sale"",
             ""ParentCaption"": ""Khuyến mãi"",
             ""ParentUrl"": ""#"",
-            ""Children"": [
-              {
-                ""Name"": ""SaleCode"",
-                ""Caption"": ""Mã khuyến mãi"",
-                ""Url"": ""/ma-khuyen-mai""
-              },
+            ""Children"": [           
               {
                 ""Name"": ""SaleProgram"",
-                ""Caption"": ""Chương trình khuyến mãi"",
-                ""Url"": ""/chuong-trinh-khuyen-mai""
+                ""Caption"": ""Khuyến mãi"",
+                ""Url"": ""/admin/saleprogram""
               }
             ]
           },
@@ -100,12 +83,12 @@ namespace Infrastructure.SecurityManagers.Navigations
               {
                 ""Name"": ""Revenue"",
                 ""Caption"": ""Doanh thu"",
-                ""Url"": ""/doanh-thu""
+                ""Url"": ""/admin/revenue""
               },
               {
                 ""Name"": ""BestSellingProduct"",
                 ""Caption"": ""Sản phẩm bán chạy"",
-                ""Url"": ""/san-pham-ban-chay""
+                ""Url"": ""/admin/bestsellingproduct""
               }
             ]
           },
@@ -117,7 +100,7 @@ namespace Infrastructure.SecurityManagers.Navigations
               {
                 ""Name"": ""Messenger"",
                 ""Caption"": ""Tin nhắn"",
-                ""Url"": ""/tin-nhan""
+                ""Url"": ""/admin/messenger""
               }
             ]
           },
@@ -129,12 +112,12 @@ namespace Infrastructure.SecurityManagers.Navigations
               {
                 ""Name"": ""Feedback"",
                 ""Caption"": ""Phản hồi"",
-                ""Url"": ""/phan-hoi""
+                ""Url"": ""/admin/feedback""
               },
               {
                 ""Name"": ""Reviews"",
                 ""Caption"": ""Đánh giá"",
-                ""Url"": ""/danh-gia""
+                ""Url"": ""/admin/reviews""
               }
             ]
           },
@@ -146,34 +129,29 @@ namespace Infrastructure.SecurityManagers.Navigations
               {
                 ""Name"": ""Config"",
                 ""Caption"": ""Cấu hình"",
-                ""Url"": ""/cau-hinh""
+                ""Url"": ""/admin/config""
               },
               {
                 ""Name"": ""Banner"",
                 ""Caption"": ""Banner"",
-                ""Url"": ""/banner""
+                ""Url"": ""/admin/banner""
               }
             ]
           },
           {
-            ""ParentName"": ""RoleMembership"",
-            ""ParentCaption"": ""Role & Membership"",
+            ""ParentName"": ""RoleClaim"",
+            ""ParentCaption"": ""Role & Claim"",
             ""ParentUrl"": ""#"",
             ""Children"": [
               {
                 ""Name"": ""Role"",
                 ""Caption"": ""Role"",
-                ""Url"": ""/Roles""
+                ""Url"": ""/admin/roles""
               },
               {
                 ""Name"": ""Claim"",
                 ""Caption"": ""Claim"",
-                ""Url"": ""/Claims""
-              },
-              {
-                ""Name"": ""Member"",
-                ""Caption"": ""Member"",
-                ""Url"": ""/Members""
+                ""Url"": ""/admin/claims""
               }
             ]
           }

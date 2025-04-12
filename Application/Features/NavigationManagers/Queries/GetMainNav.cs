@@ -16,23 +16,18 @@ namespace Application.Features.NavigationManagers.Queries
         public string Url { get; init; }
         public bool IsAuthorized { get; init; }
         public List<MainNavDto> Children { get; set; } = new List<MainNavDto>();
-        public int Index { get; init; }
-        public int ParentIndex { get; init; }
 
         public MainNavDto(
             string name,
             string caption,
             string url,
-            bool isAuthorized = false,
-            int index = 1,
-            int parentIndex = 0)
+            bool isAuthorized = false
+            )
         {
             Name = name;
             Caption = caption;
             Url = url;
             IsAuthorized = isAuthorized;
-            Index = index;
-            ParentIndex = parentIndex;
         }
 
         public void AddChild(MainNavDto child)

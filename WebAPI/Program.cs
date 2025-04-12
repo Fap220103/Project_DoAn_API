@@ -5,6 +5,7 @@ using Infrastructure.DataAccessManagers.EFCores;
 using Infrastructure.SecurityManagers.AspNetIdentity;
 using Infrastructure.SeedManagers;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.OpenApi.Models;
 using System.Configuration;
 using WebAPI.Common;
 using WebAPI.Common.Handlers;
@@ -50,7 +51,36 @@ namespace WebAPI
                     .AllowAnyHeader());
             });
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", new OpenApiInfo { Title = "PROJECT-DOAN-API", Version = "v1" });
+
+                // Thêm xác thực JWT vào Swagger
+                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "Bearer",
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header,
+                    Description = "Nhập token JWT vào đây: Bearer {token}"
+                });
+
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        new string[] {}
+                    }
+                });
+            });
 
             //>>> Register Seeder
             builder.Services.RegisterSystemSeedManager(builder.Configuration);
@@ -83,7 +113,7 @@ namespace WebAPI
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-      
+
             app.UseHttpsRedirection();
 
             app.UseAuthentication();

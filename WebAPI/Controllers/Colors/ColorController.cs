@@ -14,33 +14,21 @@ namespace WebAPI.Controllers.Colors
         public ColorController(ISender sender) : base(sender)
         {
         }
-        [HttpPost("CreateColor")]
-        public async Task<ActionResult<ApiSuccessResult<CreateColorResult>>> CreateColorAsync(CreateColorRequest request, CancellationToken cancellationToken)
+        [HttpPost]
+        public async Task<ActionResult<ApiSuccessResult<UpsertColorResult>>> UpsertColorAsync(UpsertColorRequest request, CancellationToken cancellationToken)
         {
             var response = await _sender.Send(request, cancellationToken);
 
-            return Ok(new ApiSuccessResult<CreateColorResult>
+            return Ok(new ApiSuccessResult<UpsertColorResult>
             {
                 Code = StatusCodes.Status200OK,
-                Message = $"Success executing {nameof(CreateColorAsync)}",
-                Content = response
-            });
-        }
-        [HttpPost("UpdateColor")]
-        public async Task<ActionResult<ApiSuccessResult<UpdateColorResult>>> UpdateColorAsync(UpdateColorRequest request, CancellationToken cancellationToken)
-        {
-            var response = await _sender.Send(request, cancellationToken);
-
-            return Ok(new ApiSuccessResult<UpdateColorResult>
-            {
-                Code = StatusCodes.Status200OK,
-                Message = $"Success executing {nameof(UpdateColorAsync)}",
+                Message = $"Success executing {nameof(UpsertColorAsync)}",
                 Content = response
             });
         }
 
-        [HttpDelete("DeleteColor")]
-        public async Task<ActionResult<ApiSuccessResult<DeleteColorResult>>> DeleteColorAsync(DeleteColorRequest request, CancellationToken cancellationToken)
+        [HttpDelete]
+        public async Task<ActionResult<ApiSuccessResult<DeleteColorResult>>> DeleteColorAsync([FromQuery] DeleteColorRequest request, CancellationToken cancellationToken)
         {
             var response = await _sender.Send(request, cancellationToken);
 
@@ -52,10 +40,9 @@ namespace WebAPI.Controllers.Colors
             });
         }
 
-        [HttpGet("GetColor")]
-        public async Task<ActionResult<ApiSuccessResult<GetColorResult>>> GetColorAsync(CancellationToken cancellationToken)
+        [HttpGet]
+        public async Task<ActionResult<ApiSuccessResult<GetColorResult>>> GetColorAsync([FromQuery] GetColorRequest request, CancellationToken cancellationToken)
         {
-            var request = new GetColorRequest();
             var response = await _sender.Send(request, cancellationToken);
 
             return Ok(new ApiSuccessResult<GetColorResult>

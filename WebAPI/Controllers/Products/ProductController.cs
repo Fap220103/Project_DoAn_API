@@ -5,6 +5,7 @@ using Application.Features.Products.Commands;
 using Application.Features.Products.Queries;
 using Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.Common.Models;
@@ -56,11 +57,11 @@ namespace WebAPI.Controllers.Products
             return Ok(new ApiSuccessResult<DeleteProductResult>
             {
                 Code = StatusCodes.Status200OK,
-                Message = $"Success executing {nameof(DeleteProductAsync)}",
+                Message = $"Success executing {nameof(DeleteProductAsync)}", 
                 Content = response
             });
         }
-
+      
         [HttpGet("GetAllProduct")]
         public async Task<ActionResult<ApiSuccessResult<GetAllProductResult>>> GetAllProductAsync(CancellationToken cancellationToken)
         {

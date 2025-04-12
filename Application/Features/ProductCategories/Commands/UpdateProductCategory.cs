@@ -23,6 +23,7 @@ namespace Application.Features.ProductCategories.Commands
         public string Title { get; init; } = null!;
         public string Alias { get; init; } = null!;
         public string Description { get; init; } = null!;
+        public int Level { get; init; }
         public string Icon { get; init; } = null!;
         public string SeoTitle { get; init; } = null!;
         public string SeoDescription { get; init; } = null!;
@@ -81,6 +82,7 @@ namespace Application.Features.ProductCategories.Commands
                     request.SeoDescription,
                     request.SeoKeywords,
                     request.Icon,
+                    request.Level,
                     request.ParentId,
                     request.IsActive
                 );

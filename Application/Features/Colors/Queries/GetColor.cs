@@ -1,4 +1,5 @@
-﻿using Application.Services.CQS.Queries;
+﻿using Application.Common.Models;
+using Application.Services.CQS.Queries;
 using AutoMapper;
 using Domain.Entities;
 using FluentValidation;
@@ -15,35 +16,73 @@ namespace Application.Features.Colors.Queries
    
     public class GetColorResult
     {
-        public IEnumerable<Color> Data { get; init; } = null!;
+        public PagedList<Color> Data { get; set; } = null!;
         public string Message { get; init; } = null!;
     }
 
     public class GetColorRequest : IRequest<GetColorResult>
     {
+        public int Page { get; set; } = 1;
+        public int Limit { get; set; } = 10;
+        public string? Order { get; set; }
+        public string? Search { get; set; }
     }
 
     public class GetColorHandler : IRequestHandler<GetColorRequest, GetColorResult>
     {
         private readonly IQueryContext _context;
-        private readonly IMapper _mapper;
 
         public GetColorHandler(
-            IQueryContext context,
-            IMapper mapper
+            IQueryContext context
             )
         {
             _context = context;
-            _mapper = mapper;
         }
 
         public async Task<GetColorResult> Handle(GetColorRequest request, CancellationToken cancellationToken)
         {
-            var entities = await _context.Color.ToListAsync(cancellationToken);
+            var query = _context.Color.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(request.Search))
+            {
+                string searchKeyword = request.Search.Trim().ToLower();
+                query = query.Where(c =>
+                    c.ColorName.ToLower().Contains(searchKeyword) ||  // Tìm kiếm trong tên màu
+                    c.ColorCode.ToLower().Contains(searchKeyword)     // Tìm kiếm trong mã màu
+                );
+            }
+
+            // Sắp xếp nếu có order
+            if (!string.IsNullOrEmpty(request.Order))
+            {
+                var parts = request.Order.Split('|');
+                if (parts.Length == 2)
+                {
+                    var field = parts[0].ToLower();
+                    var direction = parts[1].ToLower();
+
+                    query = (field, direction) switch
+                    {
+                        ("ColorName", "asc") => query.OrderBy(x => x.ColorName),
+                        ("ColorName", "desc") => query.OrderByDescending(x => x.ColorName),
+                        ("ColorCode", "asc") => query.OrderBy(x => x.ColorCode),
+                        ("ColorCode", "desc") => query.OrderByDescending(x => x.ColorCode),
+                        _ => query
+                    };
+                }
+            }
+
+            var total = await query.CountAsync(cancellationToken);
+            var items = await query
+                .Skip((request.Page - 1) * request.Limit)
+                .Take(request.Limit)
+                .ToListAsync(cancellationToken);
+
+            var pagedList = new PagedList<Color>(items, total, request.Page, request.Limit);
 
             return new GetColorResult
             {
-                Data = entities,
+                Data = pagedList,
                 Message = "Success"
             };
         }

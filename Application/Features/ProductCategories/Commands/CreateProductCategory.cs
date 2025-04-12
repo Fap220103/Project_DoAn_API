@@ -3,6 +3,7 @@ using FluentValidation;
 using MediatR;
 using Domain.Entities;
 using Application.Services.Externals;
+using Microsoft.AspNetCore.Http;
 
 namespace Application.Features.ProductCategories.Commands
 {
@@ -16,13 +17,14 @@ namespace Application.Features.ProductCategories.Commands
     {
         public string? UserId { get; init; }
         public string Title { get; init; } = null!;
-        public string Alias { get; set; } = null!;
+        public string? Alias { get; set; }
         public string? Description { get; init; }
-        public string? Icon { get; init; }
+        public int level { get; init; }
         public string SeoTitle { get; init; } = null!;
         public string SeoDescription { get; init; } = null!;
         public string SeoKeywords { get; init; } = null!;
-        public string ParentId { get; init; } = null!;
+        public string? ParentId { get; init; }
+        public IFormFile Image { get; init; }
     }
 
     public class CreateProductCategoryValidator : AbstractValidator<CreateProductCategoryRequest>
@@ -40,16 +42,19 @@ namespace Application.Features.ProductCategories.Commands
         private readonly IBaseCommandRepository<ProductCategory> _repository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICommonService _commonService;
+        private readonly IPhotoService _photoService;
 
         public CreateProductCategoryHandler(
             IBaseCommandRepository<ProductCategory> repository,
             IUnitOfWork unitOfWork,
-            ICommonService commonService
+            ICommonService commonService,
+            IPhotoService photoService
             )
         {
             _repository = repository;
             _unitOfWork = unitOfWork;
             _commonService = commonService;
+            _photoService = photoService;
         }
 
         public async Task<CreateProductCategoryResult> Handle(CreateProductCategoryRequest request, CancellationToken cancellationToken = default)
@@ -76,7 +81,8 @@ namespace Application.Features.ProductCategories.Commands
                     request.SeoTitle,
                     request.SeoDescription,
                     request.SeoKeywords,
-                    request.Icon,
+                    null,
+                    request.level,
                     request.ParentId
                     );
             if (parentCategory != null)
@@ -86,6 +92,12 @@ namespace Application.Features.ProductCategories.Commands
             }
 
             await _repository.CreateAsync(entity, cancellationToken);
+            var uploadResult = await _photoService.AddPhotoAsync(request.Image);
+            if (uploadResult == null)
+            {
+                throw new ApplicationException("Lỗi upload ảnh");
+            }
+                entity.Icon = uploadResult.Url.ToString();
             await _unitOfWork.SaveAsync(cancellationToken);
 
             return new CreateProductCategoryResult

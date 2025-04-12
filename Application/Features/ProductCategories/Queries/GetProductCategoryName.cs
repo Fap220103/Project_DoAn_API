@@ -12,16 +12,20 @@ using System.Threading.Tasks;
 
 namespace Application.Features.ProductCategories.Queries
 {
-
+ 
+    public class CategoryDto
+    {
+        public string Id { get; init; } = null!;
+        public string Title { get; init; } = null!;
+    }
     public class GetProductCategoryNameResult
     {
-        public string Data { get; init; } = null!;
+        public IEnumerable<CategoryDto> Data { get; init; } = null!;
         public string Message { get; init; } = null!;
     }
 
     public class GetProductCategoryNameRequest : IRequest<GetProductCategoryNameResult>
     {
-        public string parentId { get; init; } = null!;
     }
     public class GetProductCategoryNameHandler : IRequestHandler<GetProductCategoryNameRequest, GetProductCategoryNameResult>
     {
@@ -38,9 +42,8 @@ namespace Application.Features.ProductCategories.Queries
         public async Task<GetProductCategoryNameResult> Handle(GetProductCategoryNameRequest request, CancellationToken cancellationToken)
         {
             var cateName = await _context.ProductCategory
-                                  .Where(x => x.Id == request.parentId)
-                                  .Select(x => x.Title)
-                                  .FirstOrDefaultAsync(cancellationToken) ?? "";
+                                 .Select(x => new CategoryDto { Id = x.Id, Title = x.Title })
+                                 .ToListAsync(cancellationToken);
 
             return new GetProductCategoryNameResult
             {

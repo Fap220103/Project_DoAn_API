@@ -14,7 +14,8 @@ namespace WebAPI.Controllers.ProductCategories
         {
         }
         [HttpPost("CreateProductCategory")]
-        public async Task<ActionResult<ApiSuccessResult<CreateProductCategoryResult>>> CreateProductCategoryAsync(CreateProductCategoryRequest request, CancellationToken cancellationToken)
+        [Consumes("multipart/form-data")]
+        public async Task<ActionResult<ApiSuccessResult<CreateProductCategoryResult>>> CreateProductCategoryAsync([FromForm] CreateProductCategoryRequest request, CancellationToken cancellationToken)
         {
             var response = await _sender.Send(request, cancellationToken);
 
@@ -39,7 +40,7 @@ namespace WebAPI.Controllers.ProductCategories
         }
 
         [HttpDelete("DeleteProductCategory")]
-        public async Task<ActionResult<ApiSuccessResult<DeleteProductCategoryResult>>> DeleteProductCategoryAsync(DeleteProductCategoryRequest request, CancellationToken cancellationToken)
+        public async Task<ActionResult<ApiSuccessResult<DeleteProductCategoryResult>>> DeleteProductCategoryAsync([FromQuery] DeleteProductCategoryRequest request, CancellationToken cancellationToken)
         {
             var response = await _sender.Send(request, cancellationToken);
 
@@ -65,9 +66,9 @@ namespace WebAPI.Controllers.ProductCategories
             });
         }
         [HttpGet("GetProductCategoryName")]
-        public async Task<ActionResult<ApiSuccessResult<GetProductCategoryNameResult>>> GetProductCategoryNameAsync([FromQuery] string parentId, CancellationToken cancellationToken)
+        public async Task<ActionResult<ApiSuccessResult<GetProductCategoryNameResult>>> GetProductCategoryNameAsync(CancellationToken cancellationToken)
         {
-            var request = new GetProductCategoryNameRequest { parentId = parentId };
+            var request = new GetProductCategoryNameRequest();
             var response = await _sender.Send(request, cancellationToken);
 
             return Ok(new ApiSuccessResult<GetProductCategoryNameResult>
