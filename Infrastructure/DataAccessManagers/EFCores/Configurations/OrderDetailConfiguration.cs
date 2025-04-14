@@ -15,11 +15,11 @@ namespace Infrastructure.DataAccessManagers.EFCores.Configurations
     {
         public void Configure(EntityTypeBuilder<OrderDetail> builder)
         {
-            builder.HasKey(od => new { od.OrderId, od.ProductId });
+            builder.HasKey(od => new { od.OrderId, od.ProductVariantId });
 
-            builder.HasOne(p => p.Product)
+            builder.HasOne(p => p.ProductVariant)
                    .WithMany(od => od.OrderDetails)
-                   .HasForeignKey(od => od.ProductId)
+                   .HasForeignKey(od => od.ProductVariantId)
                    .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasOne(o => o.Order)

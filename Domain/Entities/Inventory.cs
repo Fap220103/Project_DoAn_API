@@ -10,15 +10,15 @@ namespace Domain.Entities
 {
     public class Inventory : BaseEntity
     {
-        public string ProductId { get; set; } = null!;
+        public string ProductVariantId { get; set; } = null!;
         public int Quantity { get; set; }
         public DateTime LastUpdated { get; set; }
         [JsonIgnore]
-        public Product Product { get; set; }
+        public ProductVariant ProductVariant { get; set; }
         public Inventory() : base() { }
-        public Inventory(string productId, int quantity, DateTime lastUpdated) : base() 
+        public Inventory(string productVariantId, int quantity, DateTime lastUpdated) : base() 
         {
-            this.ProductId = productId;
+            this.ProductVariantId = productVariantId;
             Quantity = quantity;
             LastUpdated = lastUpdated;
         } 

@@ -13,7 +13,7 @@ namespace Domain.Entities
     {
         public string SizeName { get; set; } = null!;
         [JsonIgnore]
-        public ICollection<ProductSize> ProductSize { get; set; } = new Collection<ProductSize>();
+        public ICollection<ProductVariant> ProductSize { get; set; } = new Collection<ProductVariant>();
         public Size() : base() { } //for EF Core
         public Size(
             string sizeName

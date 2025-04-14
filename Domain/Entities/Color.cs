@@ -14,7 +14,7 @@ namespace Domain.Entities
         public string ColorName { get; set; } = null!;
         public string ColorCode { get; set; } = null!;
         [JsonIgnore]
-        public ICollection<ProductColor> ProductColor { get; set; } = new Collection<ProductColor>();
+        public ICollection<ProductVariant> ProductColor { get; set; } = new Collection<ProductVariant>();
         public Color() : base() { } //for EF Core
         public Color(
             string colorName,

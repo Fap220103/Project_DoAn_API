@@ -1,7 +1,6 @@
 ﻿using Domain.Constants;
 using Domain.Entities;
 using Infrastructure.DataAccessManagers.EFCores.Configurations.Bases;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.Collections.Generic;
@@ -11,16 +10,15 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.DataAccessManagers.EFCores.Configurations
 {
-    public class InventoryConfiguration : BaseEntityConfiguration<Inventory>
+    public class SettingConfiguration : BaseEntityConfiguration<Setting>
     {
-        public override void Configure(EntityTypeBuilder<Inventory> builder)
+        public override void Configure(EntityTypeBuilder<Setting> builder)
         {
             base.Configure(builder);
 
-            builder.HasOne(p => p.ProductVariant)
-                 .WithMany(i => i.Inventory)
-                 .HasForeignKey(i => i.ProductVariantId)
-                 .OnDelete(DeleteBehavior.Cascade);
+            //builder.Property(x => x.SizeName)
+            //       .IsRequired()
+            //       .HasMaxLength(LengthConsts.S);
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using Application.Features.Configs.Commands;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,44 +12,44 @@ namespace WebAPI.Controllers.Configs
         public ConfigController(ISender sender) : base(sender)
         {
         }
-        [HttpPost("CreateConfig")]
-        public async Task<ActionResult<ApiSuccessResult<CreateConfigResult>>> CreateConfigAsync(CreateConfigRequest request, CancellationToken cancellationToken)
-        {
-            var response = await _sender.Send(request, cancellationToken);
+        //[HttpPost("CreateConfig")]
+        //public async Task<ActionResult<ApiSuccessResult<CreateConfigResult>>> CreateConfigAsync(CreateConfigRequest request, CancellationToken cancellationToken)
+        //{
+        //    var response = await _sender.Send(request, cancellationToken);
 
-            return Ok(new ApiSuccessResult<CreateConfigResult>
-            {
-                Code = StatusCodes.Status200OK,
-                Message = $"Success executing {nameof(CreateConfigAsync)}",
-                Content = response
-            });
-        }
+        //    return Ok(new ApiSuccessResult<CreateConfigResult>
+        //    {
+        //        Code = StatusCodes.Status200OK,
+        //        Message = $"Success executing {nameof(CreateConfigAsync)}",
+        //        Content = response
+        //    });
+        //}
 
-        [HttpPost("UpdateConfig")]
-        public async Task<ActionResult<ApiSuccessResult<UpdateConfigResult>>> UpdateConfigAsync(UpdateConfigRequest request, CancellationToken cancellationToken)
-        {
-            var response = await _sender.Send(request, cancellationToken);
+        //[HttpPost("UpdateConfig")]
+        //public async Task<ActionResult<ApiSuccessResult<UpdateConfigResult>>> UpdateConfigAsync(UpdateConfigRequest request, CancellationToken cancellationToken)
+        //{
+        //    var response = await _sender.Send(request, cancellationToken);
 
-            return Ok(new ApiSuccessResult<UpdateConfigResult>
-            {
-                Code = StatusCodes.Status200OK,
-                Message = $"Success executing {nameof(UpdateConfigAsync)}",
-                Content = response
-            });
-        }
+        //    return Ok(new ApiSuccessResult<UpdateConfigResult>
+        //    {
+        //        Code = StatusCodes.Status200OK,
+        //        Message = $"Success executing {nameof(UpdateConfigAsync)}",
+        //        Content = response
+        //    });
+        //}
 
-        [HttpDelete("DeleteConfig")]
-        public async Task<ActionResult<ApiSuccessResult<DeleteConfigResult>>> DeleteConfigAsync(DeleteConfigRequest request, CancellationToken cancellationToken)
-        {
-            var response = await _sender.Send(request, cancellationToken);
+        //[HttpDelete("DeleteConfig")]
+        //public async Task<ActionResult<ApiSuccessResult<DeleteConfigResult>>> DeleteConfigAsync(DeleteConfigRequest request, CancellationToken cancellationToken)
+        //{
+        //    var response = await _sender.Send(request, cancellationToken);
 
-            return Ok(new ApiSuccessResult<DeleteConfigResult>
-            {
-                Code = StatusCodes.Status200OK,
-                Message = $"Success executing {nameof(DeleteConfigAsync)}",
-                Content = response
-            });
-        }
+        //    return Ok(new ApiSuccessResult<DeleteConfigResult>
+        //    {
+        //        Code = StatusCodes.Status200OK,
+        //        Message = $"Success executing {nameof(DeleteConfigAsync)}",
+        //        Content = response
+        //    });
+        //}
 
 
         //[HttpGet("GetPagedConfig")]

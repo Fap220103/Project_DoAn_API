@@ -18,7 +18,7 @@ namespace Infrastructure.SeedManagers
         {
             services.AddScoped<RoleClaimSeeder>();
             services.AddScoped<IdentitySeeder>();
-            services.AddScoped<ConfigSeeder>();
+            //services.AddScoped<ConfigSeeder>();
             return services;
         }
 
@@ -29,17 +29,17 @@ namespace Infrastructure.SeedManagers
             var serviceProvider = scope.ServiceProvider;
 
             var context = serviceProvider.GetRequiredService<DataContext>();
-            if (!context.Config.Any())
-            {
+            //if (!context.Config.Any())
+            //{
                 var roleClaimSeeder = serviceProvider.GetRequiredService<RoleClaimSeeder>();
                 roleClaimSeeder.GenerateDataAsync().GetAwaiter().GetResult();
 
-                var configSeeder = serviceProvider.GetRequiredService<ConfigSeeder>();
-                configSeeder.GenerateDataAsync().GetAwaiter().GetResult();
+                //var configSeeder = serviceProvider.GetRequiredService<ConfigSeeder>();
+                //configSeeder.GenerateDataAsync().GetAwaiter().GetResult();
 
                 var ClaimSeeder = serviceProvider.GetRequiredService<RoleClaimSeeder>();
                 ClaimSeeder.GenerateDataAsync_v2().GetAwaiter().GetResult();
-            }
+            //}
        
             
             return host;

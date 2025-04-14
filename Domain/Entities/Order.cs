@@ -13,10 +13,7 @@ namespace Domain.Entities
     public class Order : BaseEntityAudit
     {
         public string Code { get; set; } = null!;
-        public string CustomerName { get; set; } = null!;
-        public string Phone { get; set; } = null!;
-        public string Address { get; set; } = null!;
-        public string Email { get; set; } = null!;
+        public string CustomerId { get; set; }
         public decimal TotalAmount { get; set; }
         public int Quantity { get; set; }
         public int TypePayment { get; set; }
@@ -26,10 +23,6 @@ namespace Domain.Entities
         public Order(
             string? userId,
             string code,
-            string customerName,
-            string phone,
-            string address,
-            string email,
             decimal totalAmount,
             int quantity,
             int typePayment,
@@ -37,10 +30,6 @@ namespace Domain.Entities
             ) : base(userId)
         {
             Code = code.Trim();
-            CustomerName = customerName.Trim();
-            Phone = phone.Trim();
-            Address = address.Trim();
-            Email = email.Trim();
             TotalAmount = totalAmount;
             Quantity = quantity;
             TypePayment = typePayment;
@@ -50,10 +39,6 @@ namespace Domain.Entities
         public void Update(
             string? userId,
             string code,
-            string customerName,
-            string phone,
-            string address,
-            string email,
             decimal totalAmount,
             int quantity,
             int typePayment,
@@ -62,10 +47,6 @@ namespace Domain.Entities
           )
         {
             Code = code.Trim();
-            CustomerName = customerName.Trim();
-            Phone = phone.Trim();
-            Address = address.Trim();
-            Email = email.Trim();
             TotalAmount = totalAmount;
             Quantity = quantity;
             TypePayment = typePayment;
