@@ -14,34 +14,24 @@ namespace WebAPI.Controllers.Sizes
         public SizeController(ISender sender) : base(sender)
         {
         }
-        [HttpPost("CreateSize")]
-        public async Task<ActionResult<ApiSuccessResult<CreateSizeResult>>> CreateSizeAsync(CreateSizeRequest request, CancellationToken cancellationToken)
+
+        [HttpPost]
+        public async Task<ActionResult<ApiSuccessResult<UpsertSizeResult>>> UpsertSizeAsync(UpsertSizeRequest request, CancellationToken cancellationToken)
         {
             var response = await _sender.Send(request, cancellationToken);
 
-            return Ok(new ApiSuccessResult<CreateSizeResult>
+            return Ok(new ApiSuccessResult<UpsertSizeResult>
             {
                 Code = StatusCodes.Status200OK,
-                Message = $"Success executing {nameof(CreateSizeAsync)}",
-                Content = response
-            });
-        }
-        [HttpPost("UpdateSize")]
-        public async Task<ActionResult<ApiSuccessResult<UpdateSizeResult>>> UpdateSizeAsync(UpdateSizeRequest request, CancellationToken cancellationToken)
-        {
-            var response = await _sender.Send(request, cancellationToken);
-
-            return Ok(new ApiSuccessResult<UpdateSizeResult>
-            {
-                Code = StatusCodes.Status200OK,
-                Message = $"Success executing {nameof(UpdateSizeAsync)}",
+                Message = $"Success executing {nameof(UpsertSizeAsync)}",
                 Content = response
             });
         }
 
-        [HttpDelete("DeleteSize")]
-        public async Task<ActionResult<ApiSuccessResult<DeleteSizeResult>>> DeleteSizeAsync(DeleteSizeRequest request, CancellationToken cancellationToken)
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<ApiSuccessResult<DeleteSizeResult>>> DeleteSizeAsync(string id, CancellationToken cancellationToken)
         {
+            var request = new DeleteSizeRequest { Id = id };
             var response = await _sender.Send(request, cancellationToken);
 
             return Ok(new ApiSuccessResult<DeleteSizeResult>
@@ -52,7 +42,7 @@ namespace WebAPI.Controllers.Sizes
             });
         }
 
-        [HttpGet("GetSize")]
+        [HttpGet]
         public async Task<ActionResult<ApiSuccessResult<GetSizeResult>>> GetSizeAsync(CancellationToken cancellationToken)
         {
             var request = new GetSizeRequest();

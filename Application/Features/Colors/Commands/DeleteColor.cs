@@ -19,14 +19,14 @@ namespace Application.Features.Colors.Commands
 
     public class DeleteColorRequest : IRequest<DeleteColorResult>
     {
-        public string ColorId { get; init; } = null!;
+        public string Id { get; init; } = null!;
     }
 
     public class DeleteColorValidator : AbstractValidator<DeleteColorRequest>
     {
         public DeleteColorValidator()
         {
-            RuleFor(x => x.ColorId)
+            RuleFor(x => x.Id)
                 .NotEmpty();
         }
     }
@@ -49,11 +49,11 @@ namespace Application.Features.Colors.Commands
         public async Task<DeleteColorResult> Handle(DeleteColorRequest request, CancellationToken cancellationToken = default)
         {
 
-            var entity = await _repository.GetByIdAsync(request.ColorId);
+            var entity = await _repository.GetByIdAsync(request.Id);
 
             if (entity == null)
             {
-                throw new ApplicationException($"{ExceptionConsts.EntitiyNotFound} {request.ColorId}");
+                throw new ApplicationException($"{ExceptionConsts.EntitiyNotFound} {request.Id}");
             }
 
             _repository.Purge(entity);

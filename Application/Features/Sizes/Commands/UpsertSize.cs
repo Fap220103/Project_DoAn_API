@@ -11,39 +11,36 @@ using System.Threading.Tasks;
 
 namespace Application.Features.Colors.Commands
 {
-    public class UpsertColorResult
+    public class UpsertSizeResult
     {
         public string Id { get; init; } = null!;
         public string Message { get; init; } = null!;
     }
 
-    public class UpsertColorRequest : IRequest<UpsertColorResult>
+    public class UpsertSizeRequest : IRequest<UpsertSizeResult>
     {
-        public string? Id { get; init; } 
-        public string ColorName { get; init; } = null!;
-        public string ColorCode { get; init; } = null!;
+        public string? Id { get; init; }
+        public string SizeName { get; init; } = null!;
 
     }
 
-    public class UpsertColorValidator : AbstractValidator<UpsertColorRequest>
+    public class UpsertSizeValidator : AbstractValidator<UpsertSizeRequest>
     {
-        public UpsertColorValidator()
+        public UpsertSizeValidator()
         {
-            RuleFor(x => x.ColorName)
-                .NotEmpty();
-            RuleFor(x => x.ColorCode)
+            RuleFor(x => x.SizeName)
               .NotEmpty();
         }
     }
 
 
-    public class UpsertColorHandler : IRequestHandler<UpsertColorRequest, UpsertColorResult>
+    public class UpsertSizeHandler : IRequestHandler<UpsertSizeRequest, UpsertSizeResult>
     {
-        private readonly IBaseCommandRepository<Color> _repository;
+        private readonly IBaseCommandRepository<Size> _repository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public UpsertColorHandler(
-            IBaseCommandRepository<Color> repository,
+        public UpsertSizeHandler(
+            IBaseCommandRepository<Size> repository,
             IUnitOfWork unitOfWork
             )
         {
@@ -51,18 +48,17 @@ namespace Application.Features.Colors.Commands
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<UpsertColorResult> Handle(UpsertColorRequest request, CancellationToken cancellationToken)
+        public async Task<UpsertSizeResult> Handle(UpsertSizeRequest request, CancellationToken cancellationToken)
         {
 
-            Color entity;
+            Size entity;
 
             if (string.IsNullOrWhiteSpace(request.Id))
             {
                 // Thêm mới
-                entity = new Color
+                entity = new Size
                 {
-                    ColorName = request.ColorName,
-                    ColorCode = request.ColorCode
+                    SizeName = request.SizeName
                 };
 
                 await _repository.CreateAsync(entity, cancellationToken);
@@ -76,13 +72,13 @@ namespace Application.Features.Colors.Commands
                     throw new ApplicationException($"{ExceptionConsts.EntitiyNotFound} {request.Id}");
                 }
 
-                entity.Update(request.ColorName, request.ColorCode);
+                entity.Update(request.SizeName);
                 _repository.Update(entity);
             }
 
             await _unitOfWork.SaveAsync(cancellationToken);
 
-            return new UpsertColorResult
+            return new UpsertSizeResult
             {
                 Id = entity.Id,
                 Message = "Success"

@@ -19,14 +19,14 @@ namespace Application.Features.Sizes.Commands
 
     public class DeleteSizeRequest : IRequest<DeleteSizeResult>
     {
-        public string SizeId { get; init; } = null!;
+        public string Id { get; init; } = null!;
     }
 
     public class DeleteSizeValidator : AbstractValidator<DeleteSizeRequest>
     {
         public DeleteSizeValidator()
         {
-            RuleFor(x => x.SizeId)
+            RuleFor(x => x.Id)
                 .NotEmpty();
         }
     }
@@ -49,11 +49,11 @@ namespace Application.Features.Sizes.Commands
         public async Task<DeleteSizeResult> Handle(DeleteSizeRequest request, CancellationToken cancellationToken = default)
         {
 
-            var entity = await _repository.GetByIdAsync(request.SizeId);
+            var entity = await _repository.GetByIdAsync(request.Id);
 
             if (entity == null)
             {
-                throw new ApplicationException($"{ExceptionConsts.EntitiyNotFound} {request.SizeId}");
+                throw new ApplicationException($"{ExceptionConsts.EntitiyNotFound} {request.Id}");
             }
 
             _repository.Purge(entity);

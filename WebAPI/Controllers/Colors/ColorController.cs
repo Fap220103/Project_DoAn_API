@@ -27,9 +27,10 @@ namespace WebAPI.Controllers.Colors
             });
         }
 
-        [HttpDelete]
-        public async Task<ActionResult<ApiSuccessResult<DeleteColorResult>>> DeleteColorAsync([FromQuery] DeleteColorRequest request, CancellationToken cancellationToken)
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<ApiSuccessResult<DeleteColorResult>>> DeleteColorAsync(string id, CancellationToken cancellationToken)
         {
+            var request = new DeleteColorRequest { Id = id };
             var response = await _sender.Send(request, cancellationToken);
 
             return Ok(new ApiSuccessResult<DeleteColorResult>
