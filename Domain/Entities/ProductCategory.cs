@@ -41,7 +41,6 @@ namespace Domain.Entities
             IsActive = true;
         }
 
-
         public void Update(
             string? userId,
             string title,
