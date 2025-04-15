@@ -9,28 +9,12 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
-    public class Color : BaseEntity
+    public class Color
     {
-        public string ColorName { get; set; } = null!;
-        public string ColorCode { get; set; } = null!;
-        [JsonIgnore]
+        public int Id { get; set; }
+        public string Name { get; set; } = null!;
+        public string HexCode { get; set; } = null!;
+            [JsonIgnore]
         public ICollection<ProductVariant> ProductColor { get; set; } = new Collection<ProductVariant>();
-        public Color() : base() { } //for EF Core
-        public Color(
-            string colorName,
-            string colorCode
-            ) : base()
-        {
-            ColorName = colorName.Trim();
-            ColorCode = colorCode.Trim();
-        }
-        public void Update(
-         string colorName,
-         string colorCode
-         )
-        {
-            ColorName = colorName.Trim();
-            ColorCode = colorCode.Trim();
-        }
     }
 }

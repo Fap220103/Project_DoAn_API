@@ -9,23 +9,13 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
-    public class Size : BaseEntity
+    public class Size
     {
-        public string SizeName { get; set; } = null!;
+        public int Id { get; set; }
+        public string Name { get; set; } = null!;
         [JsonIgnore]
         public ICollection<ProductVariant> ProductSize { get; set; } = new Collection<ProductVariant>();
-        public Size() : base() { } //for EF Core
-        public Size(
-            string sizeName
-            ) : base()
-        {
-            SizeName = sizeName.Trim();
-        }
-        public void Update(
-           string sizeName
-        )
-        {
-            SizeName = sizeName.Trim();
-        }
+
+
     }
 }
