@@ -17,7 +17,7 @@ namespace Infrastructure.SecurityManagers.Navigations
             ""ParentUrl"": ""#"",
             ""Children"": [
               {
-                ""Name"": ""ProductList"",
+                ""Name"": ""Product"",
                 ""Caption"": ""Sản phẩm"",
                 ""Url"": ""/admin/product""
               },
@@ -53,13 +53,8 @@ namespace Infrastructure.SecurityManagers.Navigations
             ""Children"": [
               {
                 ""Name"": ""UserProfile"",
-                ""Caption"": ""Khách hàng"",
+                ""Caption"": ""Người dùng"",
                 ""Url"": ""/admin/userprofile""
-              },
-              {
-                ""Name"": ""StaffProfile"",
-                ""Caption"": ""Nhân viên"",
-                ""Url"": ""/admin/staffprofile""
               }
             ]
           },
@@ -71,24 +66,19 @@ namespace Infrastructure.SecurityManagers.Navigations
               {
                 ""Name"": ""SaleProgram"",
                 ""Caption"": ""Khuyến mãi"",
-                ""Url"": ""/admin/saleprogram""
+                ""Url"": ""/admin/sale""
               }
             ]
           },
           {
             ""ParentName"": ""Report"",
-            ""ParentCaption"": ""Báo cáo"",
+            ""ParentCaption"": ""Báo cáo thống kê"",
             ""ParentUrl"": ""#"",
             ""Children"": [
               {
                 ""Name"": ""Revenue"",
                 ""Caption"": ""Doanh thu"",
                 ""Url"": ""/admin/revenue""
-              },
-              {
-                ""Name"": ""BestSellingProduct"",
-                ""Caption"": ""Sản phẩm bán chạy"",
-                ""Url"": ""/admin/bestsellingproduct""
               }
             ]
           },
@@ -105,36 +95,14 @@ namespace Infrastructure.SecurityManagers.Navigations
             ]
           },
           {
-            ""ParentName"": ""FeedbackReviews"",
-            ""ParentCaption"": ""Phản hồi và đánh giá"",
-            ""ParentUrl"": ""#"",
-            ""Children"": [
-              {
-                ""Name"": ""Feedback"",
-                ""Caption"": ""Phản hồi"",
-                ""Url"": ""/admin/feedback""
-              },
-              {
-                ""Name"": ""Reviews"",
-                ""Caption"": ""Đánh giá"",
-                ""Url"": ""/admin/reviews""
-              }
-            ]
-          },
-          {
             ""ParentName"": ""Settings"",
             ""ParentCaption"": ""Cài đặt hệ thống"",
             ""ParentUrl"": ""#"",
             ""Children"": [
               {
-                ""Name"": ""Config"",
-                ""Caption"": ""Cấu hình"",
-                ""Url"": ""/admin/config""
-              },
-              {
-                ""Name"": ""Banner"",
-                ""Caption"": ""Banner"",
-                ""Url"": ""/admin/banner""
+                ""Name"": ""Setting"",
+                ""Caption"": ""Cài đặt"",
+                ""Url"": ""/admin/setting""
               }
             ]
           },
