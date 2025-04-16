@@ -30,9 +30,7 @@ namespace Domain.Entities
         public string? ProductCategoryId { get; set; }
         public ProductCategory ProductCategory { get; set; }
         public ICollection<ProductImage> ProductImage { get; set; } = new Collection<ProductImage>();
-        public ICollection<OrderDetail> OrderDetails { get; set; } = new Collection<OrderDetail>();
-        public ICollection<ProductVariant> ProductColor { get; set; } = new Collection<ProductVariant>();
-        public ICollection<Inventory> Inventory { get; set; } = new Collection<Inventory>();
+        public ICollection<ProductVariant> ProductVariants { get; set; } = new Collection<ProductVariant>();
         public Product() : base() { } //for EF Core
         public Product(
             string? userId,

@@ -47,8 +47,8 @@ namespace Application.Features.Colors.Queries
             {
                 string searchKeyword = request.Search.Trim().ToLower();
                 query = query.Where(c =>
-                    c.ColorName.ToLower().Contains(searchKeyword) ||  // Tìm kiếm trong tên màu
-                    c.ColorCode.ToLower().Contains(searchKeyword)     // Tìm kiếm trong mã màu
+                    c.Name.ToLower().Contains(searchKeyword) ||  // Tìm kiếm trong tên màu
+                    c.HexCode.ToLower().Contains(searchKeyword)     // Tìm kiếm trong mã màu
                 );
             }
 
@@ -63,10 +63,10 @@ namespace Application.Features.Colors.Queries
 
                     query = (field, direction) switch
                     {
-                        ("ColorName", "asc") => query.OrderBy(x => x.ColorName),
-                        ("ColorName", "desc") => query.OrderByDescending(x => x.ColorName),
-                        ("ColorCode", "asc") => query.OrderBy(x => x.ColorCode),
-                        ("ColorCode", "desc") => query.OrderByDescending(x => x.ColorCode),
+                        ("Name", "asc") => query.OrderBy(x => x.Name),
+                        ("Name", "desc") => query.OrderByDescending(x => x.Name),
+                        ("HexCode", "asc") => query.OrderBy(x => x.HexCode),
+                        ("HexCode", "desc") => query.OrderByDescending(x => x.HexCode),
                         _ => query
                     };
                 }

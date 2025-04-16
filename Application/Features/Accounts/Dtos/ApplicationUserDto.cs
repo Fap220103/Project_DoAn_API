@@ -10,8 +10,7 @@ namespace Application.Features.Accounts.Dtos
     {
         public string? Id { get; set; }
         public string? UserId { get; init; }
-        public string? FirstName { get; init; }
-        public string? LastName { get; init; }
+        public string? UserName { get; init; }
         public string? Email { get; init; }
         public string? ProfilePictureName { get; init; }
         public bool EmailConfirmed { get; init; }

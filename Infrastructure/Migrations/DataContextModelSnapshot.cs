@@ -24,16 +24,18 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Color", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<string>("ColorCode")
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("HexCode")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("ColorName")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
@@ -41,99 +43,94 @@ namespace Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Color");
-                });
 
-            modelBuilder.Entity("Domain.Entities.Config", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<bool>("Active")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatedById")
-                        .HasMaxLength(450)
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
-
-                    b.Property<bool>("IsDeleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
-
-                    b.Property<string>("SmtpHost")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<string>("SmtpPassword")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<int>("SmtpPort")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("SmtpUseSSL")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("SmtpUserName")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UpdatedById")
-                        .HasMaxLength(450)
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SmtpHost")
-                        .HasDatabaseName("IX_Config_SmtpHost");
-
-                    b.HasIndex("SmtpUserName")
-                        .HasDatabaseName("IX_Config_SmtpUserName");
-
-                    b.HasIndex("Title")
-                        .HasDatabaseName("IX_Config_Title");
-
-                    b.ToTable("Config");
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            HexCode = "#FF0000",
+                            Name = "Đỏ"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            HexCode = "#008000",
+                            Name = "Xanh lá"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            HexCode = "#0000FF",
+                            Name = "Xanh dương"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            HexCode = "#000000",
+                            Name = "Đen"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            HexCode = "#FFFFFF",
+                            Name = "Trắng"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            HexCode = "#808080",
+                            Name = "Xám"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            HexCode = "#FFFF00",
+                            Name = "Vàng"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            HexCode = "#FFA500",
+                            Name = "Cam"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            HexCode = "#800080",
+                            Name = "Tím"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            HexCode = "#FFC0CB",
+                            Name = "Hồng"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            HexCode = "#A52A2A",
+                            Name = "Nâu"
+                        },
+                        new
+                        {
+                            Id = 12,
+                            HexCode = "#00FFFF",
+                            Name = "Lục lam"
+                        });
                 });
 
             modelBuilder.Entity("Domain.Entities.Inventory", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                    b.Property<string>("ProductVariantId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("LastUpdated")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("ProductId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(50)");
-
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
+                    b.HasKey("ProductVariantId");
 
                     b.ToTable("Inventory");
                 });
@@ -143,11 +140,6 @@ namespace Infrastructure.Migrations
                     b.Property<string>("Id")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("Code")
                         .IsRequired()
@@ -160,11 +152,7 @@ namespace Infrastructure.Migrations
                         .HasMaxLength(450)
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("CustomerName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Email")
+                    b.Property<string>("CustomerId")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -172,11 +160,6 @@ namespace Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
-
-                    b.Property<string>("Phone")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
@@ -211,8 +194,11 @@ namespace Infrastructure.Migrations
                     b.Property<string>("OrderId")
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("ProductId")
-                        .HasColumnType("nvarchar(50)");
+                    b.Property<string>("ProductVariantId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Price")
                         .HasPrecision(18, 2)
@@ -221,9 +207,9 @@ namespace Infrastructure.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.HasKey("OrderId", "ProductId");
+                    b.HasKey("OrderId", "ProductVariantId");
 
-                    b.HasIndex("ProductId");
+                    b.HasIndex("ProductVariantId");
 
                     b.ToTable("OrderDetail");
                 });
@@ -342,55 +328,23 @@ namespace Infrastructure.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<DateTime?>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatedById")
-                        .HasMaxLength(450)
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("Description")
                         .HasMaxLength(2000)
                         .HasColumnType("nvarchar(2000)");
 
-                    b.Property<string>("Icon")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsDeleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
+                    b.Property<int>("Level")
+                        .HasColumnType("int");
 
                     b.Property<string>("ParentId")
                         .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("SeoDescription")
-                        .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
-
-                    b.Property<string>("SeoKeywords")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<string>("SeoTitle")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UpdatedById")
-                        .HasMaxLength(450)
-                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -400,21 +354,6 @@ namespace Infrastructure.Migrations
                         .HasDatabaseName("IX_ProductCategory_Title");
 
                     b.ToTable("ProductCategory");
-                });
-
-            modelBuilder.Entity("Domain.Entities.ProductColor", b =>
-                {
-                    b.Property<string>("ProductId")
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("ColorId")
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("ProductId", "ColorId");
-
-                    b.HasIndex("ColorId");
-
-                    b.ToTable("ProductColor");
                 });
 
             modelBuilder.Entity("Domain.Entities.ProductImage", b =>
@@ -441,28 +380,60 @@ namespace Infrastructure.Migrations
                     b.ToTable("ProductImage");
                 });
 
-            modelBuilder.Entity("Domain.Entities.ProductSize", b =>
+            modelBuilder.Entity("Domain.Entities.ProductVariant", b =>
                 {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("ColorId")
+                        .HasColumnType("int");
+
                     b.Property<string>("ProductId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("SizeId")
-                        .HasColumnType("nvarchar(50)");
+                    b.Property<int>("SizeId")
+                        .HasColumnType("int");
 
-                    b.HasKey("ProductId", "SizeId");
+                    b.HasKey("Id");
+
+                    b.HasIndex("ColorId");
+
+                    b.HasIndex("ProductId");
 
                     b.HasIndex("SizeId");
 
-                    b.ToTable("ProductSize");
+                    b.ToTable("ProductVariant");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Size", b =>
+            modelBuilder.Entity("Domain.Entities.Setting", b =>
                 {
                     b.Property<string>("Id")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("SizeName")
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Setting");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Size", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
@@ -470,6 +441,33 @@ namespace Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Size");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "S"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "M"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "L"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "XL"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "XXL"
+                        });
                 });
 
             modelBuilder.Entity("Domain.Entities.Token", b =>
@@ -720,13 +718,13 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Inventory", b =>
                 {
-                    b.HasOne("Domain.Entities.Product", "Product")
-                        .WithMany("Inventory")
-                        .HasForeignKey("ProductId")
+                    b.HasOne("Domain.Entities.ProductVariant", "ProductVariant")
+                        .WithOne("Inventory")
+                        .HasForeignKey("Domain.Entities.Inventory", "ProductVariantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Product");
+                    b.Navigation("ProductVariant");
                 });
 
             modelBuilder.Entity("Domain.Entities.OrderDetail", b =>
@@ -737,15 +735,15 @@ namespace Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.Product", "Product")
+                    b.HasOne("Domain.Entities.ProductVariant", "ProductVariant")
                         .WithMany("OrderDetails")
-                        .HasForeignKey("ProductId")
+                        .HasForeignKey("ProductVariantId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Order");
 
-                    b.Navigation("Product");
+                    b.Navigation("ProductVariant");
                 });
 
             modelBuilder.Entity("Domain.Entities.Product", b =>
@@ -769,25 +767,6 @@ namespace Infrastructure.Migrations
                     b.Navigation("ParentCategory");
                 });
 
-            modelBuilder.Entity("Domain.Entities.ProductColor", b =>
-                {
-                    b.HasOne("Domain.Entities.Color", "Color")
-                        .WithMany("ProductColor")
-                        .HasForeignKey("ColorId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.Product", "Product")
-                        .WithMany("ProductColor")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Color");
-
-                    b.Navigation("Product");
-                });
-
             modelBuilder.Entity("Domain.Entities.ProductImage", b =>
                 {
                     b.HasOne("Domain.Entities.Product", "Product")
@@ -799,19 +778,27 @@ namespace Infrastructure.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("Domain.Entities.ProductSize", b =>
+            modelBuilder.Entity("Domain.Entities.ProductVariant", b =>
                 {
+                    b.HasOne("Domain.Entities.Color", "Color")
+                        .WithMany("ProductVariants")
+                        .HasForeignKey("ColorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Domain.Entities.Product", "Product")
-                        .WithMany("ProductSize")
+                        .WithMany("ProductVariants")
                         .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Domain.Entities.Size", "Size")
-                        .WithMany("ProductSize")
+                        .WithMany("ProductVariants")
                         .HasForeignKey("SizeId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Color");
 
                     b.Navigation("Product");
 
@@ -880,7 +867,7 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Color", b =>
                 {
-                    b.Navigation("ProductColor");
+                    b.Navigation("ProductVariants");
                 });
 
             modelBuilder.Entity("Domain.Entities.Order", b =>
@@ -890,15 +877,9 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Product", b =>
                 {
-                    b.Navigation("Inventory");
-
-                    b.Navigation("OrderDetails");
-
-                    b.Navigation("ProductColor");
-
                     b.Navigation("ProductImage");
 
-                    b.Navigation("ProductSize");
+                    b.Navigation("ProductVariants");
                 });
 
             modelBuilder.Entity("Domain.Entities.ProductCategory", b =>
@@ -908,9 +889,17 @@ namespace Infrastructure.Migrations
                     b.Navigation("Products");
                 });
 
+            modelBuilder.Entity("Domain.Entities.ProductVariant", b =>
+                {
+                    b.Navigation("Inventory")
+                        .IsRequired();
+
+                    b.Navigation("OrderDetails");
+                });
+
             modelBuilder.Entity("Domain.Entities.Size", b =>
                 {
-                    b.Navigation("ProductSize");
+                    b.Navigation("ProductVariants");
                 });
 #pragma warning restore 612, 618
         }

@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.DataAccessManagers.EFCores.Configurations
 {
-    public class ProductCategoryConfiguration : BaseEntityAdvanceConfiguration<ProductCategory>
+    public class ProductCategoryConfiguration : BaseEntityConfiguration<ProductCategory>
     {
         public override void Configure(EntityTypeBuilder<ProductCategory> builder)
         {
@@ -24,8 +24,14 @@ namespace Infrastructure.DataAccessManagers.EFCores.Configurations
             builder.Property(x => x.Alias)
                 .HasMaxLength(NameConsts.MaxLength);
 
-            builder.Property(x => x.Icon)
-                .HasMaxLength(NameConsts.MaxLength);
+            builder.Property(x => x.Title)
+              .HasMaxLength(NameConsts.MaxLength);
+
+            builder.Property(x => x.Description)
+            .HasMaxLength(DescriptionConsts.MaxLength);
+
+            builder.HasIndex(e => e.Title)
+             .HasDatabaseName($"IX_ProductCategory_Title");
 
             builder.HasOne(pc => pc.ParentCategory)
                   .WithMany(pc => pc.ChildCategories)

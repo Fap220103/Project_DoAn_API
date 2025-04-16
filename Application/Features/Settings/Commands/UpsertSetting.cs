@@ -59,9 +59,12 @@ namespace Application.Features.Settings.Commands
             if (string.IsNullOrWhiteSpace(request.Id))
             {
                 // Thêm mới
+                if(await _repository.AnyAsync(x=> x.Key == request.Key, cancellationToken))
+                {
+                    throw new ApplicationException($"{ExceptionConsts.EntitiyAlreadyExists} {request.Key}");
+                }
                 entity = new Setting
                 {
-                    Id = Guid.NewGuid().ToString(),
                     Key = request.Key,
                     Value = request.Value
                 };

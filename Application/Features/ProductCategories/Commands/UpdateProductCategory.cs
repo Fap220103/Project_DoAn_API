@@ -20,15 +20,11 @@ namespace Application.Features.ProductCategories.Commands
     public class UpdateProductCategoryRequest : IRequest<UpdateProductCategoryResult>
     {
         public string Id { get; init; } = null!;
-        public string Title { get; init; } = null!;
-        public string Alias { get; init; } = null!;
-        public string Description { get; init; } = null!;
+        public string Title { get; init; } 
+        public string? Alias { get; init; } 
+        public string? Description { get; init; }
         public int Level { get; init; }
-        public string Icon { get; init; } = null!;
-        public string SeoTitle { get; init; } = null!;
-        public string SeoDescription { get; init; } = null!;
-        public string SeoKeywords { get; init; } = null!;
-        public string ParentId { get; set; } = null!;
+        public string? ParentId { get; set; }
         public bool IsActive { get; init; }
     }
 
@@ -68,20 +64,15 @@ namespace Application.Features.ProductCategories.Commands
                 throw new ApplicationException($"{ExceptionConsts.EntitiyNotFound} {request.Id}");
             }
 
-            if (string.IsNullOrEmpty(request.ParentId))
-            {
-                request.ParentId = entity.ParentId.ToString();
-            }
+            //if (string.IsNullOrEmpty(request.ParentId))
+            //{
+            //    request.ParentId = entity.ParentId.ToString();
+            //}
 
             entity.Update(
-                    request.Id,
                     request.Title,
                     request.Alias,
                     request.Description,
-                    request.SeoTitle,
-                    request.SeoDescription,
-                    request.SeoKeywords,
-                    request.Icon,
                     request.Level,
                     request.ParentId,
                     request.IsActive

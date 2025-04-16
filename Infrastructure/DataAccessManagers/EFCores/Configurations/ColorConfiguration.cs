@@ -1,6 +1,7 @@
 ﻿using Domain.Constants;
 using Domain.Entities;
 using Infrastructure.DataAccessManagers.EFCores.Configurations.Bases;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.Collections.Generic;
@@ -10,16 +11,15 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.DataAccessManagers.EFCores.Configurations
 {
-    public class ColorConfiguration : BaseEntityConfiguration<Color>
+    public class ColorConfiguration : IEntityTypeConfiguration<Color>
     {
-        public override void Configure(EntityTypeBuilder<Color> builder)
+        public void Configure(EntityTypeBuilder<Color> builder)
         {
-            base.Configure(builder);
 
-            builder.Property(x => x.ColorCode)
+            builder.Property(x => x.Name)
                    .IsRequired()
                    .HasMaxLength(LengthConsts.S);
-            builder.Property(x => x.ColorName)
+            builder.Property(x => x.HexCode)
                   .IsRequired()
                   .HasMaxLength(LengthConsts.S);
         }

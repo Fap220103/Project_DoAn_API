@@ -1,6 +1,9 @@
 ﻿using Application.Common.Models;
 using Application.Features.Accounts.Dtos;
+using Application.Features.ProductCategories.Queries;
 using Application.Services.Externals;
+using AutoMapper;
+using Domain.Entities;
 using FluentValidation;
 using MediatR;
 using System;
@@ -18,27 +21,16 @@ namespace Application.Features.Accounts.Queries
     }
     public class GetUsersRequest : IRequest<GetUsersResult>
     {
-        public int Page { get; init; } 
-        public int Limit { get; init; }
-        public string SortBy { get; init; }
-        public string SortDirection { get; init; }
-        public string searchValue { get; init; } = string.Empty;
+        public int Page { get; init; } = 1;
+        public int Limit { get; init; } = 10;
+        public string? Order { get; init; }
+        public string? Search { get; init; }
     }
-    public class GetUsersValidator : AbstractValidator<GetUsersRequest>
+    public class GetUsersProfile : Profile
     {
-        public GetUsersValidator()
+        public GetUsersProfile()
         {
-            RuleFor(x => x.Page)
-                .NotEmpty();
-
-            RuleFor(x => x.Limit)
-                .NotEmpty();
-
-            RuleFor(x => x.SortBy)
-                .NotEmpty();
-
-            RuleFor(x => x.SortDirection)
-                .NotEmpty();
+            CreateMap<ApplicationUser, ApplicationUserDto>();
         }
     }
     public class GetUsersHandler : IRequestHandler<GetUsersRequest, GetUsersResult>
@@ -55,9 +47,8 @@ namespace Application.Features.Accounts.Queries
             var result = await _identityService.GetUsersAsync(
                 request.Page,
                 request.Limit,
-                request.SortBy,
-                request.SortDirection,
-                request.searchValue,
+                request.Order,
+                request.Search,
                 cancellationToken);
 
             return new GetUsersResult

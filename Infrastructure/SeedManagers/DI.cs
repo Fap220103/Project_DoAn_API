@@ -17,7 +17,7 @@ namespace Infrastructure.SeedManagers
         public static IServiceCollection RegisterSystemSeedManager(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped<RoleClaimSeeder>();
-            services.AddScoped<IdentitySeeder>();
+            services.AddScoped<SettingSeeder>();
             //services.AddScoped<ConfigSeeder>();
             return services;
         }
@@ -50,8 +50,6 @@ namespace Infrastructure.SeedManagers
         public static IServiceCollection RegisterDemoSeedManager(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped<UserSeeder>();
-
-
             return services;
         }
         public static IHost SeedDemoData(this IHost host)

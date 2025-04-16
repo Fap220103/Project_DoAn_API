@@ -1,6 +1,7 @@
 ﻿using Domain.Constants;
 using Domain.Entities;
 using Infrastructure.DataAccessManagers.EFCores.Configurations.Bases;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.Collections.Generic;
@@ -10,13 +11,12 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.DataAccessManagers.EFCores.Configurations
 {
-    public class SizeConfiguration : BaseEntityConfiguration<Size>
+    public class SizeConfiguration : IEntityTypeConfiguration<Size>
     {
-        public override void Configure(EntityTypeBuilder<Size> builder)
+        public void Configure(EntityTypeBuilder<Size> builder)
         {
-            base.Configure(builder);
 
-            builder.Property(x=> x.SizeName)
+            builder.Property(x=> x.Name)
                    .IsRequired()
                    .HasMaxLength(LengthConsts.S);
         }

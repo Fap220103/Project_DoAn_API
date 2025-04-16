@@ -1,4 +1,7 @@
-﻿using MediatR;
+﻿using Application.Features.Colors.Queries;
+using Application.Features.Configs.Commands;
+using Application.Features.Settings.Commands;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -39,8 +42,12 @@ namespace WebAPI.Controllers.Configs
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<ApiSuccessResult<DeleteSettingResult>>> DeleteSettingAsync(DeleteSettingRequest request, CancellationToken cancellationToken)
+        public async Task<ActionResult<ApiSuccessResult<DeleteSettingResult>>> DeleteSettingAsync(string id, CancellationToken cancellationToken)
         {
+            var request = new DeleteSettingRequest
+            {
+                Id = id
+            };
             var response = await _sender.Send(request, cancellationToken);
 
             return Ok(new ApiSuccessResult<DeleteSettingResult>

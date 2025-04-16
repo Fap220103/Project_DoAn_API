@@ -1,4 +1,5 @@
-﻿using Application.Services.CQS.Queries;
+﻿using Application.Common.Models;
+using Application.Services.CQS.Queries;
 using AutoMapper;
 using Domain.Constants;
 using Domain.Entities;
@@ -20,13 +21,10 @@ namespace Application.Features.ProductCategories.Queries
         public string Title { get; init; } = null!;
         public string Description { get; init; } = null!;
         public string? Alias { get; set; }
-        public string? Icon { get; set; }
+        public string? ParentId { get; set; }
         public string? ParentName { get; set; }
         public bool IsActive { get; set; }
-        public string SeoTitle { get; set; } = null!;
-        public string SeoDescription { get; set; } = null!;
-        public string SeoKeywords { get; set; } = null!;
-        public ICollection<ProductCategoryDto> ChildCategories { get; set; } = new List<ProductCategoryDto>();
+        public int Level { get; set; }  
     }
 
 
@@ -40,12 +38,18 @@ namespace Application.Features.ProductCategories.Queries
 
     public class GetProductCategoryResult
     {
-        public IEnumerable<ProductCategoryDto> Data { get; init; } = null!;
+        public PagedList<ProductCategoryDto> Data { get; init; } = null!;
         public string Message { get; init; } = null!;
     }
 
     public class GetProductCategoryRequest : IRequest<GetProductCategoryResult>
     {
+        public int Page { get; set; } = 1;
+        public int Limit { get; set; } = 10;
+        public string? Order { get; set; }
+        public string? Search { get; set; }
+        public string? Level { get; set; }
+        public string? ParentId { get; set; }
     }
 
     public class GetProductCategoryHandler : IRequestHandler<GetProductCategoryRequest, GetProductCategoryResult>
@@ -64,50 +68,67 @@ namespace Application.Features.ProductCategories.Queries
 
         public async Task<GetProductCategoryResult> Handle(GetProductCategoryRequest request, CancellationToken cancellationToken)
         {
-            
-            var allCategories = await _context.ProductCategory.ApplyIsDeletedFilter().ToListAsync(cancellationToken);
-
-            // Tạo lookup để ánh xạ Id với danh mục
-            var categoryDict = allCategories.ToDictionary(c => c.Id, c => c);
-
-            // Gán ChildCategories
-            var lookup = allCategories.ToLookup(c => c.ParentId);
-            foreach (var category in allCategories)
+            var query = _context.ProductCategory
+                                .Include(pc => pc.ParentCategory)
+                                .AsQueryable();
+            // Search theo parentId
+            if (!string.IsNullOrEmpty(request.ParentId))
             {
-                category.ChildCategories = lookup[category.Id].ToList();
+                query = query.Where(x => x.ParentId == request.ParentId);
             }
 
-            // Lấy danh mục gốc
-            var rootCategories = allCategories.Where(c => c.ParentId == null).ToList();
-
-            // Chuyển đổi sang DTO và gán ParentName
-            var dto = _mapper.Map<IEnumerable<ProductCategoryDto>>(rootCategories);
-            foreach (var categoryDto in dto)
+            // Search theo Title hoặc Alias
+            if (!string.IsNullOrEmpty(request.Search))
             {
-                SetParentName(categoryDto, categoryDict);
+                var keyword = request.Search.ToLower();
+                query = query.Where(x =>
+                    x.Title.ToLower().Contains(keyword) ||
+                    (x.Alias != null && x.Alias.ToLower().Contains(keyword))
+                );
             }
+
+            // Filter theo Level (nếu có)
+            if (!string.IsNullOrEmpty(request.Level) && int.TryParse(request.Level, out int level))
+            {
+                query = query.Where(x => x.Level == level);
+            }
+
+            // Sắp xếp
+            if (!string.IsNullOrEmpty(request.Order))
+            {
+                
+            }
+            else
+            {
+                query = query.OrderByDescending(x => x.Title); // mặc định
+            }
+
+            // Phân trang
+            var skip = (request.Page - 1) * request.Limit;
+            var items = await query
+                .Skip(skip)
+                .Take(request.Limit)
+                .ToListAsync(cancellationToken);
+
+            // Mapping
+            var dto = _mapper.Map<List<ProductCategoryDto>>(items);
+
+            // Gán thêm tên danh mục cha (nếu có)
+            foreach (var item in dto)
+            {
+                var parent = items.FirstOrDefault(x => x.Id == item.Id)?.ParentCategory;
+                item.ParentName = parent?.Title;
+            }
+            var total = await query.CountAsync(cancellationToken);
+            var pagedList = new PagedList<ProductCategoryDto>(dto, total, request.Page, request.Limit);
 
             return new GetProductCategoryResult
             {
-                Data = dto,
+                Data = pagedList,
                 Message = "Success"
             };
-        }
-        private void SetParentName(ProductCategoryDto dto, Dictionary<string, ProductCategory> categoryDict)
-        {
-            if (dto.Id != null && categoryDict.ContainsKey(dto.Id))
-            {
-                var parentId = categoryDict[dto.Id].ParentId;
-                if (parentId != null && categoryDict.ContainsKey(parentId))
-                {
-                    dto.ParentName = categoryDict[parentId].Title;
-                }
-            }
 
-            foreach (var child in dto.ChildCategories)
-            {
-                SetParentName(child, categoryDict);
-            }
         }
+     
     }
 }

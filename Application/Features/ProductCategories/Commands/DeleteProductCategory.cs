@@ -21,18 +21,14 @@ namespace Application.Features.ProductCategories.Commands
 
     public class DeleteProductCategoryRequest : IRequest<DeleteProductCategoryResult>
     {
-        public string UserId { get; init; } = null!;
-        public string ProductCategoryId { get; init; } = null!;
+        public string Id { get; init; } = null!;
     }
 
     public class DeleteProductCategoryValidator : AbstractValidator<DeleteProductCategoryRequest>
     {
         public DeleteProductCategoryValidator()
         {
-            RuleFor(x => x.UserId)
-                .NotEmpty();
-
-            RuleFor(x => x.ProductCategoryId)
+            RuleFor(x => x.Id)
                 .NotEmpty();
         }
     }
@@ -56,20 +52,16 @@ namespace Application.Features.ProductCategories.Commands
         {
             var query = _repository.GetQuery();
 
-            query = query
-                .ApplyIsDeletedFilter()
-                .Where(x => x.Id == request.ProductCategoryId);
+            query = query.Where(x => x.Id == request.Id);
 
             var entity = await query.SingleOrDefaultAsync(cancellationToken);
 
             if (entity == null)
             {
-                throw new ApplicationException($"{ExceptionConsts.EntitiyNotFound} {request.ProductCategoryId}");
+                throw new ApplicationException($"{ExceptionConsts.EntitiyNotFound} {request.Id}");
             }
 
-            entity.Delete(request.UserId);
-
-            _repository.Update(entity);
+            _repository.Purge(entity);
             await _unitOfWork.SaveAsync(cancellationToken);
 
             return new DeleteProductCategoryResult

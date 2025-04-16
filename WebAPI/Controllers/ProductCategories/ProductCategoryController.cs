@@ -14,8 +14,7 @@ namespace WebAPI.Controllers.ProductCategories
         {
         }
         [HttpPost("CreateProductCategory")]
-        [Consumes("multipart/form-data")]
-        public async Task<ActionResult<ApiSuccessResult<CreateProductCategoryResult>>> CreateProductCategoryAsync([FromForm] CreateProductCategoryRequest request, CancellationToken cancellationToken)
+        public async Task<ActionResult<ApiSuccessResult<CreateProductCategoryResult>>> CreateProductCategoryAsync(CreateProductCategoryRequest request, CancellationToken cancellationToken)
         {
             var response = await _sender.Send(request, cancellationToken);
 
@@ -39,9 +38,10 @@ namespace WebAPI.Controllers.ProductCategories
             });
         }
 
-        [HttpDelete("DeleteProductCategory")]
-        public async Task<ActionResult<ApiSuccessResult<DeleteProductCategoryResult>>> DeleteProductCategoryAsync([FromQuery] DeleteProductCategoryRequest request, CancellationToken cancellationToken)
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<ApiSuccessResult<DeleteProductCategoryResult>>> DeleteProductCategoryAsync(string id, CancellationToken cancellationToken)
         {
+            var request = new DeleteProductCategoryRequest { Id = id };
             var response = await _sender.Send(request, cancellationToken);
 
             return Ok(new ApiSuccessResult<DeleteProductCategoryResult>
@@ -52,29 +52,41 @@ namespace WebAPI.Controllers.ProductCategories
             });
         }
 
-        [HttpGet("GetAllProductCategory")]
-        public async Task<ActionResult<ApiSuccessResult<GetProductCategoryResult>>> GetAllProductCategoryAsync(CancellationToken cancellationToken)
+        //[HttpGet("GetAllProductCategory")]
+        //public async Task<ActionResult<ApiSuccessResult<GetProductCategoryResult>>> GetAllProductCategoryAsync(CancellationToken cancellationToken)
+        //{
+        //    var request = new GetProductCategoryRequest();
+        //    var response = await _sender.Send(request, cancellationToken);
+
+        //    return Ok(new ApiSuccessResult<GetProductCategoryResult>
+        //    {
+        //        Code = StatusCodes.Status200OK,
+        //        Message = $"Success executing {nameof(GetAllProductCategoryAsync)}",
+        //        Content = response
+        //    });
+        //}
+        //[HttpGet("GetProductCategoryName")]
+        //public async Task<ActionResult<ApiSuccessResult<GetProductCategoryNameResult>>> GetProductCategoryNameAsync(CancellationToken cancellationToken)
+        //{
+        //    var request = new GetProductCategoryNameRequest();
+        //    var response = await _sender.Send(request, cancellationToken);
+
+        //    return Ok(new ApiSuccessResult<GetProductCategoryNameResult>
+        //    {
+        //        Code = StatusCodes.Status200OK,
+        //        Message = $"Success executing {nameof(GetProductCategoryNameAsync)}",
+        //        Content = response
+        //    });
+        //}
+        [HttpGet]
+        public async Task<ActionResult<ApiSuccessResult<GetProductCategoryResult>>> GetProductCategoryAsync([FromQuery] GetProductCategoryRequest request, CancellationToken cancellationToken)
         {
-            var request = new GetProductCategoryRequest();
             var response = await _sender.Send(request, cancellationToken);
 
             return Ok(new ApiSuccessResult<GetProductCategoryResult>
             {
                 Code = StatusCodes.Status200OK,
-                Message = $"Success executing {nameof(GetAllProductCategoryAsync)}",
-                Content = response
-            });
-        }
-        [HttpGet("GetProductCategoryName")]
-        public async Task<ActionResult<ApiSuccessResult<GetProductCategoryNameResult>>> GetProductCategoryNameAsync(CancellationToken cancellationToken)
-        {
-            var request = new GetProductCategoryNameRequest();
-            var response = await _sender.Send(request, cancellationToken);
-
-            return Ok(new ApiSuccessResult<GetProductCategoryNameResult>
-            {
-                Code = StatusCodes.Status200OK,
-                Message = $"Success executing {nameof(GetProductCategoryNameAsync)}",
+                Message = $"Success executing {nameof(GetProductCategoryAsync)}",
                 Content = response
             });
         }

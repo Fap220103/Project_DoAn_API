@@ -11,12 +11,12 @@ namespace Domain.Entities
     public class ProductVariant : BaseEntity
     {
         public string ProductId { get; set; } = null!;
-        public string ColorId { get; set; } = null!;
-        public string SizeId { get; set; } = null!;
+        public int ColorId { get; set; } 
+        public int SizeId { get; set; } 
         public Color Color { get; set; }
         public Size Size { get; set; }
         public Product Product { get; set; }
-        public ICollection<Inventory> Inventory { get; set; } = new Collection<Inventory>();
+        public Inventory Inventory { get; set; }
         public ICollection<OrderDetail> OrderDetails { get; set; } = new Collection<OrderDetail>();
     }
 }

@@ -56,7 +56,7 @@ namespace Application.Features.Configs.Commands
                 throw new ApplicationException($"{ExceptionConsts.EntitiyNotFound} {request.Id}");
             }
 
-            _repository.Delete(entity);
+            _repository.Purge(entity);
             await _unitOfWork.SaveAsync(cancellationToken);
 
             return new DeleteSettingResult

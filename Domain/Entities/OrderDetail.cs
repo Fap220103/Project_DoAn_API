@@ -10,7 +10,7 @@ using Domain.Interfaces;
 
 namespace Domain.Entities
 {
-    public class OrderDetail
+    public class OrderDetail : BaseEntity
     {
         public string OrderId { get; set; } = null!;
         public string ProductVariantId { get; set; } = null!;
@@ -18,5 +18,23 @@ namespace Domain.Entities
         public int Quantity { get; set; }
         public Order Order { get; set; }
         public ProductVariant ProductVariant { get; set; }
+        public OrderDetail() : base() { } //for EF Core
+        //public OrderDetail(
+        //    string key,
+        //    string value
+        //    ) : base()
+        //{
+        //    Key = key;
+        //    Value = value;
+        //}
+
+        //public void Update(
+        //    string key,
+        //    string value
+        //    )
+        //{
+        //    Key = key;
+        //    Value = value;
+        //}
     }
 }

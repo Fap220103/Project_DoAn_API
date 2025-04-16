@@ -2,8 +2,10 @@
 using Application.Features.Accounts.Commands;
 using Application.Features.Accounts.Dtos;
 using Application.Features.Accounts.Queries;
+using Application.Features.ProductCategories.Queries;
 using Application.Services.Externals;
 using Application.Services.Repositories;
+using AutoMapper;
 using Domain.Entities;
 using Infrastructure.DataAccessManagers.EFCores.Contexts;
 using Infrastructure.SecurityManagers.RoleClaims;
@@ -11,6 +13,7 @@ using Infrastructure.SecurityManagers.Tokens;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
@@ -35,12 +38,13 @@ namespace Infrastructure.SecurityManagers.AspNetIdentity
         private readonly INavigationService _navigationService;
         private readonly IRoleClaimService _roleClaimService;
         private readonly QueryContext _queryContext;
+        private readonly IMapper _mapper;
 
         public IdentityService(
             IOptions<IdentitySettings> identitySettings,
             UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole> roleManager,
-             SignInManager<ApplicationUser> signInManager,
+            SignInManager<ApplicationUser> signInManager,
             IUserClaimsPrincipalFactory<ApplicationUser> userClaimsPrincipalFactory,
             IAuthorizationService authorizationService,
             ITokenService tokenService,
@@ -48,7 +52,8 @@ namespace Infrastructure.SecurityManagers.AspNetIdentity
             IUnitOfWork unitOfWork,
             INavigationService navigationService,
             IRoleClaimService roleClaimService,
-            QueryContext queryContext
+            QueryContext queryContext,
+            IMapper mapper
             )
         {
             _identitySettings = identitySettings.Value;
@@ -63,6 +68,7 @@ namespace Infrastructure.SecurityManagers.AspNetIdentity
             _navigationService = navigationService;
             _roleClaimService = roleClaimService;
             _queryContext = queryContext;
+            _mapper = mapper;
         }
 
         public async Task<CreateUserResult> CreateUserAsync(string email, string password, CancellationToken cancellationToken = default)
@@ -119,9 +125,56 @@ namespace Infrastructure.SecurityManagers.AspNetIdentity
             };
         }
 
-        public Task<GetUsersResult> GetUsersAsync(int page = 1, int limit = 10, string sortBy = "Email", string sortDirection = "asc", string searchValue = "", CancellationToken cancellationToken = default)
+        public async Task<GetUsersResult> GetUsersAsync(int page, int limit, string order, string search, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            var query = _queryContext.Users.AsQueryable();
+
+            // Tìm kiếm theo tên hoặc email
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                string searchKeyword = search.Trim().ToLower();
+                query = query.Where(u =>
+                    u.UserName.ToLower().Contains(searchKeyword) ||
+                    u.Email.ToLower().Contains(searchKeyword)
+                );
+            }
+
+            // Sắp xếp nếu có order
+            if (!string.IsNullOrEmpty(order))
+            {
+                var parts = order.Split('|');
+                if (parts.Length == 2)
+                {
+                    var field = parts[0].ToLower();
+                    var direction = parts[1].ToLower();
+
+                    query = (field, direction) switch
+                    {
+                        ("username", "asc") => query.OrderBy(x => x.UserName),
+                        ("username", "desc") => query.OrderByDescending(x => x.UserName),
+                        ("email", "asc") => query.OrderBy(x => x.Email),
+                        ("email", "desc") => query.OrderByDescending(x => x.Email),
+                        _ => query
+                    };
+                }
+            }
+
+            var total = await query.CountAsync(cancellationToken);
+            var items = await query
+                .Skip((page - 1) * limit)
+                .Take(limit)
+                .ToListAsync(cancellationToken);
+
+            // Mapping
+            var dto = _mapper.Map<List<ApplicationUserDto>>(items);
+
+            var pagedList = new PagedList<ApplicationUserDto>(dto, total, page, limit);
+
+            return new GetUsersResult
+            {
+                Data = pagedList,
+                Message = "Success"
+            };
         }
 
         public async Task<LoginUserResult> LoginAsync(string email, string password, CancellationToken cancellationToken = default)

@@ -76,9 +76,9 @@ namespace Infrastructure.SecurityManagers.Navigations
             ""ParentUrl"": ""#"",
             ""Children"": [
               {
-                ""Name"": ""Revenue"",
-                ""Caption"": ""Doanh thu"",
-                ""Url"": ""/admin/revenue""
+                ""Name"": ""Report"",
+                ""Caption"": ""Báo cáo - thống kê"",
+                ""Url"": ""/admin/report""
               }
             ]
           },
@@ -125,9 +125,6 @@ namespace Infrastructure.SecurityManagers.Navigations
           }
         ]
         ";
-
-
-
 
         public static List<NavigationContributor> BuildFinalNavigations()
         {

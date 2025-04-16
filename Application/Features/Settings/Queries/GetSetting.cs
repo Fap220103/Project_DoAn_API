@@ -16,16 +16,13 @@ namespace Application.Features.Colors.Queries
 
     public class GetSettingResult
     {
-        public PagedList<Color> Data { get; set; } = null!;
+        public IEnumerable<Setting> Data { get; set; } = null!;
         public string Message { get; init; } = null!;
     }
 
     public class GetSettingRequest : IRequest<GetSettingResult>
     {
-        public int Page { get; set; } = 1;
-        public int Limit { get; set; } = 10;
-        public string? Order { get; set; }
-        public string? Search { get; set; }
+
     }
 
     public class GetSettingHandler : IRequestHandler<GetSettingRequest, GetSettingResult>
@@ -41,13 +38,11 @@ namespace Application.Features.Colors.Queries
 
         public async Task<GetSettingResult> Handle(GetSettingRequest request, CancellationToken cancellationToken)
         {
-            var query = _context.Color.AsQueryable();
-
-           
+            var entities = await _context.Setting.ToListAsync(cancellationToken);
 
             return new GetSettingResult
             {
-                Data = pagedList,
+                Data = entities,
                 Message = "Success"
             };
         }

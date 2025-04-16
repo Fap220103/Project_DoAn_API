@@ -11,16 +11,15 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.DataAccessManagers.EFCores.Configurations
 {
-    public class InventoryConfiguration : BaseEntityConfiguration<Inventory>
+    public class InventoryConfiguration : IEntityTypeConfiguration<Inventory>
     {
-        public override void Configure(EntityTypeBuilder<Inventory> builder)
+        public void Configure(EntityTypeBuilder<Inventory> builder)
         {
-            base.Configure(builder);
+            builder.HasKey(i => i.ProductVariantId);
 
-            builder.HasOne(p => p.ProductVariant)
-                 .WithMany(i => i.Inventory)
-                 .HasForeignKey(i => i.ProductVariantId)
-                 .OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(i => i.ProductVariant)
+                .WithOne(pv => pv.Inventory)
+                .HasForeignKey<Inventory>(i => i.ProductVariantId);
         }
     }
 }
