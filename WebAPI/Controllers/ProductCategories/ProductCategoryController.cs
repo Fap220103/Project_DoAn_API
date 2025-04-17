@@ -1,6 +1,7 @@
 ﻿using Application.Features.ProductCategories.Commands;
 using Application.Features.ProductCategories.Queries;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.Common.Filters;
@@ -8,6 +9,7 @@ using WebAPI.Common.Models;
 
 namespace WebAPI.Controllers.ProductCategories
 {
+    [Authorize(Roles = "Admin")]
     public class ProductCategoryController : BaseApiController
     {
         public ProductCategoryController(ISender sender) : base(sender)
@@ -52,32 +54,6 @@ namespace WebAPI.Controllers.ProductCategories
             });
         }
 
-        //[HttpGet("GetAllProductCategory")]
-        //public async Task<ActionResult<ApiSuccessResult<GetProductCategoryResult>>> GetAllProductCategoryAsync(CancellationToken cancellationToken)
-        //{
-        //    var request = new GetProductCategoryRequest();
-        //    var response = await _sender.Send(request, cancellationToken);
-
-        //    return Ok(new ApiSuccessResult<GetProductCategoryResult>
-        //    {
-        //        Code = StatusCodes.Status200OK,
-        //        Message = $"Success executing {nameof(GetAllProductCategoryAsync)}",
-        //        Content = response
-        //    });
-        //}
-        //[HttpGet("GetProductCategoryName")]
-        //public async Task<ActionResult<ApiSuccessResult<GetProductCategoryNameResult>>> GetProductCategoryNameAsync(CancellationToken cancellationToken)
-        //{
-        //    var request = new GetProductCategoryNameRequest();
-        //    var response = await _sender.Send(request, cancellationToken);
-
-        //    return Ok(new ApiSuccessResult<GetProductCategoryNameResult>
-        //    {
-        //        Code = StatusCodes.Status200OK,
-        //        Message = $"Success executing {nameof(GetProductCategoryNameAsync)}",
-        //        Content = response
-        //    });
-        //}
         [HttpGet]
         public async Task<ActionResult<ApiSuccessResult<GetProductCategoryResult>>> GetProductCategoryAsync([FromQuery] GetProductCategoryRequest request, CancellationToken cancellationToken)
         {

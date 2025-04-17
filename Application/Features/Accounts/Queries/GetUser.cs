@@ -26,13 +26,6 @@ namespace Application.Features.Accounts.Queries
         public string? Order { get; init; }
         public string? Search { get; init; }
     }
-    public class GetUsersProfile : Profile
-    {
-        public GetUsersProfile()
-        {
-            CreateMap<ApplicationUser, ApplicationUserDto>();
-        }
-    }
     public class GetUsersHandler : IRequestHandler<GetUsersRequest, GetUsersResult>
     {
         private readonly IIdentityService _identityService;

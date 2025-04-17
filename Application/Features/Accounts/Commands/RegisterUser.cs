@@ -17,13 +17,11 @@ namespace Application.Features.Accounts.Commands
         public string? UserName { get; init; }
         public string? EmailConfirmationToken { get; init; }
         public bool SendEmailConfirmation { get; init; }
-        public string Host { get; init; } = null!;
     }
 
     public class RegisterUserRequest : IRequest<RegisterUserResult>
     {
         public string Email { get; init; }
-        public string Host { get; init; }
         public string Password { get; init; }
         public string ConfirmPassword { get; init; }
     }
@@ -33,9 +31,6 @@ namespace Application.Features.Accounts.Commands
         public RegisterUserValidator()
         {
             RuleFor(x => x.Email)
-                .NotEmpty();
-
-            RuleFor(x => x.Host)
                 .NotEmpty();
 
             RuleFor(x => x.Password)
@@ -74,8 +69,7 @@ namespace Application.Features.Accounts.Commands
             (
                 result.Email,
                 result.EmailConfirmationToken,
-                result.SendEmailConfirmation,
-                request.Host
+                result.SendEmailConfirmation
             );
             await _mediator.Publish(registerUserEvent);
 

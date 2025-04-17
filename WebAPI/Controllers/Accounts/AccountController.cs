@@ -81,49 +81,24 @@ namespace WebAPI.Controllers.Accounts
                     );
             }
 
-            bool useHttpOnlyCookieForToken = false;
-
-            if (_configuration["Jwt:UseHttpOnlyCookieForToken"] != null)
+            var refreshTokenCookieName = _configuration["Jwt:refreshTokenCookieName"];
+            double expireInMinute;
+            if (!double.TryParse(_configuration["Jwt:ExpireInMinute"], out expireInMinute))
             {
-                bool.TryParse(_configuration["Jwt:UseHttpOnlyCookieForToken"], out useHttpOnlyCookieForToken);
+                expireInMinute = 15.0;
             }
-
-            if (useHttpOnlyCookieForToken)
+            response.expires_in_second = (int)(expireInMinute * 60);
+            if (refreshTokenCookieName != null)
             {
-
-                var accessTokenCookieName = _configuration["Jwt:accessTokenCookieName"];
-                var refreshTokenCookieName = _configuration["Jwt:refreshTokenCookieName"];
-
-                double expireInMinute;
-                if (!double.TryParse(_configuration["Jwt:ExpireInMinute"], out expireInMinute))
+                HttpContext.Response.Cookies.Delete(refreshTokenCookieName);
+                HttpContext.Response.Cookies.Append(refreshTokenCookieName, refreshToken, new CookieOptions
                 {
-                    expireInMinute = 15.0;
-                }
+                    HttpOnly = true,
+                    Secure = false,
+                    SameSite = SameSiteMode.Strict,
+                    Expires = DateTime.UtcNow.AddDays(TokenConsts.ExpiryInDays)
+                });
 
-                if (accessTokenCookieName != null)
-                {
-                    HttpContext.Response.Cookies.Delete(accessTokenCookieName);
-                    HttpContext.Response.Cookies.Append(accessTokenCookieName, accessToken, new CookieOptions
-                    {
-                        HttpOnly = true,
-                        Secure = false,
-                        SameSite = SameSiteMode.Strict,
-                        Expires = DateTime.UtcNow.AddMinutes(expireInMinute)
-                    });
-                }
-
-                if (refreshTokenCookieName != null)
-                {
-                    HttpContext.Response.Cookies.Delete(refreshTokenCookieName);
-                    HttpContext.Response.Cookies.Append(refreshTokenCookieName, refreshToken, new CookieOptions
-                    {
-                        HttpOnly = true,
-                        Secure = false,
-                        SameSite = SameSiteMode.Strict,
-                        Expires = DateTime.UtcNow.AddDays(TokenConsts.ExpiryInDays)
-                    });
-
-                }
             }
 
             return Ok(new ApiSuccessResult<LoginUserResult>
@@ -180,26 +155,18 @@ namespace WebAPI.Controllers.Accounts
                 Content = response
             });
         }
-        [HttpPost("RefreshAccessToken")]
-        public async Task<ActionResult<ApiSuccessResult<GenerateRefreshTokenResult>>> RefreshAccessTokenAsync(GenerateRefreshTokenRequest request, CancellationToken cancellationToken)
+        [HttpPost("RefreshToken")]
+        public async Task<ActionResult<ApiSuccessResult<GenerateRefreshTokenResult>>> RefreshAccessTokenAsync(CancellationToken cancellationToken)
         {
             var refreshToken = HttpContext.Request.Cookies["refreshToken"];
             if (string.IsNullOrEmpty(refreshToken))
             {
-                refreshToken = request.RefreshToken;
-                if (string.IsNullOrEmpty(refreshToken))
-                {
-                    throw new ApiException(
-                        StatusCodes.Status400BadRequest,
-                        "Refresh token has expired, please re-login"
-                    );
-                }
-
+                throw new ApiException(
+                    StatusCodes.Status400BadRequest,
+                    "Refresh token has expired, please re-login"
+                );
             }
-
-
-            request.RefreshToken = refreshToken;
-
+            var request = new GenerateRefreshTokenRequest { RefreshToken = refreshToken };
             var response = await _sender.Send(request, cancellationToken);
 
             if (response == null)
@@ -209,9 +176,6 @@ namespace WebAPI.Controllers.Accounts
                     "Refresh token has expired, please re-login"
                     );
             }
-
-
-
             var newAccessToken = response.AccessToken;
             var newRefreshToken = response.RefreshToken;
 
@@ -222,53 +186,26 @@ namespace WebAPI.Controllers.Accounts
                     "Refresh token has expired, please re-login"
                     );
             }
-
-            bool useHttpOnlyCookieForToken = false;
-
-            if (_configuration["Jwt:UseHttpOnlyCookieForToken"] != null)
+            var refreshTokenCookieName = _configuration["Jwt:refreshTokenCookieName"];
+            double expireInMinute;
+            if (!double.TryParse(_configuration["Jwt:ExpireInMinute"], out expireInMinute))
             {
-                bool.TryParse(_configuration["Jwt:UseHttpOnlyCookieForToken"], out useHttpOnlyCookieForToken);
+                expireInMinute = 15.0;
             }
-
-            if (useHttpOnlyCookieForToken)
+            response.expires_in_second = (int)(expireInMinute * 60);
+            if (refreshTokenCookieName != null)
             {
-                var accessTokenCookieName = _configuration["Jwt:accessTokenCookieName"];
-                var refreshTokenCookieName = _configuration["Jwt:refreshTokenCookieName"];
-
-                double expireInMinute;
-                if (!double.TryParse(_configuration["Jwt:ExpireInMinute"], out expireInMinute))
+                // Set cookie HttpOnly for refreshToken
+                HttpContext.Response.Cookies.Delete(refreshTokenCookieName);
+                HttpContext.Response.Cookies.Append(refreshTokenCookieName, newRefreshToken, new CookieOptions
                 {
-                    expireInMinute = 15.0;
-                }
+                    HttpOnly = true,
+                    Secure = false,
+                    SameSite = SameSiteMode.Strict,
+                    Expires = DateTime.UtcNow.AddDays(TokenConsts.ExpiryInDays)
+                });
 
-                if (accessTokenCookieName != null)
-                {
-                    // Set cookie HttpOnly for accessToken
-                    HttpContext.Response.Cookies.Delete(accessTokenCookieName);
-                    HttpContext.Response.Cookies.Append(accessTokenCookieName, newAccessToken, new CookieOptions
-                    {
-                        HttpOnly = true,
-                        Secure = false,
-                        SameSite = SameSiteMode.Strict,
-                        Expires = DateTime.UtcNow.AddMinutes(expireInMinute)
-                    });
-                }
-
-                if (refreshTokenCookieName != null)
-                {
-                    // Set cookie HttpOnly for refreshToken
-                    HttpContext.Response.Cookies.Delete(refreshTokenCookieName);
-                    HttpContext.Response.Cookies.Append(refreshTokenCookieName, newRefreshToken, new CookieOptions
-                    {
-                        HttpOnly = true,
-                        Secure = false,
-                        SameSite = SameSiteMode.Strict,
-                        Expires = DateTime.UtcNow.AddDays(TokenConsts.ExpiryInDays)
-                    });
-
-                }
             }
-
             return Ok(new ApiSuccessResult<GenerateRefreshTokenResult>
             {
                 Code = StatusCodes.Status200OK,

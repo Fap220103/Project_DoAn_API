@@ -52,8 +52,7 @@ namespace Infrastructure.SecurityManagers.AspNetIdentity
             IUnitOfWork unitOfWork,
             INavigationService navigationService,
             IRoleClaimService roleClaimService,
-            QueryContext queryContext,
-            IMapper mapper
+            QueryContext queryContext
             )
         {
             _identitySettings = identitySettings.Value;
@@ -68,7 +67,7 @@ namespace Infrastructure.SecurityManagers.AspNetIdentity
             _navigationService = navigationService;
             _roleClaimService = roleClaimService;
             _queryContext = queryContext;
-            _mapper = mapper;
+
         }
 
         public async Task<CreateUserResult> CreateUserAsync(string email, string password, CancellationToken cancellationToken = default)
@@ -163,12 +162,16 @@ namespace Infrastructure.SecurityManagers.AspNetIdentity
             var items = await query
                 .Skip((page - 1) * limit)
                 .Take(limit)
+                .Select(u => new ApplicationUserDto
+                {
+                    Id = u.Id,
+                    UserName = u.UserName,
+                    Email = u.Email,
+                    PhoneNumber = u.PhoneNumber,
+                })
                 .ToListAsync(cancellationToken);
 
-            // Mapping
-            var dto = _mapper.Map<List<ApplicationUserDto>>(items);
-
-            var pagedList = new PagedList<ApplicationUserDto>(dto, total, page, limit);
+            var pagedList = new PagedList<ApplicationUserDto>(items, total, page, limit);
 
             return new GetUsersResult
             {
@@ -330,9 +333,6 @@ namespace Infrastructure.SecurityManagers.AspNetIdentity
             {
                 throw new IdentityException("Refresh token has expired, please re-login");
             }
-
-
-            var mainNavs = await _navigationService.GenerateMainNavAsync(user.Id, cancellationToken);
             var newAccessToken = await _tokenService.GenerateToken(user);
             var newRefreshToken = _tokenService.GenerateRefreshToken();
 
@@ -347,9 +347,6 @@ namespace Infrastructure.SecurityManagers.AspNetIdentity
             {
                 AccessToken = newAccessToken,
                 RefreshToken = newRefreshToken,
-                UserId = user.Id,
-                Email = user.Email,
-                MainNavigations = mainNavs.MainNavigations
             };
         }
         public async Task<AddRolesToUserResult> AddRolesToUserAsync(string userId, string[] roles, CancellationToken cancellationToken = default)

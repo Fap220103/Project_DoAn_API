@@ -12,18 +12,16 @@ namespace Application.Features.Accounts.Events
         public string Email { get; }
         public string? EmailConfirmationToken { get; }
         public bool SendEmailConfirmation { get; }
-        public string Host { get; }
+
 
         public RegisterUserEvent(
             string email,
             string? emailConfirmationToken,
-            bool sendEmailConfirmation,
-            string host)
+            bool sendEmailConfirmation)
         {
             Email = email;
             EmailConfirmationToken = emailConfirmationToken;
             SendEmailConfirmation = sendEmailConfirmation;
-            Host = host;
         }
     }
 }

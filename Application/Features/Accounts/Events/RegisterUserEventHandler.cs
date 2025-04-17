@@ -28,7 +28,7 @@ namespace Application.Features.Accounts.Events
 
                 Console.WriteLine($"Handling event for: {notification.Email}. Sending email confirmation");
 
-                var callbackUrl = $"{notification.Host}/Accounts/ConfirmEmail?email={notification.Email}&code={notification.EmailConfirmationToken}";
+                var callbackUrl = $"https://localhost:7190/api/Accounts/ConfirmEmail?email={notification.Email}&code={notification.EmailConfirmationToken}";
                 var encodeCallbackUrl = $"{HtmlEncoder.Default.Encode(callbackUrl)}";
 
                 var emailSubject = $"Confirm your email";

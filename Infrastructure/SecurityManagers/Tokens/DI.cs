@@ -45,22 +45,14 @@ namespace Infrastructure.SecurityManagers.Tokens
 
                 options.Events = new JwtBearerEvents
                 {
-                    // Prioritizing HttpOnly cookie before checking Authorization header
                     OnMessageReceived = context =>
                     {
-                        var accessToken = context.HttpContext.Request.Cookies["accessToken"];
-                        if (!string.IsNullOrEmpty(accessToken))
+                        var authorizationHeader = context.Request.Headers["Authorization"].FirstOrDefault();
+                        if (!string.IsNullOrEmpty(authorizationHeader) && authorizationHeader.StartsWith("Bearer "))
                         {
-                            context.Token = accessToken;
+                            context.Token = authorizationHeader.Substring("Bearer ".Length).Trim();
                         }
-                        else
-                        {
-                            var authorizationHeader = context.Request.Headers["Authorization"].FirstOrDefault();
-                            if (!string.IsNullOrEmpty(authorizationHeader) && authorizationHeader.StartsWith("Bearer "))
-                            {
-                                context.Token = authorizationHeader.Substring("Bearer ".Length).Trim();
-                            }
-                        }
+
 
                         return Task.CompletedTask;
                     }

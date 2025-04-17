@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Application.Features.Accounts.Commands
@@ -13,7 +14,9 @@ namespace Application.Features.Accounts.Commands
     public class LoginUserResult
     {
         public string? AccessToken { get; init; }
+        [JsonIgnore]
         public string? RefreshToken { get; init; }
+        public int expires_in_second { get; set; }
         public string? UserId { get; init; }
         public string? Email { get; init; }
         public List<MainNavDto>? MainNavigations { get; init; }
