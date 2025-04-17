@@ -10,23 +10,12 @@ using WebAPI.Common.Models;
 
 namespace WebAPI.Controllers.Configs
 {
+    [Authorize(Roles = "Admin")]
     public class SettingController : BaseApiController
     {
         public SettingController(ISender sender) : base(sender)
         {
         }
-        //[HttpPost]
-        //public async Task<ActionResult<ApiSuccessResult<CreateConfigResult>>> CreateConfigAsync(CreateConfigRequest request, CancellationToken cancellationToken)
-        //{
-        //    var response = await _sender.Send(request, cancellationToken);
-
-        //    return Ok(new ApiSuccessResult<CreateConfigResult>
-        //    {
-        //        Code = StatusCodes.Status200OK,
-        //        Message = $"Success executing {nameof(CreateConfigAsync)}",
-        //        Content = response
-        //    });
-        //}
 
         [HttpPost]
         public async Task<ActionResult<ApiSuccessResult<UpsertSettingResult>>> UpsertSettingAsync(UpsertSettingRequest request, CancellationToken cancellationToken)

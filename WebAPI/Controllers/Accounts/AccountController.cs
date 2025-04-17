@@ -94,8 +94,8 @@ namespace WebAPI.Controllers.Accounts
                 HttpContext.Response.Cookies.Append(refreshTokenCookieName, refreshToken, new CookieOptions
                 {
                     HttpOnly = true,
-                    Secure = false,
-                    SameSite = SameSiteMode.Strict,
+                    Secure = true,
+                    SameSite = SameSiteMode.None,
                     Expires = DateTime.UtcNow.AddDays(TokenConsts.ExpiryInDays)
                 });
 
@@ -112,24 +112,8 @@ namespace WebAPI.Controllers.Accounts
         public async Task<ActionResult<ApiSuccessResult<LogoutUserResult>>> LogoutAsync(LogoutUserRequest request, CancellationToken cancellationToken)
         {
             var response = await _sender.Send(request, cancellationToken);
-
-
-            bool useHttpOnlyCookieForToken = false;
-
-            if (_configuration["Jwt:UseHttpOnlyCookieForToken"] != null)
-            {
-                bool.TryParse(_configuration["Jwt:UseHttpOnlyCookieForToken"], out useHttpOnlyCookieForToken);
-            }
-
-            if (useHttpOnlyCookieForToken)
-            {
-                var accessTokenCookieName = _configuration["Jwt:accessTokenCookieName"];
-                var refreshTokenCookieName = _configuration["Jwt:refreshTokenCookieName"];
-
-                if (accessTokenCookieName != null) Response.Cookies.Delete(accessTokenCookieName);
-                if (refreshTokenCookieName != null) Response.Cookies.Delete(refreshTokenCookieName);
-            }
-
+            var refreshTokenCookieName = _configuration["Jwt:refreshTokenCookieName"];
+            if (refreshTokenCookieName != null) Response.Cookies.Delete(refreshTokenCookieName);
 
             return Ok(new ApiSuccessResult<LogoutUserResult>
             {
@@ -200,8 +184,8 @@ namespace WebAPI.Controllers.Accounts
                 HttpContext.Response.Cookies.Append(refreshTokenCookieName, newRefreshToken, new CookieOptions
                 {
                     HttpOnly = true,
-                    Secure = false,
-                    SameSite = SameSiteMode.Strict,
+                    Secure = true,
+                    SameSite = SameSiteMode.None,
                     Expires = DateTime.UtcNow.AddDays(TokenConsts.ExpiryInDays)
                 });
 

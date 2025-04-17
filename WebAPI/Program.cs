@@ -36,20 +36,15 @@ namespace WebAPI
                     {
                         policy.WithOrigins("http://localhost:4200") // Angular chạy trên cổng 4200
                               .AllowAnyMethod()
-                              .AllowAnyHeader();
+                              .AllowAnyHeader()
+                              .AllowCredentials();
+                               
                     });
             });
 
 
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            builder.Services.AddCors(opt =>
-            {
-                opt.AddDefaultPolicy(builder => builder
-                    .AllowAnyOrigin()
-                    .AllowAnyMethod()
-                    .AllowAnyHeader());
-            });
+         
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(options =>
             {
