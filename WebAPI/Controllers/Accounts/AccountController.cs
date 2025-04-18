@@ -109,8 +109,9 @@ namespace WebAPI.Controllers.Accounts
             });
         }
         [HttpPost("Logout")]
-        public async Task<ActionResult<ApiSuccessResult<LogoutUserResult>>> LogoutAsync(LogoutUserRequest request, CancellationToken cancellationToken)
+        public async Task<ActionResult<ApiSuccessResult<LogoutUserResult>>> LogoutAsync([FromQuery]string userId, CancellationToken cancellationToken)
         {
+            var request = new LogoutUserRequest { UserId = userId };
             var response = await _sender.Send(request, cancellationToken);
             var refreshTokenCookieName = _configuration["Jwt:refreshTokenCookieName"];
             if (refreshTokenCookieName != null) Response.Cookies.Delete(refreshTokenCookieName);

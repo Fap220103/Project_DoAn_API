@@ -165,9 +165,16 @@ namespace Infrastructure.SecurityManagers.AspNetIdentity
                 .Select(u => new ApplicationUserDto
                 {
                     Id = u.Id,
+                    UserId = u.Id,
                     UserName = u.UserName,
                     Email = u.Email,
                     PhoneNumber = u.PhoneNumber,
+                    ProfilePictureName = u.ProfilePictureName,
+                    EmailConfirmed = u.EmailConfirmed,
+                    IsBlocked = u.IsBlocked,
+                    IsDeleted = u.IsDeleted,
+                    Roles = new List<string>(),
+                    Claims = new List<string>()
                 })
                 .ToListAsync(cancellationToken);
 
