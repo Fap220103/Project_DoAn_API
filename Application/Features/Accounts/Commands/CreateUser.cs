@@ -13,15 +13,15 @@ namespace Application.Features.Accounts.Commands
     {
         public string? Id { get; init; }
         public string? Email { get; init; }
-
+        public List<string> Roles { get; init; }
     }
 
     public class CreateUserRequest : IRequest<CreateUserResult>
     {
         public string Email { get; init; }
-        public string CreatedById { get; init; }
         public string Password { get; init; }
         public string ConfirmPassword { get; init; }
+        public List<string> Roles { get; init; }
     }
 
     public class CreateUserValidator : AbstractValidator<CreateUserRequest>
@@ -31,9 +31,6 @@ namespace Application.Features.Accounts.Commands
             RuleFor(x => x.Email)
                 .NotEmpty()
                 .EmailAddress();
-
-            RuleFor(x => x.CreatedById)
-                .NotEmpty();
 
             RuleFor(x => x.Password)
                 .NotEmpty();
@@ -61,6 +58,7 @@ namespace Application.Features.Accounts.Commands
             var result = await _identityService.CreateUserAsync(
                 request.Email,
                 request.Password,
+                request.Roles,
                 cancellationToken
                 );
 

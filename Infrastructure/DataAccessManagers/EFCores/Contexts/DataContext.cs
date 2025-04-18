@@ -35,10 +35,6 @@ namespace Infrastructure.DataAccessManagers.EFCores.Contexts
         public DbSet<Size> Size { get ; set ; }
         public DbSet<Token> Token { get; set; }
         public DbSet<ApplicationUser> Users { get; set; }
-        public DbSet<IdentityRole> Roles { get; set; }
-        public DbSet<IdentityUserRole<string>> UserRoles { get; set; }
-
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

@@ -252,31 +252,6 @@ namespace WebAPI.Controllers.Accounts
             });
         }
 
-        [HttpPost("CreateUser")]
-        public async Task<ActionResult<ApiSuccessResult<CreateUserResult>>> CreateUserAsync(CreateUserRequest request, CancellationToken cancellationToken)
-        {
-            var response = await _sender.Send(request, cancellationToken);
-
-            return Ok(new ApiSuccessResult<CreateUserResult>
-            {
-                Code = StatusCodes.Status200OK,
-                Message = $"Success executing {nameof(CreateUserAsync)}",
-                Content = response
-            });
-        }
-
-
-        [HttpDelete("DeleteUser")]
-        public async Task<ActionResult<ApiSuccessResult<DeleteUserResult>>> DeleteUserAsync(DeleteUserRequest request, CancellationToken cancellationToken)
-        {
-            var response = await _sender.Send(request, cancellationToken);
-
-            return Ok(new ApiSuccessResult<DeleteUserResult>
-            {
-                Code = StatusCodes.Status200OK,
-                Message = $"Success executing {nameof(DeleteUserAsync)}",
-                Content = response
-            });
-        }
+      
     }
 }

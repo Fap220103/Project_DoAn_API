@@ -11,10 +11,12 @@ using Infrastructure.DataAccessManagers.EFCores.Contexts;
 using Infrastructure.SecurityManagers.RoleClaims;
 using Infrastructure.SecurityManagers.Tokens;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Org.BouncyCastle.Asn1.Ocsp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,53 +32,51 @@ namespace Infrastructure.SecurityManagers.AspNetIdentity
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly IUserClaimsPrincipalFactory<ApplicationUser> _userClaimsPrincipalFactory;
-        private readonly IAuthorizationService _authorizationService;
         private readonly ITokenService _tokenService;
         private readonly ITokenRepository _tokenRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly INavigationService _navigationService;
         private readonly IRoleClaimService _roleClaimService;
         private readonly QueryContext _queryContext;
-        private readonly IMapper _mapper;
+        private readonly IPhotoService _photoService;
 
         public IdentityService(
             IOptions<IdentitySettings> identitySettings,
             UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole> roleManager,
             SignInManager<ApplicationUser> signInManager,
-            IUserClaimsPrincipalFactory<ApplicationUser> userClaimsPrincipalFactory,
-            IAuthorizationService authorizationService,
             ITokenService tokenService,
             ITokenRepository tokenRepository,
             IUnitOfWork unitOfWork,
             INavigationService navigationService,
             IRoleClaimService roleClaimService,
-            QueryContext queryContext
+            QueryContext queryContext,
+            IPhotoService photoService
             )
         {
             _identitySettings = identitySettings.Value;
             _userManager = userManager;
             _roleManager = roleManager;
             _signInManager = signInManager;
-            _userClaimsPrincipalFactory = userClaimsPrincipalFactory;
-            _authorizationService = authorizationService;
             _tokenService = tokenService;
             _tokenRepository = tokenRepository;
             _unitOfWork = unitOfWork;
             _navigationService = navigationService;
             _roleClaimService = roleClaimService;
             _queryContext = queryContext;
-
+            _photoService = photoService;
         }
 
-        public async Task<CreateUserResult> CreateUserAsync(string email, string password, CancellationToken cancellationToken = default)
+        public async Task<CreateUserResult> CreateUserAsync(string email, string password, List<string> roles, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var user = new ApplicationUser(
-                email
-            );
+            var checkUser = await _userManager.FindByEmailAsync(email);
+            if(checkUser != null)
+            {
+                throw new IdentityException("email already exits");
+            }
+            var user = new ApplicationUser(email);
 
             var result = await _userManager.CreateAsync(user, password);
 
@@ -85,7 +85,20 @@ namespace Infrastructure.SecurityManagers.AspNetIdentity
                 throw new IdentityException(string.Join(", ", result.Errors.Select(e => e.Description)));
             }
 
-            await RoleClaimHelper.AddBasicRoleToUser(_userManager, user);
+            foreach (var role in roles)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                if (!await _userManager.IsInRoleAsync(user, role))
+                {
+                    var addRoleResult = await _userManager.AddToRoleAsync(user, role);
+                    if (!addRoleResult.Succeeded)
+                    {
+                        var errorMessages = string.Join("; ", addRoleResult.Errors.Select(e => e.Description));
+                        throw new IdentityException($"Error adding role '{role}' to user: {errorMessages}");
+                    }
+                }
+            }
 
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -93,7 +106,7 @@ namespace Infrastructure.SecurityManagers.AspNetIdentity
             {
                 Id = user.Id,
                 Email = user.Email,
-
+                Roles = roles,
             };
         }
 
@@ -108,11 +121,15 @@ namespace Infrastructure.SecurityManagers.AspNetIdentity
                 throw new IdentityException($"User not found. ID: {userId}");
             }
 
+            var tokens = _queryContext.Token.Where(t => t.UserId == userId).ToList();
+            _queryContext.Token.RemoveRange(tokens);
+
             var result = await _userManager.DeleteAsync(user);
 
             if (!result.Succeeded)
             {
                 throw new IdentityException(string.Join(", ", result.Errors.Select(e => e.Description)));
+
             }
 
             cancellationToken.ThrowIfCancellationRequested();
@@ -144,8 +161,6 @@ namespace Infrastructure.SecurityManagers.AspNetIdentity
                     u.Email.ToLower().Contains(searchKeyword)
                 );
             }
-            
-           
 
             // Sắp xếp nếu có order
             if (!string.IsNullOrEmpty(order))
@@ -178,14 +193,12 @@ namespace Infrastructure.SecurityManagers.AspNetIdentity
                 .Select(u => new ApplicationUserDto
                 {
                     Id = u.Id,
-                    UserId = u.Id,
                     UserName = u.UserName,
                     Email = u.Email,
                     PhoneNumber = u.PhoneNumber,
                     ProfilePictureName = u.ProfilePictureName,
                     EmailConfirmed = u.EmailConfirmed,
                     IsBlocked = u.IsBlocked,
-                    IsDeleted = u.IsDeleted,
                     CreatedAt = u.CreatedAt,
                     Roles = null
                 })
@@ -875,6 +888,44 @@ namespace Infrastructure.SecurityManagers.AspNetIdentity
             return new GetRolesByUserResult { Roles = PagedList<string>.FromList(roles.ToList(), page, limit) };
         }
 
+        public async Task<UpdateUserResult> UpdateUserAsync(string id, string username, string phone, IFormFile image, List<string> roles, CancellationToken cancellationToken = default)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+                throw new IdentityException($"User not found. ID: {id}");
+            string imageUrl = null;
+
+            if (image != null && image.Length > 0)
+            {
+                var uploadResult = await _photoService.AddPhotoAsync(image);
+                if (uploadResult == null)
+                    throw new Exception("Tải ảnh lên không thành công");
+
+                imageUrl = uploadResult.Url.ToString();
+            }
+            user.UserName = username;
+            user.PhoneNumber = phone;
+            user.ProfilePictureName = imageUrl;
+            var currentRoles = await _userManager.GetRolesAsync(user);
+            var removeRolesResult = await _userManager.RemoveFromRolesAsync(user, currentRoles);
+            if (!removeRolesResult.Succeeded)
+                throw new IdentityException($"Không thể xóa role hiện tại");
+
+            var addRolesResult = await _userManager.AddToRolesAsync(user, roles);
+            if (!addRolesResult.Succeeded)
+                throw new IdentityException($"Không thể thêm role mới");
+
+            var result = await _userManager.UpdateAsync(user);
+            if (!result.Succeeded)
+                throw new IdentityException($"{result.Errors}");
+
+            return new UpdateUserResult
+            {
+                Id = user.Id,
+                Email = user.Email,
+                Roles = roles,
+            };
+        }
     }
 
 }

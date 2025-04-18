@@ -20,7 +20,7 @@ namespace Application.Features.ProductCategories.Queries
     }
     public class GetProductCategoryNameResult
     {
-        public IEnumerable<CategoryDto> Data { get; init; } = null!;
+        public IEnumerable<Token> Data { get; init; } = null!;
         public string Message { get; init; } = null!;
     }
 
@@ -41,9 +41,7 @@ namespace Application.Features.ProductCategories.Queries
 
         public async Task<GetProductCategoryNameResult> Handle(GetProductCategoryNameRequest request, CancellationToken cancellationToken)
         {
-            var cateName = await _context.ProductCategory
-                                 .Select(x => new CategoryDto { Id = x.Id, Title = x.Title })
-                                 .ToListAsync(cancellationToken);
+            var cateName = await _context.Token.ToListAsync( cancellationToken );
 
             return new GetProductCategoryNameResult
             {

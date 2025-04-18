@@ -48,58 +48,48 @@ namespace WebAPI.Controllers.Roles
                 Content = response
             });
         }
-        [HttpGet("GetRoles")]
-        public async Task<ActionResult<ApiSuccessResult<GetRolesResult>>> GetRolesAsync(
-          [FromQuery] int skip,
-          [FromQuery] int top,
-          [FromQuery] string orderBy,
-          [FromQuery] string searchValue,
-          CancellationToken cancellationToken)
-        {
-            int pageNumber = (skip / top) + 1;
-            int pageSize = top;
+        //[HttpGet("GetRoles")]
+        //public async Task<ActionResult<ApiSuccessResult<GetRolesResult>>> GetRolesAsync(GetRolesRequest request, CancellationToken cancellationToken)
+        //{
+           
 
-            var orderByParts = orderBy.Split(' ');
-            var sortBy = orderByParts[0];
-            var sortDirection = orderByParts.Length > 1 ? orderByParts[1].ToLower() : "asc";
+        //    var command = new GetRolesRequest
+        //    {
+        //        pageNumber = pageNumber,
+        //        pageSize = pageSize,
+        //        SortBy = sortBy,
+        //        SortDirection = sortDirection,
+        //        searchValue = searchValue,
+        //    };
+        //    var response = await _sender.Send(command, cancellationToken);
 
-            var command = new GetRolesRequest
-            {
-                pageNumber = pageNumber,
-                pageSize = pageSize,
-                SortBy = sortBy,
-                SortDirection = sortDirection,
-                searchValue = searchValue,
-            };
-            var response = await _sender.Send(command, cancellationToken);
+        //    return Ok(new ApiSuccessResult<GetRolesResult>
+        //    {
+        //        Code = StatusCodes.Status200OK,
+        //        Message = $"Success executing {nameof(GetRolesAsync)}",
+        //        Content = response
+        //    });
+        //}
+        //[HttpGet("GetRolesByUser")]
+        //public async Task<ActionResult<ApiSuccessResult<GetRolesByUserResult>>> GetRolesByUserAsync(
+        //   [FromQuery] int skip,
+        //   [FromQuery] int top,
+        //   //[FromQuery] string orderBy,
+        //   [FromQuery] string userId,
+        //   CancellationToken cancellationToken)
+        //{
+        //    int pageNumber = (skip / top) + 1;
+        //    int pageSize = top;
 
-            return Ok(new ApiSuccessResult<GetRolesResult>
-            {
-                Code = StatusCodes.Status200OK,
-                Message = $"Success executing {nameof(GetRolesAsync)}",
-                Content = response
-            });
-        }
-        [HttpGet("GetRolesByUser")]
-        public async Task<ActionResult<ApiSuccessResult<GetRolesByUserResult>>> GetRolesByUserAsync(
-           [FromQuery] int skip,
-           [FromQuery] int top,
-           //[FromQuery] string orderBy,
-           [FromQuery] string userId,
-           CancellationToken cancellationToken)
-        {
-            int pageNumber = (skip / top) + 1;
-            int pageSize = top;
+        //    var command = new GetRolesByUserRequest { pageNumber = pageNumber, pageSize = pageSize, UserId = userId };
+        //    var response = await _sender.Send(command, cancellationToken); ;
 
-            var command = new GetRolesByUserRequest { pageNumber = pageNumber, pageSize = pageSize, UserId = userId };
-            var response = await _sender.Send(command, cancellationToken); ;
-
-            return Ok(new ApiSuccessResult<GetRolesByUserResult>
-            {
-                Code = StatusCodes.Status200OK,
-                Message = $"Success executing {nameof(GetRolesAsync)}",
-                Content = response
-            });
-        }
+        //    return Ok(new ApiSuccessResult<GetRolesByUserResult>
+        //    {
+        //        Code = StatusCodes.Status200OK,
+        //        Message = $"Success executing {nameof(GetRolesAsync)}",
+        //        Content = response
+        //    });
+        //}
     }
 }
