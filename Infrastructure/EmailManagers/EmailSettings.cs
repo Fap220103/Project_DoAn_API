@@ -9,7 +9,9 @@ namespace Infrastructure.EmailManagers
 {
     public class EmailSettings
     {
-        public string Email { get; init; }
-        public string Password { get; init; }
+        public string SmtpUserName { get; init; }
+        public string SmtpPassword { get; init; }
+        public int SmtpPort { get; init; }
+        public string SmtpHost { get; init; }
     }
 }

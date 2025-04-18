@@ -16,27 +16,28 @@ namespace Application.Features.ShoppingCarts.Queries
 
     public class GetCartResult
     {
-        public ShoppingCart Data { get; init; } = null!;
+        public Cart Data { get; init; } = null!;
         public string Message { get; init; } = null!;
     }
 
     public class GetCartRequest : IRequest<GetCartResult>
     {
+        public string userId { get; init; } = null!;
     }
     public class GetCartHandler : IRequestHandler<GetCartRequest, GetCartResult>
     {
-        private readonly ICartSessionService _cartSessionService;
+        private readonly ICartService _cartService;
 
         public GetCartHandler(
-            ICartSessionService cartSessionService
+            ICartService cartService
             )
         {
-            _cartSessionService = cartSessionService;
+            _cartService = cartService;
         }
 
         public async Task<GetCartResult> Handle(GetCartRequest request, CancellationToken cancellationToken)
         {
-            ShoppingCart cart = _cartSessionService.GetCart();
+            Cart cart = await _cartService.GetCartAsync(request.userId);
 
             return new GetCartResult
             {

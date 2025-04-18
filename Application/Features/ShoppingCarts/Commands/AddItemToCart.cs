@@ -23,18 +23,14 @@ namespace Application.Features.ShoppingCarts.Commands
 
     public class AddItemToCartRequest : IRequest<AddItemToCartResult>
     {
-        public string ProductId { get; init; } = null!;
-        public int Quantity { get; init; }
+        public CartItem Item { get; init; } = null!;
+        public string userId { get; init; } = null!;
     }
 
     public class AddItemToCartValidator : AbstractValidator<AddItemToCartRequest>
     {
         public AddItemToCartValidator()
         {
-            RuleFor(x => x.ProductId)
-                .NotEmpty();
-            RuleFor(x => x.Quantity)
-                .NotEmpty();
         }
     }
 
@@ -42,21 +38,19 @@ namespace Application.Features.ShoppingCarts.Commands
     public class AddItemToCartHandler : IRequestHandler<AddItemToCartRequest, AddItemToCartResult>
     {
         private readonly IQueryContext _context;
-        private readonly ICartSessionService _cartSessionService;
+        private readonly ICartService _cartService;
         public AddItemToCartHandler(
             IQueryContext context,
-            ICartSessionService cartSessionService
+            ICartService cartService
             )
         {
             _context = context;
-            _cartSessionService = cartSessionService;
+            _cartService = cartService;
         }
 
         public async Task<AddItemToCartResult> Handle(AddItemToCartRequest request, CancellationToken cancellationToken = default)
         {
-            var checkProduct = await _context.Product.Include(p => p.ProductCategory)
-                                                .Include(p => p.ProductImage)
-                                                .FirstOrDefaultAsync(x => x.Id == request.ProductId, cancellationToken);
+            var cart = await _cartService.GetCartAsync(request.userId) ?? new Cart { UserId = }
             if (checkProduct != null)
             {
                 ShoppingCart cart = _cartSessionService.GetCart();
