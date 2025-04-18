@@ -25,6 +25,7 @@ namespace Application.Features.Accounts.Queries
         public int Limit { get; init; } = 10;
         public string? Order { get; init; }
         public string? Search { get; init; }
+        public string? Role { get; init; }
     }
     public class GetUsersHandler : IRequestHandler<GetUsersRequest, GetUsersResult>
     {
@@ -42,6 +43,7 @@ namespace Application.Features.Accounts.Queries
                 request.Limit,
                 request.Order,
                 request.Search,
+                request.Role,
                 cancellationToken);
 
             return new GetUsersResult

@@ -17,7 +17,7 @@ namespace Application.Features.Accounts.Dtos
         public bool EmailConfirmed { get; init; }
         public bool IsBlocked { get; init; }
         public bool IsDeleted { get; init; }
+        public DateTime? CreatedAt { get; init; }
         public IList<string> Roles { get; set; } = new List<string>();
-        public IList<string> Claims { get; set; } = new List<string>();
     }
 }

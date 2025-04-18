@@ -10,7 +10,7 @@ namespace Application.Services.Externals
 {
     public interface IIdentityService
     {
-        Task<GetUsersResult> GetUsersAsync(int page, int limit, string? order, string? search, CancellationToken cancellationToken = default);
+        Task<GetUsersResult> GetUsersAsync(int page, int limit, string? order, string? search, string role, CancellationToken cancellationToken = default);
         Task<CreateUserResult> CreateUserAsync(string email, string password, CancellationToken cancellationToken = default);
         Task<DeleteUserResult> DeleteUserAsync(string userId, CancellationToken cancellationToken = default);
         Task<LoginUserResult> LoginAsync(string email, string password, CancellationToken cancellationToken = default);

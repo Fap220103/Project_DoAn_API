@@ -124,10 +124,17 @@ namespace Infrastructure.SecurityManagers.AspNetIdentity
             };
         }
 
-        public async Task<GetUsersResult> GetUsersAsync(int page, int limit, string order, string search, CancellationToken cancellationToken = default)
+        public async Task<GetUsersResult> GetUsersAsync(int page, int limit, string order, string search, string? role = null, CancellationToken cancellationToken = default)
         {
             var query = _queryContext.Users.AsQueryable();
 
+            if (!string.IsNullOrWhiteSpace(role))
+            {
+                var userIdsWithRole = (await _userManager.GetUsersInRoleAsync(role))
+                                                    .Select(u => u.Id)
+                                                    .ToList();
+                query = query.Where(u => userIdsWithRole.Contains(u.Id));
+            }
             // Tìm kiếm theo tên hoặc email
             if (!string.IsNullOrWhiteSpace(search))
             {
@@ -137,6 +144,8 @@ namespace Infrastructure.SecurityManagers.AspNetIdentity
                     u.Email.ToLower().Contains(searchKeyword)
                 );
             }
+            
+           
 
             // Sắp xếp nếu có order
             if (!string.IsNullOrEmpty(order))
@@ -157,6 +166,10 @@ namespace Infrastructure.SecurityManagers.AspNetIdentity
                     };
                 }
             }
+            else
+            {
+                query = query.OrderByDescending(x => x.CreatedAt); 
+            }
 
             var total = await query.CountAsync(cancellationToken);
             var items = await query
@@ -173,10 +186,16 @@ namespace Infrastructure.SecurityManagers.AspNetIdentity
                     EmailConfirmed = u.EmailConfirmed,
                     IsBlocked = u.IsBlocked,
                     IsDeleted = u.IsDeleted,
-                    Roles = new List<string>(),
-                    Claims = new List<string>()
+                    CreatedAt = u.CreatedAt,
+                    Roles = null
                 })
                 .ToListAsync(cancellationToken);
+
+            foreach (var item in items)
+            {
+                var user = await _userManager.FindByIdAsync(item.Id);
+                item.Roles = (await _userManager.GetRolesAsync(user)).ToList();
+            }
 
             var pagedList = new PagedList<ApplicationUserDto>(items, total, page, limit);
 
