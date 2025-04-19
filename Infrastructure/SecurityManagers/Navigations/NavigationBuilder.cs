@@ -105,7 +105,7 @@ namespace Infrastructure.SecurityManagers.Navigations
                 ""Url"": ""/admin/setting""
               }
             ]
-          },
+          }
         ]
         ";
 
