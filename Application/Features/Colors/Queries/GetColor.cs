@@ -63,10 +63,10 @@ namespace Application.Features.Colors.Queries
 
                     query = (field, direction) switch
                     {
-                        ("Name", "asc") => query.OrderBy(x => x.Name),
-                        ("Name", "desc") => query.OrderByDescending(x => x.Name),
-                        ("HexCode", "asc") => query.OrderBy(x => x.HexCode),
-                        ("HexCode", "desc") => query.OrderByDescending(x => x.HexCode),
+                        ("name", "asc") => query.OrderBy(x => x.Name),
+                        ("name", "desc") => query.OrderByDescending(x => x.Name),
+                        ("hexCode", "asc") => query.OrderBy(x => x.HexCode),
+                        ("hexCode", "desc") => query.OrderByDescending(x => x.HexCode),
                         _ => query
                     };
                 }

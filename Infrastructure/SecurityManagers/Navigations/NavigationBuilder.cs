@@ -106,23 +106,6 @@ namespace Infrastructure.SecurityManagers.Navigations
               }
             ]
           },
-          {
-            ""ParentName"": ""RoleClaim"",
-            ""ParentCaption"": ""Role & Claim"",
-            ""ParentUrl"": ""#"",
-            ""Children"": [
-              {
-                ""Name"": ""Role"",
-                ""Caption"": ""Role"",
-                ""Url"": ""/admin/roles""
-              },
-              {
-                ""Name"": ""Claim"",
-                ""Caption"": ""Claim"",
-                ""Url"": ""/admin/claims""
-              }
-            ]
-          }
         ]
         ";
 

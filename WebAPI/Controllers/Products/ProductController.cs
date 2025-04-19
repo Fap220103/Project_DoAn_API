@@ -63,15 +63,15 @@ namespace WebAPI.Controllers.Products
         }
       
         [HttpGet]
-        public async Task<ActionResult<ApiSuccessResult<GetAllProductResult>>> GetAllProductAsync(CancellationToken cancellationToken)
+        public async Task<ActionResult<ApiSuccessResult<GetProductResult>>> GetProductAsync(CancellationToken cancellationToken)
         {
-            var request = new GetAllProductRequest();
+            var request = new GetProductRequest();
             var response = await _sender.Send(request, cancellationToken);
 
-            return Ok(new ApiSuccessResult<GetAllProductResult>
+            return Ok(new ApiSuccessResult<GetProductResult>
             {
                 Code = StatusCodes.Status200OK,
-                Message = $"Success executing {nameof(GetAllProductAsync)}",
+                Message = $"Success executing {nameof(GetProductAsync)}",
                 Content = response
             });
         }
