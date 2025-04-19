@@ -13,44 +13,40 @@ namespace Application.Features.ShoppingCarts.Commands
 {
     public class DeleteCartResult
     {
+        public string Id { get; init; } = null!;
         public string Message { get; init; } = null!;
     }
-
     public class DeleteCartRequest : IRequest<DeleteCartResult>
     {
+        public string userId { get; init; } = null!;
     }
-
-    public class DeleteCartValidator : AbstractValidator<DeleteCartRequest>
-    {
-        public DeleteCartValidator()
-        {
-        }
-    }
-
-
     public class DeleteCartHandler : IRequestHandler<DeleteCartRequest, DeleteCartResult>
     {
-        private readonly ICartSessionService _cartSessionService;
+        private readonly ICartService _cartService;
 
         public DeleteCartHandler(
-             ICartSessionService cartSessionService
+             ICartService cartService
             )
         {
-            _cartSessionService = cartSessionService;
+            _cartService = cartService;
         }
 
         public async Task<DeleteCartResult> Handle(DeleteCartRequest request, CancellationToken cancellationToken)
         {
 
-            ShoppingCart cart = _cartSessionService.GetCart();
+            Cart cart = await _cartService.GetCartAsync(request.userId);
             if (cart != null)
             {
-                cart.ClearCart();
-                _cartSessionService.SetCart(cart);
+                await _cartService.DeleteCartAsync(request.userId);
+            }
+            else
+            {
+                throw new ApplicationException($"{ExceptionConsts.CartNotFound} {request.userId}");
             }
 
             return new DeleteCartResult
             {
+                Id = request.userId,
                 Message = "Success"
             };
         }

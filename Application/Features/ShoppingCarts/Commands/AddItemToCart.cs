@@ -25,12 +25,15 @@ namespace Application.Features.ShoppingCarts.Commands
     {
         public CartItem Item { get; init; } = null!;
         public string userId { get; init; } = null!;
+        public int Quantity { get; init; } = 1;
     }
 
     public class AddItemToCartValidator : AbstractValidator<AddItemToCartRequest>
     {
         public AddItemToCartValidator()
         {
+            RuleFor(x => x.userId)
+             .NotEmpty();
         }
     }
 
@@ -50,43 +53,36 @@ namespace Application.Features.ShoppingCarts.Commands
 
         public async Task<AddItemToCartResult> Handle(AddItemToCartRequest request, CancellationToken cancellationToken = default)
         {
-            var cart = await _cartService.GetCartAsync(request.userId) ?? new Cart { UserId = }
-            if (checkProduct != null)
+            var cart = await _cartService.GetCartAsync(request.userId) ?? new Cart { UserId = request.userId };
+
+            var checkProduct = await _context.Product
+                .Include(p => p.ProductImage)
+                .FirstOrDefaultAsync(p => p.Id == request.Item.ProductId, cancellationToken);
+
+            if (checkProduct == null)
             {
-                ShoppingCart cart = _cartSessionService.GetCart();
-                if (cart == null)
-                {
-                    cart = new ShoppingCart();
-                }
-                CartItem item = new CartItem
-                {
-                    ProductId = checkProduct.Id,
-                    ProductName = checkProduct.Title,
-                    CategoryName = checkProduct.ProductCategory.Title,
-                    Quantity = request.Quantity,
-                    Alias = checkProduct.Alias,
-
-                };
-                if (checkProduct.ProductImage.FirstOrDefault(x => x.IsDefault) != null)
-                {
-                    item.ProductImg = checkProduct.ProductImage.FirstOrDefault(x => x.IsDefault).Image;
-                }
-                item.Price = checkProduct.Price;
-                if (checkProduct.PriceSale > 0)
-                {
-                    item.Price = (decimal)checkProduct.PriceSale;
-                }
-                item.TotalPrice = item.Quantity * item.Price;
-                cart.AddToCart(item, request.Quantity);
-                _cartSessionService.SetCart(cart);
-
+                throw new Exception("Sản phẩm không tồn tại.");
             }
+
+            CartItem item = new CartItem
+            {
+                ProductId = checkProduct.Id,
+                ProductName = checkProduct.Title,
+                Quantity = request.Quantity,
+                Price = checkProduct.PriceSale > 0 ? (decimal)checkProduct.PriceSale : checkProduct.Price,
+                Image = checkProduct.ProductImage.FirstOrDefault(x => x.IsDefault)?.Image ?? string.Empty,
+            };
+
+            item.TotalPrice = item.Quantity * item.Price;
+            cart.AddToCart(item, request.Quantity);
+            await _cartService.SaveCartAsync(cart);
 
             return new AddItemToCartResult
             {
-                Id = request.ProductId,
+                Id = item.ProductId,
                 Message = "Success"
             };
         }
+
     }
 }

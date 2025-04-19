@@ -24,6 +24,7 @@ namespace Application.Features.ShoppingCarts.Commands
     {
         public string ProductId { get; init; } = null!;
         public int Quantity { get; init; }
+        public string UserId { get; init; } = null!;
 
     }
 
@@ -35,29 +36,31 @@ namespace Application.Features.ShoppingCarts.Commands
                 .NotEmpty();
             RuleFor(x => x.Quantity)
                 .NotEmpty();
+            RuleFor(x => x.UserId)
+             .NotEmpty();
         }
     }
 
 
     public class UpdateCartHandler : IRequestHandler<UpdateCartRequest, UpdateCartResult>
     {
-        private readonly ICartSessionService _cartSessionService;
+        private readonly ICartService _cartService;
 
         public UpdateCartHandler(
-             ICartSessionService cartSessionService
+             ICartService cartService
             )
         {
-            _cartSessionService = cartSessionService;
+            _cartService = cartService;
         }
 
         public async Task<UpdateCartResult> Handle(UpdateCartRequest request, CancellationToken cancellationToken)
         {
 
-            ShoppingCart cart = _cartSessionService.GetCart();
+            Cart cart = await _cartService.GetCartAsync(request.UserId);
             if (cart != null)
             {
                 cart.UpdateQuantity(request.ProductId, request.Quantity);
-                _cartSessionService.SetCart(cart);
+                await _cartService.SaveCartAsync(cart);
             }
             else
             {

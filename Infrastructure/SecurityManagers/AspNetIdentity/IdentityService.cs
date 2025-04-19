@@ -6,6 +6,7 @@ using Application.Features.ProductCategories.Queries;
 using Application.Services.Externals;
 using Application.Services.Repositories;
 using AutoMapper;
+using Domain.Constants;
 using Domain.Entities;
 using Infrastructure.DataAccessManagers.EFCores.Contexts;
 using Infrastructure.SecurityManagers.RoleClaims;
@@ -74,7 +75,7 @@ namespace Infrastructure.SecurityManagers.AspNetIdentity
             var checkUser = await _userManager.FindByEmailAsync(email);
             if(checkUser != null)
             {
-                throw new IdentityException("email already exits");
+                throw new IdentityException($"{ExceptionConsts.EmailAlreadyExists} {email}");
             }
             var user = new ApplicationUser(email);
 
@@ -123,7 +124,7 @@ namespace Infrastructure.SecurityManagers.AspNetIdentity
 
             var tokens = _queryContext.Token.Where(t => t.UserId == userId).ToList();
             _queryContext.Token.RemoveRange(tokens);
-
+            _queryContext.SaveChanges();
             var result = await _userManager.DeleteAsync(user);
 
             if (!result.Succeeded)
@@ -198,6 +199,7 @@ namespace Infrastructure.SecurityManagers.AspNetIdentity
                     PhoneNumber = u.PhoneNumber,
                     ProfilePictureName = u.ProfilePictureName,
                     EmailConfirmed = u.EmailConfirmed,
+                    Status = u.Status,
                     IsBlocked = u.IsBlocked,
                     CreatedAt = u.CreatedAt,
                     Roles = null
@@ -888,24 +890,12 @@ namespace Infrastructure.SecurityManagers.AspNetIdentity
             return new GetRolesByUserResult { Roles = PagedList<string>.FromList(roles.ToList(), page, limit) };
         }
 
-        public async Task<UpdateUserResult> UpdateUserAsync(string id, string username, string phone, IFormFile image, List<string> roles, CancellationToken cancellationToken = default)
+        public async Task<UpdateUserResult> UpdateUserAsync(string id, string username, string phone, int status, IFormFile image, List<string> roles, CancellationToken cancellationToken = default)
         {
             var user = await _userManager.FindByIdAsync(id);
             if (user == null)
                 throw new IdentityException($"User not found. ID: {id}");
-            string imageUrl = null;
 
-            if (image != null && image.Length > 0)
-            {
-                var uploadResult = await _photoService.AddPhotoAsync(image);
-                if (uploadResult == null)
-                    throw new Exception("Tải ảnh lên không thành công");
-
-                imageUrl = uploadResult.Url.ToString();
-            }
-            user.UserName = username;
-            user.PhoneNumber = phone;
-            user.ProfilePictureName = imageUrl;
             var currentRoles = await _userManager.GetRolesAsync(user);
             var removeRolesResult = await _userManager.RemoveFromRolesAsync(user, currentRoles);
             if (!removeRolesResult.Succeeded)
@@ -915,9 +905,43 @@ namespace Infrastructure.SecurityManagers.AspNetIdentity
             if (!addRolesResult.Succeeded)
                 throw new IdentityException($"Không thể thêm role mới");
 
+
+            string imageUrl = null;
+           
+            if (image != null && image.Length > 0)
+            {
+                string existingImageUrl = user.ProfilePictureName;
+                if (!string.IsNullOrEmpty(existingImageUrl))
+                {
+                    var deleteResult = await _photoService.DeletePhotoAsync(existingImageUrl);
+                    if (deleteResult==null)
+                        throw new IdentityException("Xóa ảnh không thành công");
+                }
+                var uploadResult = await _photoService.AddPhotoAsync(image);
+                if (uploadResult == null)
+                    throw new IdentityException("Tải ảnh lên không thành công");
+
+                imageUrl = uploadResult.Url.ToString();
+            }
+            else
+            {
+                imageUrl = user.ProfilePictureName;
+            }
+            user.UserName = username;
+            if(!string.IsNullOrEmpty(phone))
+            {
+                user.PhoneNumber = phone;
+            }
+
+            user.ProfilePictureName = imageUrl;
+            user.Status = status;
+
             var result = await _userManager.UpdateAsync(user);
-            if (!result.Succeeded)
-                throw new IdentityException($"{result.Errors}");
+            if (!result.Succeeded)  
+            {
+                var errorMessages = string.Join("; ", result.Errors.Select(e => e.Description));
+                throw new IdentityException($"Cập nhật user thất bại: {errorMessages}");
+            }
 
             return new UpdateUserResult
             {

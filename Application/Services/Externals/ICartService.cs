@@ -10,7 +10,7 @@ namespace Application.Services.Externals
     public interface ICartService
     {
         Task DeleteCartAsync(string userId);
-        Task<ShoppingCart?> GetCartAsync(string userId);
-        Task SaveCartAsync(ShoppingCart cart);
+        Task<Cart?> GetCartAsync(string userId);
+        Task SaveCartAsync(Cart cart);
     }
 }

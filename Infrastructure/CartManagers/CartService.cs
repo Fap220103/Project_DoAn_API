@@ -22,13 +22,13 @@ namespace Infrastructure.CartManagers
 
         private string GetCartKey(string userId) => $"cart:{userId}";
 
-        public async Task<ShoppingCart?> GetCartAsync(string userId)
+        public async Task<Cart?> GetCartAsync(string userId)
         {
             var data = await _redisDb.StringGetAsync(GetCartKey(userId));
-            return data.IsNullOrEmpty ? null : JsonSerializer.Deserialize<ShoppingCart>(data!);
+            return data.IsNullOrEmpty ? null : JsonSerializer.Deserialize<Cart>(data!);
         }
 
-        public async Task SaveCartAsync(ShoppingCart cart)
+        public async Task SaveCartAsync(Cart cart)
         {
             var serialized = JsonSerializer.Serialize(cart);
             await _redisDb.StringSetAsync(GetCartKey(cart.UserId), serialized);

@@ -20,6 +20,7 @@ namespace Application.Features.ShoppingCarts.Commands
     public class DeleteCartByIdRequest : IRequest<DeleteCartByIdResult>
     {
         public string ProductId { get; init; } = null!;
+        public string UserId { get; init; } = null!;
     }
 
     public class DeleteCartByIdValidator : AbstractValidator<DeleteCartByIdRequest>
@@ -34,19 +35,19 @@ namespace Application.Features.ShoppingCarts.Commands
 
     public class DeleteCartByIdHandler : IRequestHandler<DeleteCartByIdRequest, DeleteCartByIdResult>
     {
-        private readonly ICartSessionService _cartSessionService;
+        private readonly ICartService _cartService;
 
         public DeleteCartByIdHandler(
-             ICartSessionService cartSessionService
+             ICartService cartService
             )
         {
-            _cartSessionService = cartSessionService;
+            _cartService = cartService;
         }
 
         public async Task<DeleteCartByIdResult> Handle(DeleteCartByIdRequest request, CancellationToken cancellationToken)
         {
 
-            ShoppingCart cart = _cartSessionService.GetCart();
+            Cart cart = await _cartService.GetCartAsync(request.UserId);
             if (cart != null)
             {
                 var checkProduct = cart.Items.FirstOrDefault(x => x.ProductId == request.ProductId);
@@ -57,7 +58,7 @@ namespace Application.Features.ShoppingCarts.Commands
             }
             else
             {
-                throw new ApplicationException($"{ExceptionConsts.EntitiyNotFound} {request.ProductId}");
+                throw new ApplicationException($"{ExceptionConsts.CartNotFound} {request.ProductId}");
             }
 
             return new DeleteCartByIdResult

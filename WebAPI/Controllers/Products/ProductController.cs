@@ -18,7 +18,7 @@ namespace WebAPI.Controllers.Products
         public ProductController(ISender sender) : base(sender)
         {
         }
-        [HttpPost("CreateProduct")]
+        [HttpPost]
         [Consumes("multipart/form-data")]
         public async Task<ActionResult<ApiSuccessResult<CreateProductResult>>> CreateProductAsync([FromForm] CreateProductRequest request, CancellationToken cancellationToken)
         {
@@ -31,7 +31,7 @@ namespace WebAPI.Controllers.Products
                 Content = response
             });
         }
-        [HttpPost("UpdateProduct")]
+        [HttpPut]
         public async Task<ActionResult<ApiSuccessResult<UpdateProductResult>>> UpdateProductAsync(UpdateProductRequest request, CancellationToken cancellationToken)
         {
             var response = await _sender.Send(request, cancellationToken);
@@ -44,7 +44,7 @@ namespace WebAPI.Controllers.Products
             });
         }
 
-        [HttpDelete("DeleteProduct")]
+        [HttpDelete]
         public async Task<ActionResult<ApiSuccessResult<DeleteProductResult>>> DeleteProductAsync([FromQuery] string UserId,[FromQuery] string ProductId, CancellationToken cancellationToken)
         {
             var request = new DeleteProductRequest
@@ -62,7 +62,7 @@ namespace WebAPI.Controllers.Products
             });
         }
       
-        [HttpGet("GetAllProduct")]
+        [HttpGet]
         public async Task<ActionResult<ApiSuccessResult<GetAllProductResult>>> GetAllProductAsync(CancellationToken cancellationToken)
         {
             var request = new GetAllProductRequest();
@@ -75,7 +75,7 @@ namespace WebAPI.Controllers.Products
                 Content = response
             });
         }
-        [HttpGet("GetProductById")]
+        [HttpGet("GetById")]
         public async Task<ActionResult<ApiSuccessResult<GetProductByIdResult>>> GetProductByIdAsync([FromQuery] string ProductId,CancellationToken cancellationToken)
         {
             var request = new GetProductByIdRequest { ProductId = ProductId};
@@ -88,18 +88,6 @@ namespace WebAPI.Controllers.Products
                 Content = response
             });
         }
-        [HttpGet("GetProductByName")]
-        public async Task<ActionResult<ApiSuccessResult<GetProductByNameResult>>> GetProductByNameAsync([FromQuery] string ProductName, [FromQuery] string Type, CancellationToken cancellationToken)
-        {
-            var request = new GetProductByNameRequest { ProductName = ProductName, Type = Type };
-            var response = await _sender.Send(request, cancellationToken);
-
-            return Ok(new ApiSuccessResult<GetProductByNameResult>
-            {
-                Code = StatusCodes.Status200OK,
-                Message = $"Success executing {nameof(GetProductByNameAsync)}",
-                Content = response
-            });
-        }
+      
     }
 }

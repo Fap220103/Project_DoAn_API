@@ -106,7 +106,7 @@ namespace Application.Features.Products.Commands
                     request.SeoTitle,
                     request.SeoDescription,
                     request.SeoKeywords,
-                    request.Image,
+                    null,
                     request.Detail,
                     request.OriginalPrice,
                     request.Price,
@@ -118,7 +118,7 @@ namespace Application.Features.Products.Commands
 
             if (request.Images != null && request.Images.Any())
             {
-                int defaultImageIndex = request.Default?.FirstOrDefault() ?? 1;
+                int defaultImageIndex = request.Default?.ToList().FindIndex(x => x == 1) + 1 ?? 1;
 
                 for (int i = 0; i < request.Images.Count; i++)
                 {
@@ -126,7 +126,6 @@ namespace Application.Features.Products.Commands
                     var uploadResult = await _photoService.AddPhotoAsync(imageFile);
                     if (uploadResult == null)
                     {
-
                         _logger.LogError("Lỗi upload ảnh tại ảnh thứ {Index}", i + 1);
                         continue; 
                     }

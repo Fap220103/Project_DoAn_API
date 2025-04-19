@@ -13,7 +13,7 @@ namespace Application.Services.Externals
     {
         Task<GetUsersResult> GetUsersAsync(int page, int limit, string? order, string? search, string role, CancellationToken cancellationToken = default);
         Task<CreateUserResult> CreateUserAsync(string email, string password, List<string> roles, CancellationToken cancellationToken = default);
-        Task<UpdateUserResult> UpdateUserAsync(string id, string username, string phone, IFormFile image, List<string> roles, CancellationToken cancellationToken = default);
+        Task<UpdateUserResult> UpdateUserAsync(string id, string? username, string? phone, int status, IFormFile? image, List<string>? roles, CancellationToken cancellationToken = default);
         Task<DeleteUserResult> DeleteUserAsync(string userId, CancellationToken cancellationToken = default);
         Task<LoginUserResult> LoginAsync(string email, string password, CancellationToken cancellationToken = default);
         Task<LogoutUserResult> LogoutAsync(string userId, CancellationToken cancellationToken = default);

@@ -20,12 +20,13 @@ namespace Application.Features.Accounts.Commands
 
     public class UpdateUserRequest : IRequest<UpdateUserResult>
     {
-        public string? Id { get; init; }
-        public string UserName { get; set; }
-        public string PhoneNumber { get; set; }
+        public string Id { get; init; }
+        public string? UserName { get; set; }
+        public string? PhoneNumber { get; set; }
+        public int Status { get; set; } = 1; 
         [FromForm]
         public IFormFile? Image { get; set; } 
-        public List<string> Roles { get; set; } = new();
+        public List<string>? Roles { get; set; } = new();
     }
 
     public class UpdateUserHandler : IRequestHandler<UpdateUserRequest, UpdateUserResult>
@@ -45,6 +46,7 @@ namespace Application.Features.Accounts.Commands
                 request.Id,
                 request.UserName,
                 request.PhoneNumber,
+                request.Status,
                 request.Image,
                 request.Roles,
                 cancellationToken

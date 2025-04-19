@@ -52,8 +52,6 @@ namespace Infrastructure.SecurityManagers.Tokens
                         {
                             context.Token = authorizationHeader.Substring("Bearer ".Length).Trim();
                         }
-
-
                         return Task.CompletedTask;
                     }
                 };

@@ -54,7 +54,7 @@ namespace Domain.Entities
             OriginalPrice = originalPrice;
             Price = price;
             SalePercent = salePercent;
-            PriceSale = price - (price * salePercent / 100);
+            PriceSale = (salePercent > 0) ? (price - (price * salePercent / 100)) : price;
             IsSale = salePercent > 0;
             IsActive = true;
             ProductCategoryId = productCategoryId;

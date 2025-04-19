@@ -31,7 +31,6 @@ namespace Domain.Entities
             else
             {
                 Items.Add(item);
-
             }
         }
         public void Remove(string id)

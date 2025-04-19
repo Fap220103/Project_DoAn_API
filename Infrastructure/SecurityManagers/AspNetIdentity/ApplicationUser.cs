@@ -14,6 +14,7 @@ namespace Infrastructure.SecurityManagers.AspNetIdentity
         public string? ProfilePictureName { get; set; }
         public bool IsBlocked { get; set; }
         public bool IsDeleted { get; set; }
+        public int Status { get; set; } = 1; // 1: Active, 2: Inactive, 3: Blocked
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
 

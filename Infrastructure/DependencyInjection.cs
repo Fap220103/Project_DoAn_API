@@ -1,4 +1,4 @@
-﻿using Infrastructure.CartSessionManagers;
+﻿using Infrastructure.CartManagers;
 using Infrastructure.CommonManagers;
 using Infrastructure.DataAccessManagers.EFCores;
 using Infrastructure.EmailManagers;
@@ -62,8 +62,8 @@ namespace Infrastructure
             //>>> PhotoManager
             services.RegisterPhotoManager(configuration);
 
-            //>>> PhotoManager
-            services.RegisterCartSessionManager(configuration); 
+            //>>> CartManager
+            services.RegisterCartManager(configuration); 
             return services;
         }
     }

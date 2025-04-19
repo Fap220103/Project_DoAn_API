@@ -39,6 +39,11 @@ namespace Infrastructure.SecurityManagers.AspNetIdentity
                 // SignIn settings
                 options.SignIn.RequireConfirmedEmail = identitySettings.SignIn.RequireConfirmedEmail;
 
+                // Allowed user name characters
+                options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+                options.User.AllowedUserNameCharacters += "àáảãạăằắẳẵặâầấẩẫậđèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵÀÁẢÃẠĂẰẮẲẴẶÂẦẤẨẪẬĐÈÉẺẼẸÊỀẾỂỄỆÌÍỈĨỊÒÓỎÕỌÔỒỐỔỖỘƠỜỚỞỠỢÙÚỦŨỤƯỪỨỬỮỰỲÝỶỸỴ ";
+
+
             })
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<DataContext>()

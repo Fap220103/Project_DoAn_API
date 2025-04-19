@@ -41,7 +41,7 @@ namespace WebAPI.Controllers.UserProfiles
             });
         }
 
-        [HttpPost("UpdateUser")]
+        [HttpPut]
         public async Task<ActionResult<ApiSuccessResult<UpdateUserResult>>> UpdateUserAsync([FromForm] UpdateUserRequest request, CancellationToken cancellationToken)
         {
             var response = await _sender.Send(request, cancellationToken);
