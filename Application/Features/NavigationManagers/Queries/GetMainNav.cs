@@ -16,6 +16,7 @@ namespace Application.Features.NavigationManagers.Queries
         public string Url { get; init; }
         public bool IsAuthorized { get; init; }
         public List<MainNavDto> Children { get; set; } = new List<MainNavDto>();
+        public bool expanded { get; init; } = false;
 
         public MainNavDto(
             string name,

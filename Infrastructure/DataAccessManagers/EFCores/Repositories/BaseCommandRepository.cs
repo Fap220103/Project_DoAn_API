@@ -4,6 +4,7 @@ using Domain.Bases;
 using Domain.Interfaces;
 using Infrastructure.DataAccessManagers.EFCores.Contexts;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Asn1;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -76,5 +77,8 @@ namespace Infrastructure.DataAccessManagers.EFCores.Repositories
         {
             return await _context.Set<T>().AnyAsync(predicate, cancellationToken);
         }
+
+        public async Task AddRangeAsync(IEnumerable<T> entities, CancellationToken cancellationToken = default)
+             => await _context.Set<T>().AddRangeAsync(entities, cancellationToken);
     }
 }

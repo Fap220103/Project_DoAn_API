@@ -27,6 +27,11 @@ namespace Infrastructure.SecurityManagers.Navigations
                 ""Url"": ""/admin/productcategory""
               },
               {
+                ""Name"": ""ProductVariant"",
+                ""Caption"": ""Biến thể"",
+                ""Url"": ""/admin/productvariant""
+              },
+              {
                 ""Name"": ""Inventory"",
                 ""Caption"": ""Tồn kho"",
                 ""Url"": ""/admin/inventory""

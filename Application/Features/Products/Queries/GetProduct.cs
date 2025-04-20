@@ -36,6 +36,7 @@ namespace Application.Features.Products.Queries
         public string SeoTitle { get; set; } = null!;
         public string SeoDescription { get; set; } = null!;
         public string SeoKeywords { get; set; } = null!;
+        public string imageDefault { get; set; } = null!;
     }
 
     public class GetProductProfile : Profile
@@ -44,7 +45,9 @@ namespace Application.Features.Products.Queries
         {
             CreateMap<Product, ProductDto>()
                        .ForMember(dest => dest.ProductCategoryName,
-                       opt => opt.MapFrom(src => src.ProductCategory.Title));
+                       opt => opt.MapFrom(src => src.ProductCategory.Title))
+                          .ForMember(dest => dest.imageDefault,
+                       opt => opt.MapFrom(src => src.ProductImage.FirstOrDefault(x => x.IsDefault).Image));
         }
     }
 
@@ -79,7 +82,7 @@ namespace Application.Features.Products.Queries
         public async Task<GetProductResult> Handle(GetProductRequest request, CancellationToken cancellationToken)
         {
             var query = _context.Product.ApplyIsDeletedFilter()
-                                        .Include(x=>x.ProductImage)
+                                        .Include(x => x.ProductImage)
                                         .Include(x => x.ProductCategory)
                                         .AsQueryable();
 
@@ -87,8 +90,8 @@ namespace Application.Features.Products.Queries
             {
                 string searchKeyword = request.Search.Trim().ToLower();
                 query = query.Where(c =>
-                    c.Title.ToLower().Contains(searchKeyword) ||  
-                    c.Alias.ToLower().Contains(searchKeyword)    
+                    c.Title.ToLower().Contains(searchKeyword) ||
+                    c.Alias.ToLower().Contains(searchKeyword)
                 );
             }
 
