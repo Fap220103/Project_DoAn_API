@@ -20,6 +20,7 @@ namespace Application.Features.ProductCategories.Commands
         public string? Description { get; init; }
         public int Level { get; init; } = 1;
         public string? ParentId { get; init; }
+        public string? Link { get; set; }
     }
 
     public class CreateProductCategoryValidator : AbstractValidator<CreateProductCategoryRequest>
@@ -70,7 +71,8 @@ namespace Application.Features.ProductCategories.Commands
                     request.Alias,
                     request.Description,
                     request.Level,
-                    request.ParentId
+                    request.ParentId,
+                    request.Link
                     );
             if (parentCategory != null)
             {

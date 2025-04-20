@@ -32,7 +32,8 @@ namespace WebAPI.Controllers.Products
             });
         }
         [HttpPut]
-        public async Task<ActionResult<ApiSuccessResult<UpdateProductResult>>> UpdateProductAsync(UpdateProductRequest request, CancellationToken cancellationToken)
+        [Consumes("multipart/form-data")]
+        public async Task<ActionResult<ApiSuccessResult<UpdateProductResult>>> UpdateProductAsync([FromForm] UpdateProductRequest request, CancellationToken cancellationToken)
         {
             var response = await _sender.Send(request, cancellationToken);
 
@@ -63,9 +64,8 @@ namespace WebAPI.Controllers.Products
         }
       
         [HttpGet]
-        public async Task<ActionResult<ApiSuccessResult<GetProductResult>>> GetProductAsync(CancellationToken cancellationToken)
+        public async Task<ActionResult<ApiSuccessResult<GetProductResult>>> GetProductAsync([FromQuery] GetProductRequest request,CancellationToken cancellationToken)
         {
-            var request = new GetProductRequest();
             var response = await _sender.Send(request, cancellationToken);
 
             return Ok(new ApiSuccessResult<GetProductResult>

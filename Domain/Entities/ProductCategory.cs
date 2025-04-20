@@ -18,6 +18,9 @@ namespace Domain.Entities
         public string? ParentId { get; set; }
         public bool IsActive { get; set; }
         public int Level { get; set; }
+        public string Link { get; set; } = null!;
+        public bool IsHasChild { get; set; } = false;
+        
         public ICollection<Product> Products { get; set; } = new Collection<Product>();
         public ProductCategory? ParentCategory { get; set; }
         public ICollection<ProductCategory> ChildCategories { get; set; } = new List<ProductCategory>();
@@ -27,7 +30,8 @@ namespace Domain.Entities
             string? alias,
             string? description,
             int level,
-            string parentId
+            string parentId,
+            string link
             ) 
         {
             Title = title.Trim();
@@ -36,6 +40,8 @@ namespace Domain.Entities
             ParentId = string.IsNullOrWhiteSpace(parentId) ? null : parentId.Trim();
             Alias = alias;
             IsActive = true;
+            Link = link;
+            IsHasChild = ChildCategories != null && ChildCategories.Any(); ;
         }
 
         public void Update(
@@ -44,7 +50,8 @@ namespace Domain.Entities
             string? description,
             int level,
             string? parentId,
-            bool isActive
+            bool isActive,
+            string link
             )
         {
             Title = title.Trim();
@@ -53,6 +60,8 @@ namespace Domain.Entities
             ParentId = parentId;
             Level = level;
             IsActive = isActive;
+            Link = link;
+            IsHasChild = ChildCategories != null && ChildCategories.Any(); ;
         }
 
     }

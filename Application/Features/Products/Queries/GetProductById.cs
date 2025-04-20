@@ -31,6 +31,7 @@ namespace Application.Features.Products.Queries
         public string Title { get; init; } = null!;
         public string Description { get; init; } = null!;
         public string ProductCategoryId { get; init; } = null!;
+        public string? ProductCategoryName { get; set; }
         public string SeoTitle { get; set; } = null!;
         public string SeoDescription { get; set; } = null!;
         public string SeoKeywords { get; set; } = null!;
@@ -41,13 +42,15 @@ namespace Application.Features.Products.Queries
     {
         public GetProductByIdProfile()
         {
-            CreateMap<Product, GetProductByIdDto>();
+            CreateMap<Product, GetProductByIdDto>()
+                .ForMember(dest => dest.ProductCategoryName,
+                       opt => opt.MapFrom(src => src.ProductCategory.Title)); ;
         }
     }
 
     public class GetProductByIdResult
     {
-        public Product Data { get; init; } = null!;
+        public GetProductByIdDto Data { get; init; } = null!;
         public string Message { get; init; } = null!;
     }
 
@@ -83,15 +86,17 @@ namespace Application.Features.Products.Queries
         {
             var entity = await _context.Product.ApplyIsDeletedFilter()
                                                 .Include(x=> x.ProductImage)
+                                                .Include(x => x.ProductCategory)
                                                 .Where(x=> x.Id == request.ProductId)
                                                 .SingleOrDefaultAsync(cancellationToken);
             if(entity == null)
             {
                 throw new ApplicationException($"{ExceptionConsts.EntitiyNotFound} {request.ProductId}");
             }
+            var dto = _mapper.Map<GetProductByIdDto>(entity);
             return new GetProductByIdResult
             {
-                Data = entity,
+                Data = dto,
                 Message = "Success"
             };
         }

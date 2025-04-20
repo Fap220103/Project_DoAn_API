@@ -9,7 +9,7 @@ using WebAPI.Common.Models;
 
 namespace WebAPI.Controllers.ProductCategories
 {
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     public class ProductCategoryController : BaseApiController
     {
         public ProductCategoryController(ISender sender) : base(sender)

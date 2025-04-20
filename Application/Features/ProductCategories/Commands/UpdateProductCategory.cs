@@ -26,6 +26,7 @@ namespace Application.Features.ProductCategories.Commands
         public int Level { get; init; }
         public string? ParentId { get; set; }
         public bool IsActive { get; init; }
+        public string? Link { get; set; }
     }
 
     public class UpdateProductCategoryValidator : AbstractValidator<UpdateProductCategoryRequest>
@@ -75,7 +76,8 @@ namespace Application.Features.ProductCategories.Commands
                     request.Description,
                     request.Level,
                     request.ParentId,
-                    request.IsActive
+                    request.IsActive,
+                    request.Link
                 );
 
             _repository.Update(entity);

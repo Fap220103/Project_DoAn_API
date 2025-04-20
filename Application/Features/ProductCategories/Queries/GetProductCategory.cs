@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -24,7 +25,9 @@ namespace Application.Features.ProductCategories.Queries
         public string? ParentId { get; set; }
         public string? ParentName { get; set; }
         public bool IsActive { get; set; }
-        public int Level { get; set; }  
+        public int Level { get; set; }
+        public string Link { get; set; } = null!;
+        public bool IsHasChild { get; set; } 
     }
 
 
@@ -48,8 +51,10 @@ namespace Application.Features.ProductCategories.Queries
         public int Limit { get; set; } = 10;
         public string? Order { get; set; }
         public string? Search { get; set; }
-        public string? Level { get; set; }
+        public int Level { get; set; } = 1;
         public string? ParentId { get; set; }
+        public bool IsHasChild { get; set; } = false;
+        public string? Filter { get; set; }
     }
 
     public class GetProductCategoryHandler : IRequestHandler<GetProductCategoryRequest, GetProductCategoryResult>
@@ -87,11 +92,14 @@ namespace Application.Features.ProductCategories.Queries
                 );
             }
 
-            // Filter theo Level (nếu có)
-            if (!string.IsNullOrEmpty(request.Level) && int.TryParse(request.Level, out int level))
+            if(!request.IsHasChild && request.Level == 2 && !string.IsNullOrEmpty(request.Filter))
             {
-                query = query.Where(x => x.Level == level);
+                query = query.Where(x => x.IsHasChild == false);
             }
+
+        
+            query = query.Where(x => x.Level == request.Level);
+            
 
             // Sắp xếp
             if (!string.IsNullOrEmpty(request.Order))
