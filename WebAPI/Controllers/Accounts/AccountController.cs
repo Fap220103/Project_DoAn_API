@@ -198,30 +198,7 @@ namespace WebAPI.Controllers.Accounts
                 Content = response
             });
         }
-        [HttpPost("AddRolesToUser")]
-        public async Task<ActionResult<ApiSuccessResult<AddRolesToUserResult>>> AddRolesToUserAsync(AddRolesToUserRequest request, CancellationToken cancellationToken)
-        {
-            var response = await _sender.Send(request, cancellationToken);
-
-            return Ok(new ApiSuccessResult<AddRolesToUserResult>
-            {
-                Code = StatusCodes.Status200OK,
-                Message = $"Success executing {nameof(AddRolesToUserAsync)}",
-                Content = response
-            });
-        }
-        [HttpDelete("DeleteRolesFromUser")]
-        public async Task<ActionResult<ApiSuccessResult<DeleteRolesFromUserResult>>> DeleteRolesFromUserAsync(DeleteRolesFromUserRequest request, CancellationToken cancellationToken)
-        {
-            var response = await _sender.Send(request, cancellationToken);
-
-            return Ok(new ApiSuccessResult<DeleteRolesFromUserResult>
-            {
-                Code = StatusCodes.Status200OK,
-                Message = $"Success executing {nameof(DeleteRolesFromUserAsync)}",
-                Content = response
-            });
-        }
+        
         [HttpPost("ForgotPassword")]
         public async Task<ActionResult<ApiSuccessResult<ForgotPasswordResult>>> ForgotPasswordAsync(ForgotPasswordRequest request, CancellationToken cancellationToken)
         {

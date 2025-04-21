@@ -20,19 +20,7 @@ namespace Application.Services.Externals
         Task<RegisterUserResult> RegisterUserAsync(string email, string password, CancellationToken cancellationToken = default);
         Task<string> ConfirmEmailAsync(string email, string code, CancellationToken cancellationToken = default);
         Task<GenerateRefreshTokenResult> RefreshTokenAsync(string refreshToken, CancellationToken cancellationToken = default);
-        Task<AddRolesToUserResult> AddRolesToUserAsync(string userId, string[] roles, CancellationToken cancellationToken = default);
-        Task<DeleteRolesFromUserResult> DeleteRolesFromUserAsync(string userId, string[] roles, CancellationToken cancellationToken = default);
         Task<ForgotPasswordResult> ForgotPasswordAsync(string email, CancellationToken cancellationToken = default);
         Task<string> ForgotPasswordConfirmationAsync(string email, string tempPassword, string code, CancellationToken cancellationToken = default);
-        Task<AddClaimsToRoleResult> AddClaimsToRoleAsync(string role, string[] claims, CancellationToken cancellationToken = default);
-        Task<DeleteClaimsFromRoleResult> DeleteClaimsFromRoleAsync(string role, string[] claims, CancellationToken cancellationToken = default);
-        Task<GetClaimsByUserResult> GetClaimsByUserAsync(string userId, int pageNumber = 1, int pageSize = 10, string sortBy = "Value", string sortDirection = "asc", string searchValue = "", CancellationToken cancellationToken = default);
-        Task<GetClaimsResult> GetClaimsAsync(int pageNumber = 1, int pageSize = 10, string sortBy = "Value", string sortDirection = "asc", string searchValue = "", CancellationToken cancellationToken = default);
-        Task<GetClaimsByRoleResult> GetClaimsByRoleAsync(string role, int pageNumber = 1, int pageSize = 10, CancellationToken cancellationToken = default);
-        Task<CreateRoleResult> CreateRoleAsync(string role, string[] claims, CancellationToken cancellationToken = default);
-        Task<DeleteRoleResult> DeleteRoleAsync(string role, CancellationToken cancellationToken = default);
-        Task<UpdateRoleResult> UpdateRoleAsync(string oldRole, string newRole, string[] newClaims, CancellationToken cancellationToken = default);
-        Task<GetRolesResult> GetRolesAsync(int page = 1, int limit = 10, string sortBy = "Name", string sortDirection = "asc", string searchValue = "", CancellationToken cancellationToken = default);
-        Task<GetRolesByUserResult> GetRolesByUserAsync(string userId, int page = 1, int limit = 10, CancellationToken cancellationToken = default);
     }
 }
