@@ -121,9 +121,13 @@ namespace Infrastructure.SecurityManagers.AspNetIdentity
             _queryContext.Token.RemoveRange(tokens);
             _queryContext.SaveChanges();
 
-            var deleteResult = await _photoService.DeletePhotoAsync(user.ProfilePictureName);
-            if (deleteResult == null)
-                throw new ApplicationException("Xóa ảnh không thành công");
+            if(!string.IsNullOrEmpty(user.ProfilePictureName))
+            {
+                var deleteResult = await _photoService.DeletePhotoAsync(user.ProfilePictureName);
+                if (deleteResult == null)
+                    throw new ApplicationException("Xóa ảnh không thành công");
+            }
+          
 
             var result = await _userManager.DeleteAsync(user);
 
