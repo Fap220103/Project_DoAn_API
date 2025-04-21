@@ -71,7 +71,7 @@ namespace Infrastructure.SecurityManagers.Navigations
               {
                 ""Name"": ""SaleProgram"",
                 ""Caption"": ""Khuyến mãi"",
-                ""Url"": ""/admin/sale""
+                ""Url"": ""/admin/discount""
               }
             ]
           },

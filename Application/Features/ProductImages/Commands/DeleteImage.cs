@@ -1,4 +1,5 @@
-﻿using Application.Services.Repositories;
+﻿using Application.Services.Externals;
+using Application.Services.Repositories;
 using Domain.Constants;
 using Domain.Entities;
 using FluentValidation;
@@ -36,14 +37,17 @@ namespace Application.Features.ProductImages.Commands
     {
         private readonly IBaseCommandRepository<ProductImage> _repository;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IPhotoService _photoService;
 
         public DeleteImageHandler(
             IBaseCommandRepository<ProductImage> repository,
-            IUnitOfWork unitOfWork
+            IUnitOfWork unitOfWork,
+            IPhotoService photoService
             )
         {
             _repository = repository;
             _unitOfWork = unitOfWork;
+            _photoService = photoService;
         }
 
         public async Task<DeleteImageResult> Handle(DeleteImageRequest request, CancellationToken cancellationToken = default)
@@ -54,6 +58,9 @@ namespace Application.Features.ProductImages.Commands
             {
                 throw new ApplicationException($"{ExceptionConsts.EntitiyNotFound} {request.ImageId}");
             }
+            var deleteResult = await _photoService.DeletePhotoAsync(entity.Image);
+            if (deleteResult == null)
+                throw new ApplicationException("Xóa ảnh không thành công");
 
             _repository.Purge(entity);
             await _unitOfWork.SaveAsync(cancellationToken);

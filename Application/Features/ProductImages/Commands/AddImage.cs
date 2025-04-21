@@ -60,8 +60,6 @@ namespace Application.Features.ProductImages.Commands
                             request.ProductId, 
                             result.Url.ToString()
                         );
-           
-
             await _repository.CreateAsync(item, cancellationToken);
             await _unitOfWork.SaveAsync(cancellationToken);
 

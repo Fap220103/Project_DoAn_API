@@ -24,15 +24,12 @@ namespace Application.Features.Sizes.Queries
     public class GetSizeHandler : IRequestHandler<GetSizeRequest, GetSizeResult>
     {
         private readonly IQueryContext _context;
-        private readonly IMapper _mapper;
 
         public GetSizeHandler(
-            IQueryContext context,
-            IMapper mapper
+            IQueryContext context
             )
         {
             _context = context;
-            _mapper = mapper;
         }
 
         public async Task<GetSizeResult> Handle(GetSizeRequest request, CancellationToken cancellationToken)
