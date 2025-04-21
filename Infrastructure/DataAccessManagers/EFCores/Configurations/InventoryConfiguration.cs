@@ -20,6 +20,7 @@ namespace Infrastructure.DataAccessManagers.EFCores.Configurations
             builder.HasOne(i => i.ProductVariant)
                 .WithOne(pv => pv.Inventory)
                 .HasForeignKey<Inventory>(i => i.ProductVariantId);
+                //.OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

@@ -37,7 +37,7 @@ namespace Domain.Entities
             string title,
             string? alias,
             string? description,
-            string? seoTitle,
+            string? seoTitle, 
             string? seoDescription,
             string? seoKeywords,
             string? image,
