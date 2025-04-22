@@ -16,6 +16,7 @@ namespace Application.Features.Inventories.Queries
 {
     public class InventoryDto
     {
+        public string ProductVariantId { get; set; } = null!;
         public string ProductName { get; set; } = null!;
         public string ProductCode { get; set; } = null!;
         public string ColorName { get; set; } = null!;

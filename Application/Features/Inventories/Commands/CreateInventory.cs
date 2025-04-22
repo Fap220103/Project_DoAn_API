@@ -1,4 +1,5 @@
-﻿using Application.Services.CQS.Queries;
+﻿using Application.Services.CQS.Commands;
+using Application.Services.CQS.Queries;
 using Application.Services.Repositories;
 using Domain.Entities;
 using FluentValidation;
@@ -32,26 +33,19 @@ namespace Application.Features.Inventories.Commands
                 .NotEmpty();
         }
     }
-
-
     public class CreateInventoryHandler : IRequestHandler<CreateInventoryRequest, CreateInventoryResult>
     {
-        private readonly IBaseCommandRepository<ProductVariant> _repository;
-        private readonly IQueryContext _context;
-        private readonly IUnitOfWork _unitOfWork;
-        public CreateInventoryHandler(
-            IBaseCommandRepository<ProductVariant> repository,
-            IQueryContext context,
-            IUnitOfWork unitOfWork
-            )
+        private readonly ICommandContext _context;
+
+        public CreateInventoryHandler(ICommandContext context)
         {
-            _repository = repository;
             _context = context;
-            _unitOfWork = unitOfWork;
         }
+
         public async Task<CreateInventoryResult> Handle(CreateInventoryRequest request, CancellationToken cancellationToken = default)
         {
-            var variant = await _repository.GetByIdAsync(request.ProductVariantId, cancellationToken);
+            var variant = await _context.ProductVariant
+                .FirstOrDefaultAsync(x => x.Id == request.ProductVariantId, cancellationToken);
 
             if (variant == null)
             {
@@ -78,7 +72,8 @@ namespace Application.Features.Inventories.Commands
                 await _context.Inventory.AddAsync(newInventory, cancellationToken);
             }
 
-            await _unitOfWork.SaveAsync(cancellationToken);
+            // Đây là dòng lưu vào database
+            await _context.SaveChangesAsync(cancellationToken);
 
             return new CreateInventoryResult
             {
@@ -86,6 +81,6 @@ namespace Application.Features.Inventories.Commands
                 Message = "Success"
             };
         }
-
     }
+
 }
