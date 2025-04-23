@@ -16,7 +16,6 @@ namespace Application.Features.Products.Queries
     public class GetProductByIdDto
     {
         public string Id { get; init; } = null!;
-        public string? Alias { get; set; }
         public string ProductCode { get; init; } = null!;
         public string Detail { get; init; } = null!;
         public string? Image { get; set; }
@@ -26,15 +25,11 @@ namespace Application.Features.Products.Queries
         public decimal PriceSale { get; init; }
         public int ViewCount { get; set; }
         public bool IsSale { get; set; }
-        public bool IsActive { get; set; }
-        public bool isDeleted { get; set; }
         public string Title { get; init; } = null!;
         public string Description { get; init; } = null!;
-        public string ProductCategoryId { get; init; } = null!;
         public string? ProductCategoryName { get; set; }
-        public string SeoTitle { get; set; } = null!;
-        public string SeoDescription { get; set; } = null!;
-        public string SeoKeywords { get; set; } = null!;
+        public List<ProductImage> ProductImage { get; set; } = new();
+
     }
 
 
@@ -63,7 +58,8 @@ namespace Application.Features.Products.Queries
     {
         public GetProductByIdValidator()
         {
-
+            RuleFor(x => x.ProductId)
+                  .NotEmpty().WithMessage("ProductId is required.");
         }
     }
 

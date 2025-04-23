@@ -21,6 +21,7 @@ namespace Application.Features.ProductVariants.Queries
         public string ProductCode { get; set; }
         public string ColorName { get; set; }
         public string SizeName { get; set; }
+        public int Quantity { get; set; }
     }
     public class ProductVariantProfile : Profile
     {

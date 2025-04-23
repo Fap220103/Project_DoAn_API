@@ -81,6 +81,11 @@ namespace Infrastructure.DataAccessManagers.EFCores.Repositories
         public async Task AddRangeAsync(IEnumerable<T> entities, CancellationToken cancellationToken = default)
              => await _context.Set<T>().AddRangeAsync(entities, cancellationToken);
 
-       
+        public Task UpdateRangeAsync(IEnumerable<T> entities, CancellationToken cancellationToken = default)
+        {
+            _context.Set<T>().UpdateRange(entities);
+            return Task.CompletedTask;
+        }
+
     }
 }

@@ -54,5 +54,18 @@ namespace WebAPI.Controllers.Inventories
                 Content = response
             });
         }
+
+        [HttpGet("GetStock")]
+        public async Task<ActionResult<ApiSuccessResult<GetStockResult>>> GetStockAsync([FromQuery] GetStockRequest request, CancellationToken cancellationToken)
+        {
+            var response = await _sender.Send(request, cancellationToken);
+
+            return Ok(new ApiSuccessResult<GetStockResult>
+            {
+                Code = StatusCodes.Status200OK,
+                Message = $"Success executing {nameof(GetStockAsync)}",
+                Content = response
+            });
+        }
     }
 }

@@ -26,7 +26,19 @@ namespace WebAPI.Controllers.ProductVariants
                 Content = response
             });
         }
-       
+        [HttpPost("AddStock")]
+        public async Task<ActionResult<ApiSuccessResult<AddStockResult>>> AddStockAsync(AddStockRequest request, CancellationToken cancellationToken)
+        {
+            var response = await _sender.Send(request, cancellationToken);
+
+            return Ok(new ApiSuccessResult<AddStockResult>
+            {
+                Code = StatusCodes.Status200OK,
+                Message = $"Success executing {nameof(AddStockAsync)}",
+                Content = response
+            });
+        }
+
 
         [HttpDelete("{id}")]
         public async Task<ActionResult<ApiSuccessResult<DeleteProductVariantResult>>> DeleteProductVariantAsync(string id, CancellationToken cancellationToken)
@@ -54,6 +66,41 @@ namespace WebAPI.Controllers.ProductVariants
                 Content = response
             });
         }
-     
+        [HttpGet("GetCZVariant")]
+        public async Task<ActionResult<ApiSuccessResult<GetCZVariantResult>>> GetCZVariantAsync([FromQuery] GetCZVariantRequest request, CancellationToken cancellationToken)
+        {
+            var response = await _sender.Send(request, cancellationToken);
+
+            return Ok(new ApiSuccessResult<GetCZVariantResult>
+            {
+                Code = StatusCodes.Status200OK,
+                Message = $"Success executing {nameof(GetCZVariantAsync)}",
+                Content = response
+            });
+        }
+        [HttpGet("GetProductVariantId")]
+        public async Task<ActionResult<ApiSuccessResult<GetProductVariantIdResult>>> GetProductVariantIdAsync([FromQuery] GetProductVariantIdRequest request, CancellationToken cancellationToken)
+        {
+            var response = await _sender.Send(request, cancellationToken);
+
+            return Ok(new ApiSuccessResult<GetProductVariantIdResult>
+            {
+                Code = StatusCodes.Status200OK,
+                Message = $"Success executing {nameof(GetProductVariantIdAsync)}",
+                Content = response
+            });
+        }
+        [HttpGet("GetStock")]
+        public async Task<ActionResult<ApiSuccessResult<GetStockResult>>> GetStockAsync([FromQuery] GetStockRequest request, CancellationToken cancellationToken)
+        {
+            var response = await _sender.Send(request, cancellationToken);
+
+            return Ok(new ApiSuccessResult<GetStockResult>
+            {
+                Code = StatusCodes.Status200OK,
+                Message = $"Success executing {nameof(GetStockAsync)}",
+                Content = response
+            });
+        }
     }
 }

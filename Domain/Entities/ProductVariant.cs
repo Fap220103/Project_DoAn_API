@@ -13,6 +13,7 @@ namespace Domain.Entities
         public string ProductId { get; set; } = null!;
         public int ColorId { get; set; } 
         public int SizeId { get; set; } 
+        public int Quantity { get; set; }
         public Color Color { get; set; }
         public Size Size { get; set; }
         public Product Product { get; set; }

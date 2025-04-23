@@ -6,6 +6,7 @@ using Application.Services.Externals;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Application.Services.CQS.Queries;
+using Application.Services.CQS.Commands;
 
 namespace Application.Features.ProductVariants.Commands
 {
@@ -20,6 +21,7 @@ namespace Application.Features.ProductVariants.Commands
         public string ProductId { get; init; }
         public List<int> ColorId { get; set; }
         public List<int> SizeId { get; init; }
+        public int Quantity { get; init; } = 10;
     }
 
     public class CreateProductVariantValidator : AbstractValidator<CreateProductVariantRequest>
@@ -39,12 +41,12 @@ namespace Application.Features.ProductVariants.Commands
     public class CreateProductVariantHandler : IRequestHandler<CreateProductVariantRequest, CreateProductVariantResult>
     {
         private readonly IBaseCommandRepository<ProductVariant> _repository;
-        private readonly IQueryContext _context;
+        private readonly ICommandContext _context;
         private readonly IUnitOfWork _unitOfWork;
 
         public CreateProductVariantHandler(
             IBaseCommandRepository<ProductVariant> repository,
-            IQueryContext context,
+            ICommandContext context,
             IUnitOfWork unitOfWork
             )
         {
@@ -56,6 +58,7 @@ namespace Application.Features.ProductVariants.Commands
         public async Task<CreateProductVariantResult> Handle(CreateProductVariantRequest request, CancellationToken cancellationToken = default)
         {
             var productVariants = new List<ProductVariant>();
+            var updatedExistingVariants = new List<ProductVariant>();
 
             var existingVariants = await _context.ProductVariant
                 .Where(x => x.ProductId == request.ProductId
@@ -63,21 +66,27 @@ namespace Application.Features.ProductVariants.Commands
                          && request.SizeId.Contains(x.SizeId))
                 .ToListAsync(cancellationToken);
 
-            bool IsDuplicate(int colorId, int sizeId) =>
-                existingVariants.Any(x => x.ColorId == colorId && x.SizeId == sizeId);
-
             foreach (var colorId in request.ColorId)
             {
                 foreach (var sizeId in request.SizeId)
                 {
-                    if (IsDuplicate(colorId, sizeId)) continue;
+                    var existing = existingVariants
+                                 .FirstOrDefault(x => x.ColorId == colorId && x.SizeId == sizeId);
+
+                    if (existing != null)
+                    {
+                        existing.Quantity += request.Quantity;
+                        updatedExistingVariants.Add(existing);
+                        continue;
+                    }
 
                     var variant = new ProductVariant
                     {
                         Id = Guid.NewGuid().ToString(),
                         ProductId = request.ProductId,
                         ColorId = colorId,
-                        SizeId = sizeId
+                        SizeId = sizeId,
+                        Quantity = request.Quantity,
                     };
 
                     productVariants.Add(variant);
@@ -87,8 +96,12 @@ namespace Application.Features.ProductVariants.Commands
             if (productVariants.Any())
             {
                 await _repository.AddRangeAsync(productVariants, cancellationToken);
-                await _unitOfWork.SaveAsync();
             }
+            if (updatedExistingVariants.Any())
+            {
+                await _repository.UpdateRangeAsync(updatedExistingVariants, cancellationToken);
+            }
+            await _unitOfWork.SaveAsync();
 
             return new CreateProductVariantResult
             {
