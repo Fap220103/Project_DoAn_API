@@ -1,9 +1,11 @@
-﻿using Application.Services.Externals;
+﻿using Application.Services.CQS.Queries;
+using Application.Services.Externals;
 using Application.Services.Repositories;
 using Domain.Entities;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -26,6 +28,7 @@ namespace Application.Features.Products.Commands
         public string Title { get; init; } = null!;
         public string? Alias { get; set; }
         public string? Description { get; init; }
+        public string? ProductCode { get; set; } = null!;
         public string? Image { get; set; }
         public string Detail { get; init; } = null!;
         public decimal OriginalPrice { get; init; } 
@@ -69,6 +72,7 @@ namespace Application.Features.Products.Commands
         private readonly IPhotoService _photoService;
         private readonly ICommonService _commonService;
         private readonly ILogger<CreateProductHandler> _logger;
+        private readonly IQueryContext _context;
 
         public CreateProductHandler(
             IBaseCommandRepository<Product> repoProduct,
@@ -76,7 +80,8 @@ namespace Application.Features.Products.Commands
             IUnitOfWork unitOfWork,
             IPhotoService photoService,
             ICommonService commonService,
-            ILogger<CreateProductHandler> logger
+            ILogger<CreateProductHandler> logger,
+            IQueryContext context
             )
         {
             _repoProduct = repoProduct;
@@ -85,6 +90,7 @@ namespace Application.Features.Products.Commands
             _photoService = photoService;
             _commonService = commonService;
             _logger = logger;
+            _context = context;
         }
 
         public async Task<CreateProductResult> Handle(CreateProductRequest request, CancellationToken cancellationToken = default)
@@ -113,7 +119,27 @@ namespace Application.Features.Products.Commands
                     request.SalePercent,
                     request.ProductCategoryId
                     );
-            entity.ProductCode = _commonService.GenerateCode("PRO");
+            //if (string.IsNullOrEmpty(request.ProductCode)) 
+            //{
+            //    entity.ProductCode = _commonService.GenerateCode("PRO");
+            //}
+            //else
+            //{
+            //    entity.ProductCode = request.ProductCode;
+            //}
+            if (!string.IsNullOrEmpty(request.ProductCode))
+            {
+                var existed = await _context.Product.FirstOrDefaultAsync(x => x.ProductCode == request.ProductCode, cancellationToken);
+                if (existed != null)
+                {
+                    throw new ApplicationException($"Mã sản phẩm '{request.ProductCode}' đã tồn tại.");
+                }
+                entity.ProductCode = request.ProductCode;
+            }
+            else
+            {
+                entity.ProductCode = _commonService.GenerateCode("PRO");
+            }
             await _repoProduct.CreateAsync(entity, cancellationToken);
 
             if (request.Images != null && request.Images.Any())

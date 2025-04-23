@@ -18,7 +18,7 @@ namespace Domain.Entities
         public string? ParentId { get; set; }
         public bool IsActive { get; set; }
         public int Level { get; set; }
-        public string Link { get; set; } = null!;
+        public string? Link { get; set; } 
         public bool IsHasChild { get; set; } = false;
         
         public ICollection<Product> Products { get; set; } = new Collection<Product>();

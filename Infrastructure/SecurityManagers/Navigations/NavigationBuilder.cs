@@ -24,7 +24,7 @@ namespace Infrastructure.SecurityManagers.Navigations
               {
                 ""Name"": ""ProductCategory"",
                 ""Caption"": ""Danh mục"",
-                ""Url"": ""/admin/productcategory""
+                ""Url"": ""/admin/productcategory"" 
               },
               {
                 ""Name"": ""ProductVariant"",
@@ -69,7 +69,7 @@ namespace Infrastructure.SecurityManagers.Navigations
             ""ParentUrl"": ""#"",
             ""Children"": [           
               {
-                ""Name"": ""SaleProgram"",
+                ""Name"": ""Discount"",
                 ""Caption"": ""Khuyến mãi"",
                 ""Url"": ""/admin/discount""
               }

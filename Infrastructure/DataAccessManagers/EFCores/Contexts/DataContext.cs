@@ -23,7 +23,7 @@ namespace Infrastructure.DataAccessManagers.EFCores.Contexts
         {
         }
         public DbSet<Color> Color { get; set; }
-      
+        public DbSet<Discount> Discount { get; set; }
         public DbSet<Inventory> Inventory { get; set; }
         public DbSet<Order> Order { get ; set ; }
         public DbSet<OrderDetail> OrderDetail { get ; set ; }
@@ -35,11 +35,14 @@ namespace Infrastructure.DataAccessManagers.EFCores.Contexts
         public DbSet<Size> Size { get ; set ; }
         public DbSet<Token> Token { get; set; }
         public DbSet<ApplicationUser> Users { get; set; }
+      
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfiguration(new ApplicationUserConfiguration());
             modelBuilder.ApplyConfiguration(new ColorConfiguration());
+            modelBuilder.ApplyConfiguration(new DiscountConfiguration());
             modelBuilder.ApplyConfiguration(new InventoryConfiguration());
             modelBuilder.ApplyConfiguration(new OrderConfiguration());
             modelBuilder.ApplyConfiguration(new OrderDetailConfiguration());

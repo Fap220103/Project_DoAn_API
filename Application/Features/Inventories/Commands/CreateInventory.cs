@@ -44,6 +44,11 @@ namespace Application.Features.Inventories.Commands
 
         public async Task<CreateInventoryResult> Handle(CreateInventoryRequest request, CancellationToken cancellationToken = default)
         {
+            if (request.Quantity <= 0)
+            {
+                request.Quantity = 1;
+            }
+
             var variant = await _context.ProductVariant
                 .FirstOrDefaultAsync(x => x.Id == request.ProductVariantId, cancellationToken);
 
@@ -57,7 +62,7 @@ namespace Application.Features.Inventories.Commands
 
             if (existingInventory != null)
             {
-                existingInventory.Quantity = request.Quantity;
+                existingInventory.Quantity += request.Quantity;
                 existingInventory.LastUpdated = DateTime.UtcNow;
             }
             else

@@ -88,6 +88,27 @@ namespace WebAPI.Controllers.Products
                 Content = response
             });
         }
-      
+
+        [HttpGet("export-excel")]
+        public async Task<IActionResult> ExportToExcel()
+        {
+            var result = await _sender.Send(new ExportProductsToExcelRequest());
+
+            return File(result, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "products.xlsx");
+        }
+
+        [HttpPost("import")]
+        public async Task<IActionResult> ImportExcel(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+                return BadRequest("Vui lòng chọn file Excel.");
+
+            using var stream = file.OpenReadStream();
+            var command = new ImportProductsRequest { ExcelFileStream = stream };
+
+            await _sender.Send(command);
+            return Ok("Import thành công!");
+        }
+
     }
 }

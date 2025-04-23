@@ -44,6 +44,8 @@ namespace Application.Features.ProductVariants.Queries
         public int Page { get; set; } = 1;
         public int Limit { get; set; } = 10;
         public string? Search { get; set; }
+        public int? ColorId { get; set; }
+        public int? SizeId { get; set; }
     }
 
     public class GetProductVariantHandler : IRequestHandler<GetProductVariantRequest, GetProductVariantResult>
@@ -68,22 +70,31 @@ namespace Application.Features.ProductVariants.Queries
                                 .Include(p => p.Size)
                                 .AsQueryable()
                                 .AsNoTracking();
-            
+            // Lọc theo ColorId nếu có
+            if (request.ColorId.HasValue)
+            {
+                query = query.Where(x => x.ColorId == request.ColorId.Value);
+            }
+
+            // Lọc theo SizeId nếu có
+            if (request.SizeId.HasValue)
+            {
+                query = query.Where(x => x.SizeId == request.SizeId.Value);
+            }
 
             // Search theo Title hoặc Alias
             if (!string.IsNullOrEmpty(request.Search))
             {
                 var keyword = request.Search.ToLower();
                 query = query.Where(x =>
-                    x.Product.Title.ToLower().Contains(keyword)
+                    x.Product.Title.ToLower().Contains(keyword) ||
+                     x.Product.ProductCode.ToLower().Contains(keyword) ||
+                    x.Product.Id == keyword
                 );
             }
 
-           
-            
             query = query.OrderByDescending(x => x.Product.Title); // mặc định
             
-
             // Phân trang
             var skip = (request.Page - 1) * request.Limit;
             var items = await query

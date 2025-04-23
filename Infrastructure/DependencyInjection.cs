@@ -3,6 +3,7 @@ using Infrastructure.CommonManagers;
 using Infrastructure.DataAccessManagers.EFCores;
 using Infrastructure.EmailManagers;
 using Infrastructure.EncryptionManagers;
+using Infrastructure.ExcelExportManagers;
 using Infrastructure.LoggingManagers.Serilogs;
 using Infrastructure.PhotoManagers;
 using Infrastructure.SecurityManagers.AspNetIdentity;
@@ -63,7 +64,10 @@ namespace Infrastructure
             services.RegisterPhotoManager(configuration);
 
             //>>> CartManager
-            services.RegisterCartManager(configuration); 
+            services.RegisterCartManager(configuration);
+
+            //>>> ExcelExportManager
+            services.RegisterExcelExportManager(configuration); 
             return services;
         }
     }

@@ -22,7 +22,6 @@ namespace Application.Services.Repositories
         void Purge(T entity);
 
         Task<T?> GetByIdAsync(string id, CancellationToken cancellationToken = default);
-
         T? Get(string id);
 
         IQueryable<T> GetQuery();

@@ -11,6 +11,7 @@ namespace Application.Services.CQS
     public interface IEntityDbSet
     {
         public DbSet<Color> Color { get; set; }
+        public DbSet<Discount> Discount { get; set; }
         public DbSet<Setting> Setting { get; set; }
         public DbSet<Inventory> Inventory { get; set; }
         public DbSet<Order> Order { get; set; }

@@ -82,10 +82,10 @@ namespace Infrastructure.SeedManagers.Systems
             var roleStaff = await _roleManager.FindByNameAsync(staffRole);
             if (roleStaff != null)
             {
-                await _roleManager.AddClaimAsync(roleStaff, new Claim("Permission", $"Chat:Create"));
-                await _roleManager.AddClaimAsync(roleStaff, new Claim("Permission", $"Chat:Read"));
-                await _roleManager.AddClaimAsync(roleStaff, new Claim("Permission", $"Chat:Update"));
-                await _roleManager.AddClaimAsync(roleStaff, new Claim("Permission", $"Chat:Delete"));
+                await _roleManager.AddClaimAsync(roleStaff, new Claim("Permission", $"Messenger:Create"));
+                await _roleManager.AddClaimAsync(roleStaff, new Claim("Permission", $"Messenger:Read"));
+                await _roleManager.AddClaimAsync(roleStaff, new Claim("Permission", $"Messenger:Update"));
+                await _roleManager.AddClaimAsync(roleStaff, new Claim("Permission", $"Messenger:Delete"));
                 await _roleManager.AddClaimAsync(roleStaff, new Claim("Permission", $"Order:Create"));
                 await _roleManager.AddClaimAsync(roleStaff, new Claim("Permission", $"Order:Read"));
                 await _roleManager.AddClaimAsync(roleStaff, new Claim("Permission", $"Order:Update"));
