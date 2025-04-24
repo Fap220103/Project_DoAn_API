@@ -108,6 +108,8 @@ namespace Application.Features.Products.Queries
                     {
                         ("title", "asc") => query.OrderBy(x => x.Title),
                         ("title", "desc") => query.OrderByDescending(x => x.Title),
+                        ("salepercent", "asc") => query.OrderBy(x => x.SalePercent),
+                        ("salepercent", "desc") => query.OrderByDescending(x => x.SalePercent),
                         //("", "asc") => query.OrderBy(x => x.HexCode),
                         //("HexCode", "desc") => query.OrderByDescending(x => x.HexCode),
                         _ => query

@@ -108,7 +108,7 @@ namespace Application.Features.ProductCategories.Queries
             }
             else
             {
-                query = query.OrderByDescending(x => x.Title); // mặc định
+                query = query.OrderBy(x => x.Title); // mặc định
             }
 
             // Phân trang
