@@ -10,6 +10,7 @@ using Infrastructure.SecurityManagers.AspNetIdentity;
 using Infrastructure.SecurityManagers.Navigations;
 using Infrastructure.SecurityManagers.RoleClaims;
 using Infrastructure.SecurityManagers.Tokens;
+using Infrastructure.VnPayService;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -67,7 +68,10 @@ namespace Infrastructure
             services.RegisterCartManager(configuration);
 
             //>>> ExcelExportManager
-            services.RegisterExcelExportManager(configuration); 
+            services.RegisterExcelExportManager(configuration);
+
+            //>>> VnPayManager
+            services.VnPayManager(configuration);
             return services;
         }
     }

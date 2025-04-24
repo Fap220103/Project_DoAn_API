@@ -512,6 +512,16 @@ namespace Infrastructure.SecurityManagers.AspNetIdentity
                 Roles = roles,
             };
         }
+
+        public async Task<string?> GetCustomerNameAsync(string customerId, CancellationToken cancellationToken = default)
+        {
+            var user = await _queryContext.Users
+                .Where(u => u.Id == customerId)
+                .Select(u => u.UserName)
+                .FirstOrDefaultAsync(cancellationToken);
+
+            return user;
+        }
     }
 
 }

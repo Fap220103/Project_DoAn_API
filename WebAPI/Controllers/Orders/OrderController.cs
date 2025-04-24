@@ -1,0 +1,71 @@
+﻿using Application.Features.Orders.Commands;
+using Application.Features.Orders.Queries;
+using Application.Features.ProductCategories.Commands;
+using Application.Features.ProductCategories.Queries;
+using CloudinaryDotNet.Actions;
+using MediatR;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using WebAPI.Common.Models;
+
+namespace WebAPI.Controllers.Orders
+{
+    public class OrderController : BaseApiController
+    {
+        public OrderController(ISender sender) : base(sender)
+        {
+        }
+        [HttpPost]
+        public async Task<ActionResult<ApiSuccessResult<CreateOrderResult>>> CreateOrderAsync(CreateOrderRequest request, CancellationToken cancellationToken)
+        {
+            var response = await _sender.Send(request, cancellationToken);
+
+            return Ok(new ApiSuccessResult<CreateOrderResult>
+            {
+                Code = StatusCodes.Status200OK,
+                Message = $"Success executing {nameof(CreateOrderAsync)}",
+                Content = response
+            });
+        }
+        //[HttpPost("UpdateProductCategory")]
+        //public async Task<ActionResult<ApiSuccessResult<UpdateProductCategoryResult>>> UpdateProductCategoryAsync(UpdateProductCategoryRequest request, CancellationToken cancellationToken)
+        //{
+        //    var response = await _sender.Send(request, cancellationToken);
+
+        //    return Ok(new ApiSuccessResult<UpdateProductCategoryResult>
+        //    {
+        //        Code = StatusCodes.Status200OK,
+        //        Message = $"Success executing {nameof(UpdateProductCategoryAsync)}",
+        //        Content = response
+        //    });
+        //}
+
+        //[HttpDelete("{id}")]
+        //public async Task<ActionResult<ApiSuccessResult<DeleteProductCategoryResult>>> DeleteProductCategoryAsync(string id, CancellationToken cancellationToken)
+        //{
+        //    var request = new DeleteProductCategoryRequest { Id = id };
+        //    var response = await _sender.Send(request, cancellationToken);
+
+        //    return Ok(new ApiSuccessResult<DeleteProductCategoryResult>
+        //    {
+        //        Code = StatusCodes.Status200OK,
+        //        Message = $"Success executing {nameof(DeleteProductCategoryAsync)}",
+        //        Content = response
+        //    });
+        //}
+
+        [HttpGet]
+        public async Task<ActionResult<ApiSuccessResult<GetOrderResult>>> GetOrderAsync([FromQuery] GetOrderRequest request, CancellationToken cancellationToken)
+        {
+            var response = await _sender.Send(request, cancellationToken);
+
+            return Ok(new ApiSuccessResult<GetOrderResult>
+            {
+                Code = StatusCodes.Status200OK,
+                Message = $"Success executing {nameof(GetOrderAsync)}",
+                Content = response
+            });
+        }
+        
+    }
+}

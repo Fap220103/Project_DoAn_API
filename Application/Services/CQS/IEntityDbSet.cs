@@ -20,6 +20,7 @@ namespace Application.Services.CQS
         public DbSet<ProductCategory> ProductCategory { get; set; }
         public DbSet<ProductImage> ProductImage { get; set; }
         public DbSet<ProductVariant> ProductVariant { get; set; }
+        public DbSet<ReviewProduct> ReviewProduct { get; set; }
         public DbSet<Size> Size { get; set; }
         public DbSet<Token> Token { get; set; }
     }

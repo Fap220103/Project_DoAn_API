@@ -59,7 +59,5 @@ namespace WebAPI.Controllers.Configs
                 Content = response
             });
         }
-
-
     }
 }

@@ -34,7 +34,7 @@ namespace Domain.Entities
             Quantity = quantity;
             TypePayment = typePayment;
             Status = status;
-            OrderDetails = new Collection<OrderDetail>();
+            CustomerId = userId;
         }
         public void Update(
             string? userId,

@@ -1,9 +1,7 @@
 ﻿using Application.Common.Models;
-using Application.Features.ProductCategories.Queries;
 using Application.Services.CQS.Queries;
 using AutoMapper;
 using Domain.Entities;
-using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -14,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Application.Features.Products.Queries
 {
-    public class ProductDto
+    public class ProductClientDto
     {
         public string Id { get; init; } = null!;
         public string? Alias { get; set; }
@@ -27,49 +25,46 @@ namespace Application.Features.Products.Queries
         public decimal PriceSale { get; init; }
         public int ViewCount { get; set; }
         public bool IsSale { get; set; }
-        public bool IsActive { get; set; }
         public string Title { get; init; } = null!;
         public string Description { get; init; } = null!;
         public string ProductCategoryId { get; init; } = null!;
         public string? ProductCategoryName { get; set; }
-        public string SeoTitle { get; set; } = null!;
-        public string SeoDescription { get; set; } = null!;
-        public string SeoKeywords { get; set; } = null!;
         public string imageDefault { get; set; } = null!;
     }
 
-    public class GetProductProfile : Profile
+    public class GetProductByCategoryProfile : Profile
     {
-        public GetProductProfile()
+        public GetProductByCategoryProfile()
         {
-            CreateMap<Product, ProductDto>()
+            CreateMap<Product, ProductClientDto>()
                        .ForMember(dest => dest.ProductCategoryName,
                        opt => opt.MapFrom(src => src.ProductCategory.Title))
                           .ForMember(dest => dest.imageDefault,
-                       opt => opt.MapFrom(src => src.ProductImage.FirstOrDefault(x => x.IsDefault).Image));
+                       opt => opt.MapFrom(src => src.ProductImage.FirstOrDefault(x => x.IsDefault).Image ?? "default.jpg"));
         }
     }
 
-    public class GetProductResult
+    public class GetProductByCategoryResult
     {
-        public PagedList<ProductDto> Data { get; init; } = null!;
+        public PagedList<ProductClientDto> Data { get; init; } = null!;
         public string Message { get; init; } = null!;
     }
 
-    public class GetProductRequest : IRequest<GetProductResult>
+    public class GetProductByCategoryRequest : IRequest<GetProductByCategoryResult>
     {
         public int Page { get; set; } = 1;
         public int Limit { get; set; } = 10;
         public string? Order { get; set; }
         public string? Search { get; set; }
+        public string? categoryId { get; set; }
     }
 
-    public class GetProductHandler : IRequestHandler<GetProductRequest, GetProductResult>
+    public class GetProductByCategoryHandler : IRequestHandler<GetProductByCategoryRequest, GetProductByCategoryResult>
     {
         private readonly IQueryContext _context;
         private readonly IMapper _mapper;
 
-        public GetProductHandler(
+        public GetProductByCategoryHandler(
             IQueryContext context,
             IMapper mapper
             )
@@ -78,12 +73,18 @@ namespace Application.Features.Products.Queries
             _mapper = mapper;
         }
 
-        public async Task<GetProductResult> Handle(GetProductRequest request, CancellationToken cancellationToken)
+        public async Task<GetProductByCategoryResult> Handle(GetProductByCategoryRequest request, CancellationToken cancellationToken)
         {
             var query = _context.Product.ApplyIsDeletedFilter()
                                         .Include(x => x.ProductImage)
                                         .Include(x => x.ProductCategory)
                                         .AsQueryable();
+
+            if (!string.IsNullOrEmpty(request.categoryId))
+            {
+                var categoryIds = request.categoryId.Split(',').ToList();
+                query = query.Where(p => categoryIds.Contains(p.ProductCategoryId));
+            }
 
             if (!string.IsNullOrWhiteSpace(request.Search))
             {
@@ -93,7 +94,8 @@ namespace Application.Features.Products.Queries
                     c.Alias.ToLower().Contains(searchKeyword)
                 );
             }
-
+         
+          
             // Sắp xếp nếu có order
             if (!string.IsNullOrEmpty(request.Order))
             {
@@ -107,17 +109,15 @@ namespace Application.Features.Products.Queries
                     {
                         ("title", "asc") => query.OrderBy(x => x.Title),
                         ("title", "desc") => query.OrderByDescending(x => x.Title),
-                        ("salepercent", "asc") => query.OrderBy(x => x.SalePercent),
-                        ("salepercent", "desc") => query.OrderByDescending(x => x.SalePercent),
-                        //("", "asc") => query.OrderBy(x => x.HexCode),
-                        //("HexCode", "desc") => query.OrderByDescending(x => x.HexCode),
+                        ("viewcount", "asc") => query.OrderBy(x => x.ViewCount),
+                        ("viewcount", "desc") => query.OrderByDescending(x => x.ViewCount),
                         _ => query
                     };
                 }
             }
             else
             {
-                query = query.OrderByDescending(x => x.CreatedAt);
+                query = query.OrderBy(x => x.Title);
             }
 
             var total = await query.CountAsync(cancellationToken);
@@ -125,10 +125,10 @@ namespace Application.Features.Products.Queries
                 .Skip((request.Page - 1) * request.Limit)
                 .Take(request.Limit)
                 .ToListAsync(cancellationToken);
-            var dto = _mapper.Map<IEnumerable<ProductDto>>(items).ToList();
+            var dto = _mapper.Map<IEnumerable<ProductClientDto>>(items).ToList();
 
-            var pagedList = new PagedList<ProductDto>(dto, total, request.Page, request.Limit);
-            return new GetProductResult
+            var pagedList = new PagedList<ProductClientDto>(dto, total, request.Page, request.Limit);
+            return new GetProductByCategoryResult
             {
                 Data = pagedList,
                 Message = "Success"

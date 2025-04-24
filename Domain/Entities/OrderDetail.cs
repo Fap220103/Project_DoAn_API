@@ -19,6 +19,7 @@ namespace Domain.Entities
         public Order Order { get; set; }
         public ProductVariant ProductVariant { get; set; }
         public OrderDetail() : base() { } //for EF Core
+
         //public OrderDetail(
         //    string key,
         //    string value

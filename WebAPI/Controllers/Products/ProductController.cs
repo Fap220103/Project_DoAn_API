@@ -88,7 +88,18 @@ namespace WebAPI.Controllers.Products
                 Content = response
             });
         }
+        [HttpGet("GetByCategory")]
+        public async Task<ActionResult<ApiSuccessResult<GetProductByCategoryResult>>> GetProductByCategoryAsync([FromQuery] GetProductByCategoryRequest request, CancellationToken cancellationToken)
+        {
+            var response = await _sender.Send(request, cancellationToken);
 
+            return Ok(new ApiSuccessResult<GetProductByCategoryResult>
+            {
+                Code = StatusCodes.Status200OK,
+                Message = $"Success executing {nameof(GetProductByCategoryAsync)}",
+                Content = response
+            });
+        }
         [HttpGet("export-excel")]
         public async Task<IActionResult> ExportToExcel()
         {

@@ -1,4 +1,5 @@
 ﻿using Domain.Bases;
+using Domain.Constants;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -15,5 +16,21 @@ namespace Domain.Entities
         public string Content { get; set; } = null!;
         public int Rate { get; set; }
         public DateTime CreatedDate { get; set; }
+        public Product Product { get; set; }
+        public ReviewProduct() : base() { } //for EF Core
+        public ReviewProduct(
+            string productId,
+            string customerId,
+            string content,
+            int rate
+        )
+        {
+            ProductId = productId.Trim();
+            CustomerId = customerId.Trim();
+            Content = content.Trim();
+            Rate = rate;
+            CreatedDate = DateTime.Now;
+        }
+
     }
 }

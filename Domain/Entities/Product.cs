@@ -31,6 +31,7 @@ namespace Domain.Entities
         public ProductCategory ProductCategory { get; set; }
         public ICollection<ProductImage> ProductImage { get; set; } = new Collection<ProductImage>();
         public ICollection<ProductVariant> ProductVariants { get; set; } = new Collection<ProductVariant>();
+        public  ICollection<ReviewProduct> ReviewProducts { get; set; } = new Collection<ReviewProduct>();
         public Product() : base() { } //for EF Core
         public Product(
             string? userId,
