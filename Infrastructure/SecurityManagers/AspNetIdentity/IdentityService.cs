@@ -304,7 +304,11 @@ namespace Infrastructure.SecurityManagers.AspNetIdentity
         public async Task<RegisterUserResult> RegisterUserAsync(string email, string password, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
-
+            var existingUser = await _userManager.FindByEmailAsync(email);
+            if (existingUser != null)
+            {
+                throw new IdentityException("Email đã được sử dụng.");
+            }
             var user = new ApplicationUser(
                 email
             );

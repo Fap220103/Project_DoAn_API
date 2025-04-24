@@ -18,7 +18,7 @@ namespace WebAPI.Controllers.Accounts
         {
             _configuration = configuration;
         }
-        [HttpPost("RegisterUser")]
+        [HttpPost("Register")]
         public async Task<ActionResult<ApiSuccessResult<RegisterUserResult>>> RegisterUserAsync(RegisterUserRequest request, CancellationToken cancellationToken)
         {
             var response = await _sender.Send(request, cancellationToken);

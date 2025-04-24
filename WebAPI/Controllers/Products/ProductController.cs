@@ -88,7 +88,7 @@ namespace WebAPI.Controllers.Products
                 Content = response
             });
         }
-        [HttpGet("GetByCategory")]
+        [HttpGet("GetByCategoryId")]
         public async Task<ActionResult<ApiSuccessResult<GetProductByCategoryResult>>> GetProductByCategoryAsync([FromQuery] GetProductByCategoryRequest request, CancellationToken cancellationToken)
         {
             var response = await _sender.Send(request, cancellationToken);

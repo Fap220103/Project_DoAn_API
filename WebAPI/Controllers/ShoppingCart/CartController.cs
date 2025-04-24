@@ -16,14 +16,28 @@ namespace WebAPI.Controllers.ShoppingCart
         public CartController(ISender sender) : base(sender)
         {
         }
-        [HttpPost("AddItemToCart")]
+        //[HttpPost("AddItemToCart")]
+        //public async Task<ActionResult<ApiSuccessResult<AddItemToCartResult>>> AddItemAsync(
+        //    [FromQuery] string userId, 
+        //    [FromQuery] int Quantity,
+        //    [FromBody] CartItem item, 
+        //    CancellationToken cancellationToken)
+        //{
+        //    var request = new AddItemToCartRequest { userId = userId, Item = item };
+        //    var response = await _sender.Send(request, cancellationToken);
+
+        //    return Ok(new ApiSuccessResult<AddItemToCartResult>
+        //    {
+        //        Code = StatusCodes.Status200OK,
+        //        Message = $"Success executing {nameof(AddItemAsync)}",
+        //        Content = response
+        //    });
+        //}
+        [HttpPost("SyncCart")]
         public async Task<ActionResult<ApiSuccessResult<AddItemToCartResult>>> AddItemAsync(
-            [FromQuery] string userId, 
-            [FromQuery] int Quantity,
-            [FromBody] CartItem item, 
+            AddItemToCartRequest request,
             CancellationToken cancellationToken)
         {
-            var request = new AddItemToCartRequest { userId = userId, Quantity = Quantity, Item = item };
             var response = await _sender.Send(request, cancellationToken);
 
             return Ok(new ApiSuccessResult<AddItemToCartResult>
@@ -78,9 +92,9 @@ namespace WebAPI.Controllers.ShoppingCart
         }
 
         [HttpGet("GetCart")]
-        public async Task<ActionResult<ApiSuccessResult<GetCartResult>>> GetCartAsync(CancellationToken cancellationToken)
+        public async Task<ActionResult<ApiSuccessResult<GetCartResult>>> GetCartAsync([FromQuery] string userId, CancellationToken cancellationToken)
         {
-            var request = new GetCartRequest();
+            var request = new GetCartRequest { userId = userId };
             var response = await _sender.Send(request, cancellationToken);
 
             return Ok(new ApiSuccessResult<GetCartResult>

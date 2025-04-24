@@ -8,8 +8,10 @@ namespace Domain.Entities
 {
     public class CartItem
     {
-        public string ProductId { get; set; }
+        public string ProductVariantId { get; set; }
         public string ProductName { get; set; }
+        public string SizeName { get; set; }
+        public string ColorName { get; set; }
         public int Quantity { get; set; }
         public string Image {  get; set; }
         public decimal Price { get; set; }
@@ -22,7 +24,7 @@ namespace Domain.Entities
         public List<CartItem> Items { get; set; } = new();
         public void AddToCart(CartItem item, int quantity)
         {
-            var checkExits = Items.FirstOrDefault(x => x.ProductId == item.ProductId);
+            var checkExits = Items.FirstOrDefault(x => x.ProductVariantId == item.ProductVariantId);
             if (checkExits != null)
             {
                 checkExits.Quantity += quantity;
@@ -35,7 +37,7 @@ namespace Domain.Entities
         }
         public void Remove(string id)
         {
-            var checkExits = Items.FirstOrDefault(x => x.ProductId.Equals(id));
+            var checkExits = Items.FirstOrDefault(x => x.ProductVariantId.Equals(id));
             if (checkExits != null)
             {
                 Items.Remove(checkExits);
@@ -45,7 +47,7 @@ namespace Domain.Entities
         }
         public void UpdateQuantity(string id, int quantity)
         {
-            var checkExits = Items.FirstOrDefault(x => x.ProductId.Equals(id));
+            var checkExits = Items.FirstOrDefault(x => x.ProductVariantId.Equals(id));
             if (checkExits != null)
             {
                 checkExits.Quantity = quantity;

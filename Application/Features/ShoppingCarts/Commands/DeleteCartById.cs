@@ -50,7 +50,7 @@ namespace Application.Features.ShoppingCarts.Commands
             Cart cart = await _cartService.GetCartAsync(request.UserId);
             if (cart != null)
             {
-                var checkProduct = cart.Items.FirstOrDefault(x => x.ProductId == request.ProductId);
+                var checkProduct = cart.Items.FirstOrDefault(x => x.ProductVariantId == request.ProductId);
                 if (checkProduct != null)
                 {
                     cart.Remove(request.ProductId);
