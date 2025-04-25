@@ -27,6 +27,18 @@ namespace WebAPI.Controllers.UserProfiles
                 Content = response
             });
         }
+        [HttpGet("GetProfile")]
+        public async Task<ActionResult<ApiSuccessResult<GetUserByIdResult>>> GetUserByIdAsync([FromQuery] GetUserByIdRequest request, CancellationToken cancellationToken)
+        {
+            var response = await _sender.Send(request, cancellationToken);
+
+            return Ok(new ApiSuccessResult<GetUserByIdResult>
+            {
+                Code = StatusCodes.Status200OK,
+                Message = $"Success executing {nameof(GetUserByIdAsync)}",
+                Content = response
+            });
+        }
 
         [HttpPost]
         public async Task<ActionResult<ApiSuccessResult<CreateUserResult>>> CreateUserAsync(CreateUserRequest request, CancellationToken cancellationToken)
@@ -50,6 +62,18 @@ namespace WebAPI.Controllers.UserProfiles
             {
                 Code = StatusCodes.Status200OK,
                 Message = $"Success executing {nameof(UpdateUserAsync)}",
+                Content = response
+            });
+        }
+        [HttpPut("UpdateProfile")]
+        public async Task<ActionResult<ApiSuccessResult<UpdateProfileResult>>> UpdateProfileAsync([FromForm] UpdateProfileRequest request, CancellationToken cancellationToken)
+        {
+            var response = await _sender.Send(request, cancellationToken);
+
+            return Ok(new ApiSuccessResult<UpdateProfileResult>
+            {
+                Code = StatusCodes.Status200OK,
+                Message = $"Success executing {nameof(UpdateProfileAsync)}",
                 Content = response
             });
         }

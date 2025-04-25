@@ -23,18 +23,30 @@ namespace WebAPI.Controllers.ShippingAddress
                 Content = response
             });
         }
-        [HttpPost("ChangeDefaultAddress")]
-        public async Task<ActionResult<ApiSuccessResult<ChangeDefaultResult>>> ChangeDefaultAsync(ChangeDefaultRequest request, CancellationToken cancellationToken)
+        [HttpPut]
+        public async Task<ActionResult<ApiSuccessResult<ChangeDefaultAddressResult>>> ChangeDefaultAddressAsync(ChangeDefaultAddressRequest request, CancellationToken cancellationToken)
         {
             var response = await _sender.Send(request, cancellationToken);
 
-            return Ok(new ApiSuccessResult<ChangeDefaultResult>
+            return Ok(new ApiSuccessResult<ChangeDefaultAddressResult>
             {
                 Code = StatusCodes.Status200OK,
-                Message = $"Success executing {nameof(ChangeDefaultAsync)}",
+                Message = $"Success executing {nameof(ChangeDefaultAddressAsync)}",
                 Content = response
             });
         }
+        //[HttpPost("ChangeDefaultAddress")]
+        //public async Task<ActionResult<ApiSuccessResult<ChangeDefaultResult>>> ChangeDefaultAsync([FromBody] ChangeDefaultRequest request, CancellationToken cancellationToken)
+        //{
+        //    var response = await _sender.Send(request, cancellationToken);
+
+        //    return Ok(new ApiSuccessResult<ChangeDefaultResult>
+        //    {
+        //        Code = StatusCodes.Status200OK,
+        //        Message = $"Success executing {nameof(ChangeDefaultAsync)}",
+        //        Content = response
+        //    });
+        //}
 
         [HttpDelete("{id}")]
         public async Task<ActionResult<ApiSuccessResult<DeleteShippingAddressResult>>> DeleteShippingAddressAsync(string id, CancellationToken cancellationToken)
@@ -51,7 +63,7 @@ namespace WebAPI.Controllers.ShippingAddress
         }
 
         [HttpGet]
-        public async Task<ActionResult<ApiSuccessResult<GetShippingAddressResult>>> GetShippingAddressAsync(GetShippingAddressRequest request, CancellationToken cancellationToken)
+        public async Task<ActionResult<ApiSuccessResult<GetShippingAddressResult>>> GetShippingAddressAsync([FromQuery] GetShippingAddressRequest request, CancellationToken cancellationToken)
         {
             var response = await _sender.Send(request, cancellationToken);
 

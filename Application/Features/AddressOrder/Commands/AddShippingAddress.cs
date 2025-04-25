@@ -68,6 +68,8 @@ namespace Application.Features.AddressOrder.Commands
                 if (oldDefault != null)
                 {
                     oldDefault.IsDefault = false;
+                    _context.ShippingAddress.Update(oldDefault);
+                    await _context.SaveChangesAsync();
                 }
             }
 

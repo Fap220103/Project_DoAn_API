@@ -1,4 +1,5 @@
 ﻿using Application.Features.Accounts.Commands;
+using Application.Features.Accounts.Dtos;
 using Application.Features.Accounts.Queries;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -24,6 +25,7 @@ namespace Application.Services.Externals
         Task<string> ForgotPasswordConfirmationAsync(string email, string tempPassword, string code, CancellationToken cancellationToken = default);
         Task<string?> GetCustomerNameAsync(string customerId, CancellationToken cancellationToken = default);
         Task<bool> IsUserExistsAsync(string userId, CancellationToken cancellationToken = default);
-
+        Task<ApplicationUserDto> GetUserByIdAsync(string userId, CancellationToken cancellationToken = default);
+        Task<UpdateProfileResult> UpdateProfileAsync(string id, string username, string phone, IFormFile image, CancellationToken cancellationToken = default);
     }
 }

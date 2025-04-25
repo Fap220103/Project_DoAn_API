@@ -12,22 +12,22 @@ using System.Threading.Tasks;
 
 namespace Application.Features.AddressOrder.Commands
 {
-    public class ChangeDefaultResult
+    public class ChangeDefaultAddressResult
     {
         public string Id { get; init; } = null!;
         public string Message { get; init; } = null!;
     }
 
-    public class ChangeDefaultRequest : IRequest<ChangeDefaultResult>
+    public class ChangeDefaultAddressRequest : IRequest<ChangeDefaultAddressResult>
     {
         public string Id { get; init; }
         public string CustomerId { get; init; }
 
     }
 
-    public class ChangeDefaultValidator : AbstractValidator<ChangeDefaultRequest>
+    public class ChangeDefaultAddressValidator : AbstractValidator<ChangeDefaultAddressRequest>
     {
-        public ChangeDefaultValidator()
+        public ChangeDefaultAddressValidator()
         {
             RuleFor(x => x.Id)
                 .NotEmpty();
@@ -37,13 +37,13 @@ namespace Application.Features.AddressOrder.Commands
     }
 
 
-    public class ChangeDefaultHandler : IRequestHandler<ChangeDefaultRequest, ChangeDefaultResult>
+    public class ChangeDefaultAddressHandler : IRequestHandler<ChangeDefaultAddressRequest, ChangeDefaultAddressResult>
     {
         private readonly IBaseCommandRepository<ShippingAddress> _repository;
         private readonly ICommandContext _context;
         private readonly IUnitOfWork _unitOfWork;
 
-        public ChangeDefaultHandler(
+        public ChangeDefaultAddressHandler(
             IBaseCommandRepository<ShippingAddress> repository,
             ICommandContext context,
             IUnitOfWork unitOfWork
@@ -54,12 +54,14 @@ namespace Application.Features.AddressOrder.Commands
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<ChangeDefaultResult> Handle(ChangeDefaultRequest request, CancellationToken cancellationToken)
+        public async Task<ChangeDefaultAddressResult> Handle(ChangeDefaultAddressRequest request, CancellationToken cancellationToken)
         {
             var entityDefault = _context.ShippingAddress.FirstOrDefault(x => x.IsDefault && x.UserId == request.CustomerId);
             if (entityDefault != null)
             {
                 entityDefault.IsDefault = false;
+                _context.ShippingAddress.Update(entityDefault);
+                _context.SaveChangesAsync();
             }
             var entity = await _repository.GetByIdAsync(request.Id, cancellationToken);
             if(entity == null)
@@ -70,7 +72,7 @@ namespace Application.Features.AddressOrder.Commands
           
             await _unitOfWork.SaveAsync(cancellationToken);
 
-            return new ChangeDefaultResult
+            return new ChangeDefaultAddressResult
             {
                 Id = request.Id,
                 Message = "Success"

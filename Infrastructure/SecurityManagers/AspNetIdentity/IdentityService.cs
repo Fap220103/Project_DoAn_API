@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Mysqlx.Crud;
 using Org.BouncyCastle.Asn1.Ocsp;
 using System;
 using System.Collections.Generic;
@@ -25,6 +26,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Infrastructure.SecurityManagers.AspNetIdentity
 {
@@ -531,6 +533,78 @@ namespace Infrastructure.SecurityManagers.AspNetIdentity
             var user = await _userManager.FindByIdAsync(userId);
             return user != null;
         }
+
+        public async Task<ApplicationUserDto> GetUserByIdAsync(string userId, CancellationToken cancellationToken = default)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null) return null;
+
+            return new ApplicationUserDto
+            {
+                Id = user.Id,
+                UserName = user.UserName,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                ProfilePictureName = user.ProfilePictureName,
+                EmailConfirmed = user.EmailConfirmed,
+                Status = user.Status,
+                CreatedAt = user.CreatedAt,
+                Roles = null
+            };
+        }
+        public async Task<UpdateProfileResult> UpdateProfileAsync(string id, string username, string phone, IFormFile image, CancellationToken cancellationToken = default)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+                throw new IdentityException($"User not found. ID: {id}");
+
+            string imageUrl = null;
+
+            if (image != null && image.Length > 0)
+            {
+                string existingImageUrl = user.ProfilePictureName;
+                if (!string.IsNullOrEmpty(existingImageUrl))
+                {
+                    var deleteResult = await _photoService.DeletePhotoAsync(existingImageUrl);
+                    if (deleteResult == null)
+                        throw new IdentityException("Xóa ảnh không thành công");
+                }
+                var uploadResult = await _photoService.AddPhotoAsync(image);
+                if (uploadResult == null)
+                    throw new IdentityException("Tải ảnh lên không thành công");
+
+                imageUrl = uploadResult.Url.ToString();
+            }
+            else
+            {
+                imageUrl = user.ProfilePictureName;
+            }
+            user.UserName = username;
+            if (!string.IsNullOrEmpty(phone))
+            {
+                user.PhoneNumber = phone;
+            }
+
+            user.ProfilePictureName = imageUrl;
+          
+
+            var result = await _userManager.UpdateAsync(user);
+            if (!result.Succeeded)
+            {
+                var errorMessages = string.Join("; ", result.Errors.Select(e => e.Description));
+                throw new IdentityException($"Cập nhật user thất bại: {errorMessages}");
+            }
+
+            return new UpdateProfileResult
+            {
+                Id = user.Id,
+                Email = user.Email,
+                PhoneNumber = phone,
+                UserName = username,
+            };
+        }
+
     }
 
 }
