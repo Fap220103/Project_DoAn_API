@@ -605,6 +605,31 @@ namespace Infrastructure.SecurityManagers.AspNetIdentity
             };
         }
 
+        public async Task<ChangePassResult> ChangePasswordAsync(string currentPass, string newPass, string userId, CancellationToken cancellationToken = default)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                throw new IdentityException(ExceptionConsts.EntitiyNotFound);
+            }
+            var result = await _userManager.ChangePasswordAsync(user, currentPass, newPass);
+            if (result.Succeeded)
+            {
+                return new ChangePassResult
+                {
+                    userId = user.Id,
+                    Message = "Success",
+                    Success = true,
+                };
+            }
+            return new ChangePassResult
+            {
+                userId = user.Id,
+                Message = "Fail",
+                Success = false,
+            };
+
+        }
     }
 
 }
