@@ -23,5 +23,7 @@ namespace Application.Services.Externals
         Task<ForgotPasswordResult> ForgotPasswordAsync(string email, CancellationToken cancellationToken = default);
         Task<string> ForgotPasswordConfirmationAsync(string email, string tempPassword, string code, CancellationToken cancellationToken = default);
         Task<string?> GetCustomerNameAsync(string customerId, CancellationToken cancellationToken = default);
+        Task<bool> IsUserExistsAsync(string userId, CancellationToken cancellationToken = default);
+
     }
 }

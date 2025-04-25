@@ -16,24 +16,7 @@ namespace WebAPI.Controllers.ShoppingCart
         public CartController(ISender sender) : base(sender)
         {
         }
-        //[HttpPost("AddItemToCart")]
-        //public async Task<ActionResult<ApiSuccessResult<AddItemToCartResult>>> AddItemAsync(
-        //    [FromQuery] string userId, 
-        //    [FromQuery] int Quantity,
-        //    [FromBody] CartItem item, 
-        //    CancellationToken cancellationToken)
-        //{
-        //    var request = new AddItemToCartRequest { userId = userId, Item = item };
-        //    var response = await _sender.Send(request, cancellationToken);
-
-        //    return Ok(new ApiSuccessResult<AddItemToCartResult>
-        //    {
-        //        Code = StatusCodes.Status200OK,
-        //        Message = $"Success executing {nameof(AddItemAsync)}",
-        //        Content = response
-        //    });
-        //}
-        [HttpPost("SyncCart")]
+        [HttpPost("AddItemToCart")]
         public async Task<ActionResult<ApiSuccessResult<AddItemToCartResult>>> AddItemAsync(
             AddItemToCartRequest request,
             CancellationToken cancellationToken)
@@ -47,11 +30,24 @@ namespace WebAPI.Controllers.ShoppingCart
                 Content = response
             });
         }
-
-        [HttpPost("UpdateCart")]
-        public async Task<ActionResult<ApiSuccessResult<UpdateCartResult>>> UpdateCartAsync([FromQuery] string productId, [FromQuery] int Quantity,[FromQuery] string userId, CancellationToken cancellationToken)
+        [HttpPost("SyncCart")]
+        public async Task<ActionResult<ApiSuccessResult<SyncCartResult>>> SyncCartAsync(
+            SyncCartRequest request,
+            CancellationToken cancellationToken)
         {
-            var request = new UpdateCartRequest { ProductId = productId, Quantity = Quantity, UserId = userId };
+            var response = await _sender.Send(request, cancellationToken);
+
+            return Ok(new ApiSuccessResult<SyncCartResult>
+            {
+                Code = StatusCodes.Status200OK,
+                Message = $"Success executing {nameof(SyncCartAsync)}",
+                Content = response
+            });
+        }
+
+        [HttpPost("SaveCart")]
+        public async Task<ActionResult<ApiSuccessResult<UpdateCartResult>>> UpdateCartAsync(UpdateCartRequest request, CancellationToken cancellationToken)
+        {
             var response = await _sender.Send(request, cancellationToken);
 
             return Ok(new ApiSuccessResult<UpdateCartResult>
@@ -63,8 +59,9 @@ namespace WebAPI.Controllers.ShoppingCart
         }
 
         [HttpDelete("DeleteCart")]
-        public async Task<ActionResult<ApiSuccessResult<DeleteCartResult>>> DeleteCartAsync(DeleteCartRequest request, CancellationToken cancellationToken)
+        public async Task<ActionResult<ApiSuccessResult<DeleteCartResult>>> DeleteCartAsync([FromQuery] string userId, CancellationToken cancellationToken)
         {
+            var request = new DeleteCartRequest { userId = userId };
             var response = await _sender.Send(request, cancellationToken);
 
             return Ok(new ApiSuccessResult<DeleteCartResult>
@@ -74,13 +71,13 @@ namespace WebAPI.Controllers.ShoppingCart
                 Content = response
             });
         }
-        [HttpDelete("DeleteCartById")]
+        [HttpDelete("RemoveCartItem")]
         public async Task<ActionResult<ApiSuccessResult<DeleteCartByIdResult>>> DeleteCartByIdAsync(
-            [FromQuery] string ProductId,
+            [FromQuery] string ProductVariantId,
             [FromQuery] string UserId,
             CancellationToken cancellationToken)
         {
-            var request = new DeleteCartByIdRequest { ProductId = ProductId, UserId = UserId };
+            var request = new DeleteCartByIdRequest { ProductVariantId = ProductVariantId, UserId = UserId };
             var response = await _sender.Send(request, cancellationToken);
 
             return Ok(new ApiSuccessResult<DeleteCartByIdResult>

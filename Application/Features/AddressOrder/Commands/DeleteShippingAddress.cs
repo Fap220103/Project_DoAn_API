@@ -9,23 +9,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Features.Configs.Commands
+namespace Application.Features.AddressOrder.Commands
 {
-    public class DeleteSettingResult
+    public class DeleteShippingAddressResult
     {
         public string Id { get; init; } = null!;
         public string Message { get; init; } = null!;
     }
 
-    public class DeleteSettingRequest : IRequest<DeleteSettingResult>
+    public class DeleteShippingAddressRequest : IRequest<DeleteShippingAddressResult>
     {
         public string Id { get; init; } = null!;
-        public string? UserId { get; init; }
     }
 
-    public class DeleteSettingValidator : AbstractValidator<DeleteSettingRequest>
+    public class DeleteShippingAddressValidator : AbstractValidator<DeleteShippingAddressRequest>
     {
-        public DeleteSettingValidator()
+        public DeleteShippingAddressValidator()
         {
             RuleFor(x => x.Id)
                 .NotEmpty();
@@ -33,13 +32,13 @@ namespace Application.Features.Configs.Commands
     }
 
 
-    public class DeleteSettingHandler : IRequestHandler<DeleteSettingRequest, DeleteSettingResult>
+    public class DeleteShippingAddressHandler : IRequestHandler<DeleteShippingAddressRequest, DeleteShippingAddressResult>
     {
-        private readonly IBaseCommandRepository<Setting> _repository;
+        private readonly IBaseCommandRepository<ShippingAddress> _repository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public DeleteSettingHandler(
-            IBaseCommandRepository<Setting> repository,
+        public DeleteShippingAddressHandler(
+            IBaseCommandRepository<ShippingAddress> repository,
             IUnitOfWork unitOfWork
             )
         {
@@ -47,7 +46,7 @@ namespace Application.Features.Configs.Commands
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<DeleteSettingResult> Handle(DeleteSettingRequest request, CancellationToken cancellationToken = default)
+        public async Task<DeleteShippingAddressResult> Handle(DeleteShippingAddressRequest request, CancellationToken cancellationToken = default)
         {
             var entity = await _repository.GetByIdAsync(request.Id, cancellationToken);
 
@@ -56,10 +55,15 @@ namespace Application.Features.Configs.Commands
                 throw new ApplicationException($"{ExceptionConsts.EntitiyNotFound} {request.Id}");
             }
 
+            if(entity.IsDefault)
+            {
+                throw new ApplicationException("Không được phép xóa địa chỉ mặc định");
+            }
+
             _repository.Purge(entity);
             await _unitOfWork.SaveAsync(cancellationToken);
 
-            return new DeleteSettingResult
+            return new DeleteShippingAddressResult
             {
                 Id = entity.Id,
                 Message = "Success"

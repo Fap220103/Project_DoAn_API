@@ -37,7 +37,7 @@ namespace Application.Features.ShoppingCarts.Queries
 
         public async Task<GetCartResult> Handle(GetCartRequest request, CancellationToken cancellationToken)
         {
-            Cart cart = await _cartService.GetCartAsync(request.userId);
+            Cart cart = await _cartService.GetCartAsync(request.userId) ?? new Cart { UserId = request.userId };
 
             return new GetCartResult
             {

@@ -32,11 +32,12 @@ namespace Infrastructure.DataAccessManagers.EFCores.Contexts
         public DbSet<ProductImage> ProductImage { get ; set ; }
         public DbSet<ProductVariant> ProductVariant { get; set; }
         public DbSet<ReviewProduct> ReviewProduct { get; set; }
+        public DbSet<ShippingAddress> ShippingAddress { get; set; }
         public DbSet<Setting> Setting { get; set; }
         public DbSet<Size> Size { get ; set ; }
         public DbSet<Token> Token { get; set; }
         public DbSet<ApplicationUser> Users { get; set; }
-     
+      
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -51,6 +52,7 @@ namespace Infrastructure.DataAccessManagers.EFCores.Contexts
             modelBuilder.ApplyConfiguration(new ProductCategoryConfiguration());
             modelBuilder.ApplyConfiguration(new ProductImageConfiguration());
             modelBuilder.ApplyConfiguration(new ProductVariantConfiguration());
+            modelBuilder.ApplyConfiguration(new ShippingAddressConfiguration());
             modelBuilder.ApplyConfiguration(new SettingConfiguration());
             modelBuilder.ApplyConfiguration(new SizeConfiguration());
             modelBuilder.ApplyConfiguration(new TokenConfiguration());

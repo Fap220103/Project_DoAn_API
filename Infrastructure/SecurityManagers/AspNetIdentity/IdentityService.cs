@@ -204,7 +204,6 @@ namespace Infrastructure.SecurityManagers.AspNetIdentity
                     ProfilePictureName = u.ProfilePictureName,
                     EmailConfirmed = u.EmailConfirmed,
                     Status = u.Status,
-                    IsBlocked = u.IsBlocked,
                     CreatedAt = u.CreatedAt,
                     Roles = null
                 })
@@ -525,6 +524,12 @@ namespace Infrastructure.SecurityManagers.AspNetIdentity
                 .FirstOrDefaultAsync(cancellationToken);
 
             return user;
+        }
+
+        public async Task<bool> IsUserExistsAsync(string userId, CancellationToken cancellationToken = default)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            return user != null;
         }
     }
 

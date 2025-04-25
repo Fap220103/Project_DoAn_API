@@ -65,6 +65,5 @@ namespace WebAPI.Controllers.Discounts
                 Content = response
             });
         }
-       
     }
 }

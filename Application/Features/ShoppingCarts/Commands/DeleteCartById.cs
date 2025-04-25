@@ -19,7 +19,7 @@ namespace Application.Features.ShoppingCarts.Commands
 
     public class DeleteCartByIdRequest : IRequest<DeleteCartByIdResult>
     {
-        public string ProductId { get; init; } = null!;
+        public string ProductVariantId { get; init; } = null!;
         public string UserId { get; init; } = null!;
     }
 
@@ -27,7 +27,7 @@ namespace Application.Features.ShoppingCarts.Commands
     {
         public DeleteCartByIdValidator()
         {
-            RuleFor(x => x.ProductId)
+            RuleFor(x => x.ProductVariantId)
                 .NotEmpty();
         }
     }
@@ -50,20 +50,16 @@ namespace Application.Features.ShoppingCarts.Commands
             Cart cart = await _cartService.GetCartAsync(request.UserId);
             if (cart != null)
             {
-                var checkProduct = cart.Items.FirstOrDefault(x => x.ProductVariantId == request.ProductId);
-                if (checkProduct != null)
-                {
-                    cart.Remove(request.ProductId);
-                }
+                cart.Remove(request.ProductVariantId);   
             }
             else
             {
-                throw new ApplicationException($"{ExceptionConsts.CartNotFound} {request.ProductId}");
+                throw new ApplicationException($"{ExceptionConsts.CartNotFound} {request.ProductVariantId}");
             }
-
+            _cartService.SaveCartAsync(cart);
             return new DeleteCartByIdResult
             {
-                Id = request.ProductId,
+                Id = request.ProductVariantId,
                 Message = "Success"
             };
         }

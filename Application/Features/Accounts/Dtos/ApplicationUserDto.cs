@@ -15,7 +15,6 @@ namespace Application.Features.Accounts.Dtos
         public string? ProfilePictureName { get; init; }
         public bool EmailConfirmed { get; init; }
         public int Status { get; init; }
-        public bool IsBlocked { get; init; }
         public DateTime? CreatedAt { get; init; }
         public IList<string> Roles { get; set; } = new List<string>();
     }
