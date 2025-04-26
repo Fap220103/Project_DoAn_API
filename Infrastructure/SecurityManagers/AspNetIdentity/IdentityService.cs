@@ -417,17 +417,12 @@ namespace Infrastructure.SecurityManagers.AspNetIdentity
             var code = await _userManager.GeneratePasswordResetTokenAsync(user);
             code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
 
-            var clearTempPassword = Guid.NewGuid().ToString().Substring(0, _identitySettings.Password.RequiredLength);
-            var tempPassword = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(clearTempPassword));
-
             cancellationToken.ThrowIfCancellationRequested();
 
             return new ForgotPasswordResult
             {
                 Email = email,
-                TempPassword = tempPassword,
-                EmailConfirmationToken = code,
-                ClearTempPassword = clearTempPassword
+                EmailConfirmationToken = code
             };
         }
 
@@ -629,6 +624,26 @@ namespace Infrastructure.SecurityManagers.AspNetIdentity
                 Success = false,
             };
 
+        }
+
+        public async Task<string> ResetPasswordAsync(string email, string newPassword, string code, CancellationToken cancellationToken = default)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+
+            if (user == null)
+            {
+                throw new IdentityException($"Unable to load user with email: {email}");
+            }
+
+            code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
+            var result = await _userManager.ResetPasswordAsync(user, code, newPassword);
+
+            if (!result.Succeeded)
+            {
+                throw new IdentityException($"Error resetting your password");
+            }
+
+            return email;
         }
     }
 

@@ -6,6 +6,7 @@ using MimeKit;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Configuration;
+using MailKit.Security;
 
 namespace Infrastructure.EmailManagers
 {
@@ -14,10 +15,10 @@ namespace Infrastructure.EmailManagers
         private readonly ILogger<EmailService> _logger;
         private readonly EmailSettings _emailSettings;
 
-        public EmailService(ILogger<EmailService> logger, EmailSettings emailSettings)
+        public EmailService(ILogger<EmailService> logger, IOptions<EmailSettings> emailSettings)
         {
             _logger = logger;
-            _emailSettings = emailSettings;
+            _emailSettings = emailSettings.Value;
         }
 
         public async Task SendEmailAsync(string email, string subject, string htmlMessage)
@@ -38,7 +39,7 @@ namespace Infrastructure.EmailManagers
 
                 using (var client = new SmtpClient())
                 {
-                    await client.ConnectAsync(_emailSettings.SmtpHost, _emailSettings.SmtpPort, true);
+                    await client.ConnectAsync(_emailSettings.SmtpHost, _emailSettings.SmtpPort, SecureSocketOptions.StartTls);
                     await client.AuthenticateAsync(_emailSettings.SmtpUserName, _emailSettings.SmtpPassword);
                     await client.SendAsync(message);
                     await client.DisconnectAsync(true);
@@ -48,6 +49,7 @@ namespace Infrastructure.EmailManagers
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
+                throw new EmailException("Lỗi trong quá trình gửi mail");
             }
         }
     }

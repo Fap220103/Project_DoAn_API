@@ -13,8 +13,8 @@ namespace Application.Features.Accounts.Commands
     public class ForgotPasswordResult
     {
         public string Email { get; init; } = null!;
-        public string TempPassword { get; init; } = null!;
-        public string ClearTempPassword { get; init; } = null!;
+        //public string TempPassword { get; init; } = null!;
+        //public string ClearTempPassword { get; init; } = null!;
         public string? EmailConfirmationToken { get; init; }
         public string Host { get; init; } = null!;
     }
@@ -63,10 +63,8 @@ namespace Application.Features.Accounts.Commands
             var forgotPasswordEvent = new ForgotPasswordEvent
             (
                 result.Email,
-                result.TempPassword,
                 result.EmailConfirmationToken,
-                request.Host,
-                result.ClearTempPassword
+                request.Host
             );
 
             await _mediator.Publish(forgotPasswordEvent);
