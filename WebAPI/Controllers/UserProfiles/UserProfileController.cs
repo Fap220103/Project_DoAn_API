@@ -91,5 +91,17 @@ namespace WebAPI.Controllers.UserProfiles
                 Content = response
             });
         }
+        [HttpPost("ChangePass")]
+        public async Task<ActionResult<ApiSuccessResult<ChangePassResult>>> ChangePassAsync(ChangePassRequest request, CancellationToken cancellationToken)
+        {
+            var response = await _sender.Send(request, cancellationToken);
+
+            return Ok(new ApiSuccessResult<ChangePassResult>
+            {
+                Code = StatusCodes.Status200OK,
+                Message = $"Success executing {nameof(ChangePassAsync)}",
+                Content = response
+            });
+        }
     }
 }

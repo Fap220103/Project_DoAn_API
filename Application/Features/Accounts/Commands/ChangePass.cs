@@ -29,8 +29,7 @@ namespace Application.Features.Accounts.Commands
         public ChangePassValidator()
         {
             RuleFor(x => x.CurrentPass)
-                .NotEmpty()
-                .EmailAddress();
+                .NotEmpty();
 
             RuleFor(x => x.NewPass)
                 .NotEmpty();
