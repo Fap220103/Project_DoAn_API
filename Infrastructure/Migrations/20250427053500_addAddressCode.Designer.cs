@@ -4,6 +4,7 @@ using Infrastructure.DataAccessManagers.EFCores.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20250427053500_addAddressCode")]
+    partial class addAddressCode
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -209,10 +211,6 @@ namespace Infrastructure.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<string>("ShippingAddressId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(50)");
-
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
@@ -234,8 +232,6 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("Code")
                         .HasDatabaseName("IX_Order_Code");
-
-                    b.HasIndex("ShippingAddressId");
 
                     b.ToTable("Order");
                 });
@@ -877,17 +873,6 @@ namespace Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("ProductVariant");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Order", b =>
-                {
-                    b.HasOne("Domain.Entities.ShippingAddress", "ShippingAddress")
-                        .WithMany()
-                        .HasForeignKey("ShippingAddressId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ShippingAddress");
                 });
 
             modelBuilder.Entity("Domain.Entities.OrderDetail", b =>

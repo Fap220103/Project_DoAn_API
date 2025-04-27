@@ -29,6 +29,7 @@ namespace Application.Features.Orders.Commands
     {
         public string CustomerId { get; set; } = null!;
         public int TypePayment { get; set; }
+        public string ShippingAddressId { get; set; } = null!;
         public List<OrderItemDto> Items { get; set; } = new();
     }
 
@@ -36,7 +37,10 @@ namespace Application.Features.Orders.Commands
     {
         public CreateOrderValidator()
         {
-        
+            RuleFor(x => x.CustomerId)
+                  .NotEmpty();
+            RuleFor(x => x.ShippingAddressId)
+              .NotEmpty();
         }
     }
 
@@ -76,7 +80,8 @@ namespace Application.Features.Orders.Commands
                 totalAmount,
                 totalQuantity,
                 request.TypePayment,
-                status
+                status,
+                request.ShippingAddressId
             );
             order.OrderDetails = request.Items.Select(i => new OrderDetail
             {
@@ -96,19 +101,16 @@ namespace Application.Features.Orders.Commands
                 {
                     if (variant.Quantity < item.Quantity)
                     {
-                        // Nếu không đủ số lượng, trả về lỗi hoặc thông báo
                         throw new ApplicationException($"Không đủ số lượng sản phẩm {variant.Id} trong kho.");
                     }
                     else
                     {
-                        // Trừ số lượng tồn kho
                         variant.Quantity -= item.Quantity;
-                        _repositoryVariant.Update(variant);  // Cập nhật lại sản phẩm vào cơ sở dữ liệu
+                        _repositoryVariant.Update(variant);
                     }
                 }
                 else
                 {
-                    // Nếu không tìm thấy sản phẩm, có thể thông báo lỗi hoặc xử lý thêm.
                     throw new ApplicationException($"{ExceptionConsts.EntitiyNotFound}");  
                 }
             }

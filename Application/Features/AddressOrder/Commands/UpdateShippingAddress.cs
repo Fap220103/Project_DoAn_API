@@ -14,14 +14,15 @@ using System.Threading.Tasks;
 
 namespace Application.Features.AddressOrder.Commands
 {
-    public class AddShippingAddressResult
+    public class UpdateShippingAddressResult
     {
         public string Id { get; init; } = null!;
         public string Message { get; init; } = null!;
     }
 
-    public class AddShippingAddressRequest : IRequest<AddShippingAddressResult>
+    public class UpdateShippingAddressRequest : IRequest<UpdateShippingAddressResult>
     {
+        public string Id { get; init; } = null!;
         public string UserId { get; init; } = null!;
         public string RecipientName { get; init; } = null!;
         public string PhoneNumber { get; init; } = null!;
@@ -35,14 +36,14 @@ namespace Application.Features.AddressOrder.Commands
         public bool IsDefault { get; init; } = false;
     }
 
-    public class AddShippingAddressHandler : IRequestHandler<AddShippingAddressRequest, AddShippingAddressResult>
+    public class UpdateShippingAddressHandler : IRequestHandler<UpdateShippingAddressRequest, UpdateShippingAddressResult>
     {
         private readonly IBaseCommandRepository<ShippingAddress> _repository;
         private readonly ICommandContext _context;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IIdentityService _identityService;
 
-        public AddShippingAddressHandler(
+        public UpdateShippingAddressHandler(
             IBaseCommandRepository<ShippingAddress> repository,
             ICommandContext context,
             IUnitOfWork unitOfWork,
@@ -55,12 +56,17 @@ namespace Application.Features.AddressOrder.Commands
             _identityService = identityService;
         }
 
-        public async Task<AddShippingAddressResult> Handle(AddShippingAddressRequest request, CancellationToken cancellationToken)
+        public async Task<UpdateShippingAddressResult> Handle(UpdateShippingAddressRequest request, CancellationToken cancellationToken)
         {
             var userExists = await _identityService.IsUserExistsAsync(request.UserId, cancellationToken);
             if (!userExists)
             {
                 throw new ApplicationException($"Không tìm thấy người dùng với Id: {request.UserId}");
+            }
+            var addressExits = await _repository.GetByIdAsync(request.Id, cancellationToken);
+            if(addressExits == null)
+            {
+                throw new ApplicationException($"Không tìm thấy địa chỉ với Id: {request.Id}");
             }
 
             if (request.IsDefault)
@@ -76,8 +82,7 @@ namespace Application.Features.AddressOrder.Commands
                 }
             }
 
-            var newAddress = new ShippingAddress(
-                request.UserId,
+            addressExits.Update(
                 request.RecipientName,
                 request.PhoneNumber,
                 request.AddressLine,
@@ -90,12 +95,12 @@ namespace Application.Features.AddressOrder.Commands
                 request.IsDefault
             );
 
-            await _repository.CreateAsync(newAddress);
+            _repository.Update(addressExits);
             await _unitOfWork.SaveAsync(cancellationToken);
 
-            return new AddShippingAddressResult
+            return new UpdateShippingAddressResult
             {
-                Id = newAddress.Id,
+                Id = addressExits.Id,
                 Message = "Success"
             };
         }

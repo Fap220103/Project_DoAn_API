@@ -66,6 +66,17 @@ namespace WebAPI.Controllers.Orders
                 Content = response
             });
         }
-        
+        [HttpGet("GetOrderById")]
+        public async Task<ActionResult<ApiSuccessResult<GetOrderByIdResult>>> GetOrderByIdAsync([FromQuery] GetOrderByIdRequest request, CancellationToken cancellationToken)
+        {
+            var response = await _sender.Send(request, cancellationToken);
+
+            return Ok(new ApiSuccessResult<GetOrderByIdResult>
+            {
+                Code = StatusCodes.Status200OK,
+                Message = $"Success executing {nameof(GetOrderByIdAsync)}",
+                Content = response
+            });
+        }
     }
 }

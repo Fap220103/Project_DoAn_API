@@ -37,7 +37,7 @@ namespace Application.Features.AddressOrder.Queries
 
         public async Task<GetShippingAddressResult> Handle(GetShippingAddressRequest request, CancellationToken cancellationToken)
         {
-            var query = _context.ShippingAddress.Where(x=> x.UserId == request.userId).AsQueryable();
+            var query = _context.ShippingAddress.Where(x=> x.UserId == request.userId).OrderByDescending(x => x.IsDefault).AsQueryable();
             // Phân trang
             var skip = (request.Page - 1) * request.Limit;
             var items = await query

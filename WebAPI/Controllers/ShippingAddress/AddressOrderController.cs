@@ -35,6 +35,18 @@ namespace WebAPI.Controllers.ShippingAddress
                 Content = response
             });
         }
+        [HttpPut("UpdateAddress")]
+        public async Task<ActionResult<ApiSuccessResult<UpdateShippingAddressResult>>> UpdateShippingAddressAsync(UpdateShippingAddressRequest request, CancellationToken cancellationToken)
+        {
+            var response = await _sender.Send(request, cancellationToken);
+
+            return Ok(new ApiSuccessResult<UpdateShippingAddressResult>
+            {
+                Code = StatusCodes.Status200OK,
+                Message = $"Success executing {nameof(UpdateShippingAddressAsync)}",
+                Content = response
+            });
+        }
         //[HttpPost("ChangeDefaultAddress")]
         //public async Task<ActionResult<ApiSuccessResult<ChangeDefaultResult>>> ChangeDefaultAsync([FromBody] ChangeDefaultRequest request, CancellationToken cancellationToken)
         //{
@@ -75,5 +87,17 @@ namespace WebAPI.Controllers.ShippingAddress
             });
         }
 
+        [HttpGet("GetAddressDefault")]
+        public async Task<ActionResult<ApiSuccessResult<GetAddressDefaultResult>>> GetAddressDefaultAsync([FromQuery] GetAddressDefaultRequest request, CancellationToken cancellationToken)
+        {
+            var response = await _sender.Send(request, cancellationToken);
+
+            return Ok(new ApiSuccessResult<GetAddressDefaultResult>
+            {
+                Code = StatusCodes.Status200OK,
+                Message = $"Success executing {nameof(GetShippingAddressAsync)}",
+                Content = response
+            });
+        }
     }
 }

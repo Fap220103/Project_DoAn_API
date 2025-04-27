@@ -15,41 +15,10 @@ using System.Threading.Tasks;
 
 namespace Application.Features.Orders.Queries
 {
-    public class OrderDto
+   
+    public class GetOrderByIdProfile : Profile
     {
-        public string OrderId { get; set; } = null!;
-        public string CustomerId { get; set; } = null!;
-        public decimal TotalAmount { get; set; }
-        public int Status { get; set; }
-        public int TotalQuantity { get; set; }
-        public string OrderCode { get; set; } = null!;
-        public DateTime CreatedAt { get; set; }
-        public List<OrderDetailDto> items { get; set; } = new();
-        public ShippingAddressDto address { get; set; } = new();
-    }
-    public class OrderDetailDto
-    {
-        public string ProductVariantId { get; set; } = null!;
-        public int Quantity { get; set; }
-        public decimal Price { get; set; }
-        public string ProductName { get; set; }
-        public string ColorName { get; set; }
-        public string SizeName { get; set; }
-    }
-    public class ShippingAddressDto
-    {
-        public string UserId { get; set; }
-        public string RecipientName { get; set; }
-        public string PhoneNumber { get; set; }
-        public string AddressLine { get; set; }
-        public string Province { get; set; }
-        public string District { get; set; }
-        public string Ward { get; set; }
-    }
-
-    public class GetOrderProfile : Profile
-    {
-        public GetOrderProfile()
+        public GetOrderByIdProfile()
         {
             CreateMap<Order, OrderDto>()
                 .ForMember(dest => dest.OrderId, opt => opt.MapFrom(src => src.Id))
@@ -65,35 +34,34 @@ namespace Application.Features.Orders.Queries
                 .ForMember(dest => dest.ProductVariantId, opt => opt.MapFrom(src => src.ProductVariantId))
                 .ForMember(dest => dest.Quantity, opt => opt.MapFrom(src => src.Quantity))
                 .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.Price))
-                .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.ProductVariant.Product.Title))  
-                .ForMember(dest => dest.ColorName, opt => opt.MapFrom(src => src.ProductVariant.Color.Name))         
-                .ForMember(dest => dest.SizeName, opt => opt.MapFrom(src => src.ProductVariant.Size.Name));        
+                .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.ProductVariant.Product.Title))
+                .ForMember(dest => dest.ColorName, opt => opt.MapFrom(src => src.ProductVariant.Color.Name))
+                .ForMember(dest => dest.SizeName, opt => opt.MapFrom(src => src.ProductVariant.Size.Name));
 
             CreateMap<ShippingAddress, ShippingAddressDto>();
 
         }
     }
 
-    public class GetOrderResult
+    public class GetOrderByIdResult
     {
-        public PagedList<OrderDto> Data { get; init; } = null!;
+        public OrderDto Data { get; init; } = null!;
 
         public string Message { get; init; } = null!;
     }
 
-    public class GetOrderRequest : IRequest<GetOrderResult>
+    public class GetOrderByIdRequest : IRequest<GetOrderByIdResult>
     {
-        public int Page { get; set; } = 1;
-        public int Limit { get; set; } = 10;
+        public string orderId { get; set; } 
     }
 
-    public class GetOrderHandler : IRequestHandler<GetOrderRequest, GetOrderResult>
+    public class GetOrderByIdHandler : IRequestHandler<GetOrderByIdRequest, GetOrderByIdResult>
     {
         private readonly IQueryContext _context;
         private readonly IIdentityService _identityService;
         private readonly IMapper _mapper;
 
-        public GetOrderHandler(
+        public GetOrderByIdHandler(
             IQueryContext context,
             IIdentityService identityService,
             IMapper mapper
@@ -105,7 +73,7 @@ namespace Application.Features.Orders.Queries
             _mapper = mapper;
         }
 
-        public async Task<GetOrderResult> Handle(GetOrderRequest request, CancellationToken cancellationToken)
+        public async Task<GetOrderByIdResult> Handle(GetOrderByIdRequest request, CancellationToken cancellationToken)
         {
             var query = _context.Order.Include(x => x.OrderDetails)
                                         .ThenInclude(od => od.ProductVariant)
@@ -117,21 +85,13 @@ namespace Application.Features.Orders.Queries
                                             .ThenInclude(od => od.ProductVariant)
                                                 .ThenInclude(pv => pv.Size)   // Bao gồm thông tin kích thước
                                         .Include(x => x.ShippingAddress)
-                                        .AsQueryable();
+                                        .FirstOrDefault(x=> x.Id == request.orderId);
 
-            // Phân trang
-            var skip = (request.Page - 1) * request.Limit;
-            var items = await query
-                .Skip(skip)
-                .Take(request.Limit)
-                .ToListAsync(cancellationToken);
-
-            var total = await query.CountAsync(cancellationToken);
-            var dto = _mapper.Map<List<OrderDto>>(items);
-            var pagedList = new PagedList<OrderDto>(dto, total, request.Page, request.Limit);
-            return new GetOrderResult
+         
+            var dto = _mapper.Map<OrderDto>(query);
+            return new GetOrderByIdResult
             {
-                Data = pagedList,
+                Data = dto,
                 Message = "Success"
             };
         }

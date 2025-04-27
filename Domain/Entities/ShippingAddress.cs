@@ -14,8 +14,11 @@ namespace Domain.Entities
         public string RecipientName { get; set; }
         public string PhoneNumber { get; set; }
         public string AddressLine { get; set; }
+        public string ProvinceCode { get; set; }
         public string Province { get; set; }
+        public string DistrictCode { get; set; }
         public string District { get; set; }
+        public string WardCode { get; set; }
         public string Ward { get; set; }
         public bool IsDefault { get; set; }
         public ShippingAddress() : base() { } //for EF Core
@@ -27,16 +30,46 @@ namespace Domain.Entities
             string province,
             string district,
             string ward,
+            string provinceCode,
+            string districtCode,
+            string wardCode,
             bool isDefault
         )
         {
             UserId = userId.Trim();
-            RecipientName = recipientName;
-            PhoneNumber = phoneNumber;
-            AddressLine = addressLine;
-            Province = province;
-            District = district;
-            Ward = ward;
+            RecipientName = recipientName.Trim();
+            PhoneNumber = phoneNumber.Trim();
+            AddressLine = addressLine.Trim();
+            Province = province.Trim();
+            District = district.Trim();
+            Ward = ward.Trim();
+            ProvinceCode = provinceCode.Trim();
+            DistrictCode = districtCode.Trim();
+            WardCode = wardCode.Trim();
+            IsDefault = isDefault;
+        }
+        public void Update(
+            string recipientName,
+            string phoneNumber,
+            string addressLine,
+            string province,
+            string district,
+            string ward,
+            string provinceCode,
+            string districtCode,
+            string wardCode,
+            bool isDefault
+        )
+        {
+            RecipientName = recipientName.Trim();
+            PhoneNumber = phoneNumber.Trim();
+            AddressLine = addressLine.Trim();
+            Province = province.Trim();
+            District = district.Trim();
+            Ward = ward.Trim();
+            ProvinceCode = provinceCode.Trim();
+            DistrictCode = districtCode.Trim();
+            WardCode = wardCode.Trim();
             IsDefault = isDefault;
         }
     }

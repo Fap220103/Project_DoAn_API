@@ -18,6 +18,8 @@ namespace Domain.Entities
         public int Quantity { get; set; }
         public int TypePayment { get; set; }
         public int Status { get; set; }
+        public string ShippingAddressId { get; set; }
+        public ShippingAddress ShippingAddress { get; set; }
         public ICollection<OrderDetail> OrderDetails { get; set; } = new Collection<OrderDetail>();
         public Order() : base() { } //for EF Core
         public Order(
@@ -26,7 +28,8 @@ namespace Domain.Entities
             decimal totalAmount,
             int quantity,
             int typePayment,
-            int status
+            int status,
+            string shippingAddressId
             ) : base(userId)
         {
             Code = code.Trim();
@@ -35,6 +38,7 @@ namespace Domain.Entities
             TypePayment = typePayment;
             Status = status;
             CustomerId = userId;
+            ShippingAddressId = shippingAddressId;
         }
         public void Update(
             string? userId,
@@ -43,7 +47,8 @@ namespace Domain.Entities
             int quantity,
             int typePayment,
             string customerId,
-            int status
+            int status,
+            string shippingAddressId
           )
         {
             Code = code.Trim();
@@ -51,7 +56,7 @@ namespace Domain.Entities
             Quantity = quantity;
             TypePayment = typePayment;
             Status = status;
-
+            ShippingAddressId = shippingAddressId;
             SetAudit(userId);
         }
 
