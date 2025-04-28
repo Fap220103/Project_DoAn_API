@@ -24,5 +24,7 @@ namespace Application.Services.CQS
         public DbSet<ShippingAddress> ShippingAddress { get; set; }
         public DbSet<Size> Size { get; set; }
         public DbSet<Token> Token { get; set; }
+        public DbSet<UserDiscount> UserDiscount { get; set; }
+        
     }
 }

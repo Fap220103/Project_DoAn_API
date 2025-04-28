@@ -60,7 +60,6 @@ namespace WebAPI.Controllers.Products
             });
         }
         [AllowAnonymous]      
-        
         [HttpGet]
         public async Task<ActionResult<ApiSuccessResult<GetProductResult>>> GetProductAsync([FromQuery] GetProductRequest request,CancellationToken cancellationToken)
         {
@@ -73,6 +72,7 @@ namespace WebAPI.Controllers.Products
                 Content = response
             });
         }
+        [AllowAnonymous]
         [HttpGet("GetById")]
         public async Task<ActionResult<ApiSuccessResult<GetProductByIdResult>>> GetProductByIdAsync([FromQuery] string ProductId,CancellationToken cancellationToken)
         {
@@ -86,6 +86,7 @@ namespace WebAPI.Controllers.Products
                 Content = response
             });
         }
+        [AllowAnonymous]
         [HttpGet("GetByCategoryId")]
         public async Task<ActionResult<ApiSuccessResult<GetProductByCategoryResult>>> GetProductByCategoryAsync([FromQuery] GetProductByCategoryRequest request, CancellationToken cancellationToken)
         {

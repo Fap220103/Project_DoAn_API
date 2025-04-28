@@ -9,8 +9,8 @@ namespace Domain.Entities
 {
     public class UserDiscount : BaseEntity
     { 
-        public Guid UserId { get; set; } 
-        public int DiscountId { get; set; }
+        public string UserId { get; set; } 
+        public string DiscountId { get; set; }
         public bool IsUsed { get; set; } = false;
         public Discount Discount { get; set; }
     }

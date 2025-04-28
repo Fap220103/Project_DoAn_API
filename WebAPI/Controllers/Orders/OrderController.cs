@@ -1,5 +1,6 @@
 ﻿using Application.Features.Orders.Commands;
 using Application.Features.Orders.Queries;
+using Application.Features.ProductCategories.Commands;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -7,7 +8,6 @@ using WebAPI.Common.Models;
 
 namespace WebAPI.Controllers.Orders
 {
-    [Authorize(Roles = "Admin,Staff")]
     public class OrderController : BaseApiController
     {
         public OrderController(ISender sender) : base(sender)
@@ -25,18 +25,18 @@ namespace WebAPI.Controllers.Orders
                 Content = response
             });
         }
-        //[HttpPost("UpdateProductCategory")]
-        //public async Task<ActionResult<ApiSuccessResult<UpdateProductCategoryResult>>> UpdateProductCategoryAsync(UpdateProductCategoryRequest request, CancellationToken cancellationToken)
-        //{
-        //    var response = await _sender.Send(request, cancellationToken);
+        [HttpPut("UpdateOrderStatus")]
+        public async Task<ActionResult<ApiSuccessResult<UpdateOrderStatusResult>>> UpdateOrderStatusAsync(UpdateOrderStatusRequest request, CancellationToken cancellationToken)
+        {
+            var response = await _sender.Send(request, cancellationToken);
 
-        //    return Ok(new ApiSuccessResult<UpdateProductCategoryResult>
-        //    {
-        //        Code = StatusCodes.Status200OK,
-        //        Message = $"Success executing {nameof(UpdateProductCategoryAsync)}",
-        //        Content = response
-        //    });
-        //}
+            return Ok(new ApiSuccessResult<UpdateOrderStatusResult>
+            {
+                Code = StatusCodes.Status200OK,
+                Message = $"Success executing {nameof(UpdateOrderStatusAsync)}",
+                Content = response
+            });
+        }
 
         //[HttpDelete("{id}")]
         //public async Task<ActionResult<ApiSuccessResult<DeleteProductCategoryResult>>> DeleteProductCategoryAsync(string id, CancellationToken cancellationToken)
@@ -51,7 +51,6 @@ namespace WebAPI.Controllers.Orders
         //        Content = response
         //    });
         //}
-        [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<ApiSuccessResult<GetOrderResult>>> GetOrderAsync([FromQuery] GetOrderRequest request, CancellationToken cancellationToken)
         {

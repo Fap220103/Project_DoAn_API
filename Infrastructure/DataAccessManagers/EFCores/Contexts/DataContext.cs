@@ -37,7 +37,7 @@ namespace Infrastructure.DataAccessManagers.EFCores.Contexts
         public DbSet<Size> Size { get ; set ; }
         public DbSet<Token> Token { get; set; }
         public DbSet<ApplicationUser> Users { get; set; }
-      
+        public DbSet<UserDiscount> UserDiscount { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -56,6 +56,7 @@ namespace Infrastructure.DataAccessManagers.EFCores.Contexts
             modelBuilder.ApplyConfiguration(new SettingConfiguration());
             modelBuilder.ApplyConfiguration(new SizeConfiguration());
             modelBuilder.ApplyConfiguration(new TokenConfiguration());
+            modelBuilder.ApplyConfiguration(new UserDiscountConfiguration());
 
             modelBuilder.Entity<Color>().HasData(
                 new Color { Id = 1, Name = "Đỏ", HexCode = "#FF0000" },

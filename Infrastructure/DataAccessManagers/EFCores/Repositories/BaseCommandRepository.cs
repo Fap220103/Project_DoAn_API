@@ -87,5 +87,9 @@ namespace Infrastructure.DataAccessManagers.EFCores.Repositories
             return Task.CompletedTask;
         }
 
+        public async Task<T?> FindAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default)
+        {
+            return await _context.Set<T>().FirstOrDefaultAsync(predicate, cancellationToken);
+        }
     }
 }

@@ -24,6 +24,7 @@ namespace Domain.Entities
         public bool IsActive { get; set; } = true;
         public int? UsageLimit { get; set; } // Số lần dùng tối đa
         public int UsedCount { get; set; } = 0; // Số lần đã dùng
+        public ICollection<UserDiscount> UserDiscounts { get; set; } = new Collection<UserDiscount>();
         public Discount() : base() { } //for EF Core
         public Discount(
             string code,

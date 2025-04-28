@@ -1,9 +1,11 @@
-﻿using Application.Services.Externals;
+﻿using Application.Services.CQS.Commands;
+using Application.Services.Externals;
 using Application.Services.Repositories;
 using Domain.Constants;
 using Domain.Entities;
 using FluentValidation;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,7 +32,11 @@ namespace Application.Features.Orders.Commands
         public string CustomerId { get; set; } = null!;
         public int TypePayment { get; set; }
         public string ShippingAddressId { get; set; } = null!;
+
         public List<OrderItemDto> Items { get; set; } = new();
+        public string DiscountId { get; set; }
+        public decimal DiscountValue { get; set; } = 0;
+        public int DiscountType { get; set; } = 0;
     }
 
     public class CreateOrderValidator : AbstractValidator<CreateOrderRequest>
@@ -49,13 +55,15 @@ namespace Application.Features.Orders.Commands
     {
         private readonly IBaseCommandRepository<Order> _repository;
         private readonly IBaseCommandRepository<ProductVariant> _repositoryVariant;
+        private readonly ICommandContext _context;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICommonService _commonService;
         private readonly IVnPayService _vnPayService;
 
         public CreateOrderHandler(
             IBaseCommandRepository<Order> repository,
-             IBaseCommandRepository<ProductVariant> repositoryVariant,
+            IBaseCommandRepository<ProductVariant> repositoryVariant,
+            ICommandContext context,
             IUnitOfWork unitOfWork,
             ICommonService commonService,
             IVnPayService vnPayService
@@ -63,6 +71,7 @@ namespace Application.Features.Orders.Commands
         {
             _repository = repository;
             _repositoryVariant = repositoryVariant;
+            _context = context;
             _unitOfWork = unitOfWork;
             _commonService = commonService;
             _vnPayService = vnPayService;
@@ -73,6 +82,42 @@ namespace Application.Features.Orders.Commands
             var orderCode = _commonService.GenerateCode("DH");
             var totalAmount = request.Items.Sum(x => x.Quantity * x.Price);
             var totalQuantity = request.Items.Sum(x => x.Quantity);
+
+            if (request.DiscountValue > 0)
+            {
+                if (request.DiscountType == 0)
+                {
+                    totalAmount -= totalAmount * request.DiscountValue / 100;
+                }
+                else if (request.DiscountType == 1)
+                {
+                    totalAmount -= request.DiscountValue;
+                }
+
+                totalAmount = Math.Max(totalAmount, 0);
+
+                // xử lý số lượng discount
+                var userDiscountQuery = await _context.UserDiscount
+                                          .FirstOrDefaultAsync(x => x.UserId == request.CustomerId && x.Id == request.DiscountId);
+
+                if (userDiscountQuery != null)
+                {
+                    userDiscountQuery.IsUsed = true;
+                    _context.UserDiscount.Update(userDiscountQuery);
+                }
+                var discountQuery = await _context.Discount
+              .FirstOrDefaultAsync(x => x.Id == request.DiscountId);
+
+                if (discountQuery != null)
+                {
+                    discountQuery.UsedCount++;
+                    _context.Discount.Update(discountQuery);
+                }
+                _context.Discount.Update(discountQuery);
+
+                await _context.SaveChangesAsync();
+            }
+
             var status = 1;
             var order = new Order(
                 request.CustomerId,
@@ -111,15 +156,16 @@ namespace Application.Features.Orders.Commands
                 }
                 else
                 {
-                    throw new ApplicationException($"{ExceptionConsts.EntitiyNotFound}");  
+                    throw new ApplicationException($"{ExceptionConsts.EntitiyNotFound}");
                 }
             }
 
             await _unitOfWork.SaveAsync(cancellationToken);
             if (request.TypePayment == 2)
             {
-                _vnPayService.UrlPayment(request.TypePayment,orderCode);
+                _vnPayService.UrlPayment(request.TypePayment, orderCode);
             }
+
 
             return new CreateOrderResult
             {
