@@ -1,14 +1,14 @@
 ﻿using Application.Features.Discounts.Commands;
 using Application.Features.Discounts.Queries;
 using Application.Features.ProductCategories.Commands;
-using Application.Features.ProductCategories.Queries;
 using MediatR;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.Common.Models;
 
 namespace WebAPI.Controllers.Discounts
 {
+    [Authorize(Roles = "Admin")]
     public class DiscountController : BaseApiController
     {
         public DiscountController(ISender sender) : base(sender)
@@ -26,18 +26,18 @@ namespace WebAPI.Controllers.Discounts
                 Content = response
             });
         }
-        //[HttpPost("UpdateProductCategory")]
-        //public async Task<ActionResult<ApiSuccessResult<UpdateProductCategoryResult>>> UpdateProductCategoryAsync(UpdateProductCategoryRequest request, CancellationToken cancellationToken)
-        //{
-        //    var response = await _sender.Send(request, cancellationToken);
+        [HttpPut]
+        public async Task<ActionResult<ApiSuccessResult<UpdateDiscountResult>>> UpdateDiscountAsync(UpdateDiscountRequest request, CancellationToken cancellationToken)
+        {
+            var response = await _sender.Send(request, cancellationToken);
 
-        //    return Ok(new ApiSuccessResult<UpdateProductCategoryResult>
-        //    {
-        //        Code = StatusCodes.Status200OK,
-        //        Message = $"Success executing {nameof(UpdateProductCategoryAsync)}",
-        //        Content = response
-        //    });
-        //}
+            return Ok(new ApiSuccessResult<UpdateDiscountResult>
+            {
+                Code = StatusCodes.Status200OK,
+                Message = $"Success executing {nameof(UpdateDiscountAsync)}",
+                Content = response
+            });
+        }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult<ApiSuccessResult<DeleteDiscountResult>>> DeleteDiscountAsync(string id, CancellationToken cancellationToken)
@@ -52,7 +52,7 @@ namespace WebAPI.Controllers.Discounts
                 Content = response
             });
         }
-
+        [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<ApiSuccessResult<GetDiscountResult>>> GetDiscountAsync([FromQuery] GetDiscountRequest request, CancellationToken cancellationToken)
         {

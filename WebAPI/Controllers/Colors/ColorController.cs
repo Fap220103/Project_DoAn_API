@@ -3,12 +3,14 @@ using Application.Features.Colors.Queries;
 using Application.Features.ProductCategories.Commands;
 using Application.Features.ProductCategories.Queries;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.Common.Models;
 
 namespace WebAPI.Controllers.Colors
 {
+    [Authorize(Roles = "Admin")]
     public class ColorController : BaseApiController
     {
         public ColorController(ISender sender) : base(sender)

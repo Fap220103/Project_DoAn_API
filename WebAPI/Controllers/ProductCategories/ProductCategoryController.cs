@@ -9,7 +9,7 @@ using WebAPI.Common.Models;
 
 namespace WebAPI.Controllers.ProductCategories
 {
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     public class ProductCategoryController : BaseApiController
     {
         public ProductCategoryController(ISender sender) : base(sender)
@@ -54,6 +54,7 @@ namespace WebAPI.Controllers.ProductCategories
             });
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<ApiSuccessResult<GetProductCategoryResult>>> GetProductCategoryAsync([FromQuery] GetProductCategoryRequest request, CancellationToken cancellationToken)
         {

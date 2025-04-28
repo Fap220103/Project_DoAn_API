@@ -3,12 +3,13 @@ using Application.Features.ProductCategories.Queries;
 using Application.Features.ProductVariants.Commands;
 using Application.Features.ProductVariants.Queries;
 using MediatR;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.Common.Models;
 
 namespace WebAPI.Controllers.ProductVariants
 {
+    [Authorize(Roles = "Admin,Staff")]
     public class ProductVariantController : BaseApiController
     {
         public ProductVariantController(ISender sender) : base(sender)
@@ -53,7 +54,7 @@ namespace WebAPI.Controllers.ProductVariants
                 Content = response
             });
         }
-
+        [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<ApiSuccessResult<GetProductVariantResult>>> GetProductVariantAsync([FromQuery] GetProductVariantRequest request, CancellationToken cancellationToken)
         {
@@ -66,6 +67,7 @@ namespace WebAPI.Controllers.ProductVariants
                 Content = response
             });
         }
+        [AllowAnonymous]
         [HttpGet("GetCZVariant")]
         public async Task<ActionResult<ApiSuccessResult<GetCZVariantResult>>> GetCZVariantAsync([FromQuery] GetCZVariantRequest request, CancellationToken cancellationToken)
         {
@@ -78,6 +80,7 @@ namespace WebAPI.Controllers.ProductVariants
                 Content = response
             });
         }
+        [AllowAnonymous]
         [HttpGet("GetProductVariantId")]
         public async Task<ActionResult<ApiSuccessResult<GetProductVariantIdResult>>> GetProductVariantIdAsync([FromQuery] GetProductVariantIdRequest request, CancellationToken cancellationToken)
         {
@@ -90,6 +93,7 @@ namespace WebAPI.Controllers.ProductVariants
                 Content = response
             });
         }
+        [AllowAnonymous]
         [HttpGet("GetStock")]
         public async Task<ActionResult<ApiSuccessResult<GetStockResult>>> GetStockAsync([FromQuery] GetStockRequest request, CancellationToken cancellationToken)
         {

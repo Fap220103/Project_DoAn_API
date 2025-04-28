@@ -11,6 +11,7 @@ using WebAPI.Common.Models;
 
 namespace WebAPI.Controllers.Accounts
 {
+    
     public class AccountController : BaseApiController
     {
         private readonly IConfiguration _configuration;
@@ -18,6 +19,7 @@ namespace WebAPI.Controllers.Accounts
         {
             _configuration = configuration;
         }
+        
         [HttpPost("Register")]
         public async Task<ActionResult<ApiSuccessResult<RegisterUserResult>>> RegisterUserAsync(RegisterUserRequest request, CancellationToken cancellationToken)
         {

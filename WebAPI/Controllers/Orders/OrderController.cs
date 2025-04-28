@@ -1,15 +1,13 @@
 ﻿using Application.Features.Orders.Commands;
 using Application.Features.Orders.Queries;
-using Application.Features.ProductCategories.Commands;
-using Application.Features.ProductCategories.Queries;
-using CloudinaryDotNet.Actions;
 using MediatR;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.Common.Models;
 
 namespace WebAPI.Controllers.Orders
 {
+    [Authorize(Roles = "Admin,Staff")]
     public class OrderController : BaseApiController
     {
         public OrderController(ISender sender) : base(sender)
@@ -53,7 +51,7 @@ namespace WebAPI.Controllers.Orders
         //        Content = response
         //    });
         //}
-
+        [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<ApiSuccessResult<GetOrderResult>>> GetOrderAsync([FromQuery] GetOrderRequest request, CancellationToken cancellationToken)
         {

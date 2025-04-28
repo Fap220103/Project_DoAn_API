@@ -1,9 +1,5 @@
-﻿using Application.Features.ProductCategories.Commands;
-using Application.Features.ProductCategories.Queries;
-using Application.Features.ProductImages.Commands;
-using Application.Features.Products.Commands;
+﻿using Application.Features.Products.Commands;
 using Application.Features.Products.Queries;
-using Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -13,6 +9,7 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace WebAPI.Controllers.Products
 {
+    [Authorize(Roles = "Admin")]
     public class ProductController : BaseApiController
     {
         public ProductController(ISender sender) : base(sender)
@@ -62,7 +59,8 @@ namespace WebAPI.Controllers.Products
                 Content = response
             });
         }
-      
+        [AllowAnonymous]      
+        
         [HttpGet]
         public async Task<ActionResult<ApiSuccessResult<GetProductResult>>> GetProductAsync([FromQuery] GetProductRequest request,CancellationToken cancellationToken)
         {

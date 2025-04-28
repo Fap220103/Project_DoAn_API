@@ -85,6 +85,7 @@ namespace Application.Features.Orders.Queries
     {
         public int Page { get; set; } = 1;
         public int Limit { get; set; } = 10;
+        public string? userId { get; set; }
     }
 
     public class GetOrderHandler : IRequestHandler<GetOrderRequest, GetOrderResult>
@@ -118,6 +119,11 @@ namespace Application.Features.Orders.Queries
                                                 .ThenInclude(pv => pv.Size)   // Bao gồm thông tin kích thước
                                         .Include(x => x.ShippingAddress)
                                         .AsQueryable();
+
+            if (!string.IsNullOrEmpty(request.userId))
+            {
+                query = query.Where(x=> x.CustomerId == request.userId);
+            }
 
             // Phân trang
             var skip = (request.Page - 1) * request.Limit;

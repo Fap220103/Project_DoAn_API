@@ -45,6 +45,27 @@ namespace Domain.Entities
             UsageLimit = usageLimit;
             IsActive = true;
         }
+        public void Update(
+           string code,
+           string title,
+           string? description,
+           DiscountType discountType,
+           decimal discountValue,
+           DateTime endDate,
+           int usageLimit,
+           bool isActive
+        ) 
+        {
+            Code = code.Trim();
+            Title = title.Trim();
+            Description = description?.Trim();
+            DiscountType = discountType;
+            DiscountValue = discountValue;
+            StartDate = DateTime.UtcNow;
+            EndDate = endDate;
+            UsageLimit = usageLimit;
+            IsActive = isActive;
+        }
         public bool CanBeUsed()
         {
             var now = DateTime.UtcNow;

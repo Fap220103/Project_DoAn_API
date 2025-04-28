@@ -3,6 +3,7 @@ using Application.Features.Accounts.Queries;
 using Application.Features.ProductCategories.Commands;
 using Application.Features.ProductCategories.Queries;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.Common.Models;
@@ -39,7 +40,7 @@ namespace WebAPI.Controllers.UserProfiles
                 Content = response
             });
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<ActionResult<ApiSuccessResult<CreateUserResult>>> CreateUserAsync(CreateUserRequest request, CancellationToken cancellationToken)
         {
@@ -52,7 +53,7 @@ namespace WebAPI.Controllers.UserProfiles
                 Content = response
             });
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPut]
         public async Task<ActionResult<ApiSuccessResult<UpdateUserResult>>> UpdateUserAsync([FromForm] UpdateUserRequest request, CancellationToken cancellationToken)
         {
@@ -77,7 +78,7 @@ namespace WebAPI.Controllers.UserProfiles
                 Content = response
             });
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{userId}")]
         public async Task<ActionResult<ApiSuccessResult<DeleteUserResult>>> DeleteUserAsync(string userId, CancellationToken cancellationToken)
         {
