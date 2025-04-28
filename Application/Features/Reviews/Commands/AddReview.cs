@@ -57,14 +57,14 @@ namespace Application.Features.Reviews.Commands
 
         public async Task<AddReviewResult> Handle(AddReviewRequest request, CancellationToken cancellationToken)
         {
-            var hasReviewed = await _repository
-                                    .AnyAsync(x => x.ProductId == request.ProductId && x.CustomerId == request.CustomerId, cancellationToken);
+            //var hasReviewed = await _repository
+            //                        .AnyAsync(x => x.ProductId == request.ProductId && x.CustomerId == request.CustomerId, cancellationToken);
 
-            if (hasReviewed)
-            {
-                throw new ApplicationException("Bạn đã đánh giá sản phẩm này rồi!");
+            //if (hasReviewed)
+            //{
+            //    throw new ApplicationException("Bạn đã đánh giá sản phẩm này rồi!");
   
-            }
+            //}
             var entity = new ReviewProduct(request.ProductId, request.CustomerId, request.Content, request.Rate );
             await _repository.CreateAsync(entity, cancellationToken);
             await _unitOfWork.SaveAsync(cancellationToken);

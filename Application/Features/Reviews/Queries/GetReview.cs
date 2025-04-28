@@ -42,7 +42,8 @@ namespace Application.Features.Reviews.Queries
     {
         public int Page { get; set; } = 1;
         public int Limit { get; set; } = 10;
-        public int Rate { get; set; } = 5;
+        public int Rate { get; set; }
+        public string ProductId { get; set; } = null!;
     }
 
     public class GetReviewHandler : IRequestHandler<GetReviewRequest, GetReviewResult>
@@ -67,6 +68,11 @@ namespace Application.Features.Reviews.Queries
             if (request.Rate > 0)
             {
                 query = query.Where(x => x.Rate == request.Rate);
+            }
+
+            if (!string.IsNullOrEmpty(request.ProductId))
+            {
+                query = query.Where(x => x.ProductId == request.ProductId);
             }
 
             // Sắp xếp

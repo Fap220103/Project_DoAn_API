@@ -38,19 +38,18 @@ namespace WebAPI.Controllers.Orders
             });
         }
 
-        //[HttpDelete("{id}")]
-        //public async Task<ActionResult<ApiSuccessResult<DeleteProductCategoryResult>>> DeleteProductCategoryAsync(string id, CancellationToken cancellationToken)
-        //{
-        //    var request = new DeleteProductCategoryRequest { Id = id };
-        //    var response = await _sender.Send(request, cancellationToken);
+        [HttpPost("CancelOrder")]
+        public async Task<ActionResult<ApiSuccessResult<CancelOrderResult>>> CancelOrderAsync(CancelOrderRequest request, CancellationToken cancellationToken)
+        {
+            var response = await _sender.Send(request, cancellationToken);
 
-        //    return Ok(new ApiSuccessResult<DeleteProductCategoryResult>
-        //    {
-        //        Code = StatusCodes.Status200OK,
-        //        Message = $"Success executing {nameof(DeleteProductCategoryAsync)}",
-        //        Content = response
-        //    });
-        //}
+            return Ok(new ApiSuccessResult<CancelOrderResult>
+            {
+                Code = StatusCodes.Status200OK,
+                Message = $"Success executing {nameof(CancelOrderAsync)}",
+                Content = response
+            });
+        }
         [HttpGet]
         public async Task<ActionResult<ApiSuccessResult<GetOrderResult>>> GetOrderAsync([FromQuery] GetOrderRequest request, CancellationToken cancellationToken)
         {
