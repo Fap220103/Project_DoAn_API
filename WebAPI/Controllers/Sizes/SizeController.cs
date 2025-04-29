@@ -8,7 +8,7 @@ using WebAPI.Common.Models;
 
 namespace WebAPI.Controllers.Sizes
 {
-    [Authorize(Roles = "Admin")]
+
     public class SizeController : BaseApiController
     {
         public SizeController(ISender sender) : base(sender)

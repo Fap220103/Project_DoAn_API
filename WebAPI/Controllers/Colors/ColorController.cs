@@ -10,7 +10,7 @@ using WebAPI.Common.Models;
 
 namespace WebAPI.Controllers.Colors
 {
-    [Authorize(Roles = "Admin")]
+
     public class ColorController : BaseApiController
     {
         public ColorController(ISender sender) : base(sender)

@@ -30,6 +30,9 @@ namespace Application.Features.Products.Queries
         public string ProductCategoryId { get; init; } = null!;
         public string? ProductCategoryName { get; set; }
         public string imageDefault { get; set; } = null!;
+        public int avgRate { get; set; }
+        public int totalRate { get; set; }
+        public int totalSold { get; set; }
     }
 
     public class GetProductByCategoryProfile : Profile
@@ -57,6 +60,11 @@ namespace Application.Features.Products.Queries
         public string? Order { get; set; }
         public string? Search { get; set; }
         public string? categoryId { get; set; }
+
+        public decimal? PriceMin { get; set; }
+        public decimal? PriceMax { get; set; }
+        public string? Sizes { get; set; }
+        public string? Colors { get; set; }
     }
 
     public class GetProductByCategoryHandler : IRequestHandler<GetProductByCategoryRequest, GetProductByCategoryResult>
@@ -78,24 +86,65 @@ namespace Application.Features.Products.Queries
             var query = _context.Product.ApplyIsDeletedFilter()
                                         .Include(x => x.ProductImage)
                                         .Include(x => x.ProductCategory)
+                                        .Include(x=> x.ReviewProducts)
                                         .AsQueryable();
 
+            //lọc theo danh mục
             if (!string.IsNullOrEmpty(request.categoryId))
             {
                 var categoryIds = request.categoryId.Split(',').ToList();
                 query = query.Where(p => categoryIds.Contains(p.ProductCategoryId));
             }
 
+            // tìm kiếm
             if (!string.IsNullOrWhiteSpace(request.Search))
             {
                 string searchKeyword = request.Search.Trim().ToLower();
                 query = query.Where(c =>
                     c.Title.ToLower().Contains(searchKeyword) ||
+                    c.ProductCode.ToLower().Contains(searchKeyword) ||
                     c.Alias.ToLower().Contains(searchKeyword)
                 );
             }
-         
-          
+
+            // lọc theo giá
+            if (request.PriceMin.HasValue)
+            {
+                query = query.Where(p => p.Price >= request.PriceMin.Value);
+            }
+            if (request.PriceMax.HasValue)
+            {
+                query = query.Where(p => p.Price <= request.PriceMax.Value);
+            }
+
+            //lọc theo màu
+            if (!string.IsNullOrEmpty(request.Colors))
+            {
+                var colorNames = request.Colors.Split(',').Select(c => c.Trim()).ToList();
+                var productVariantQuery = _context.ProductVariant.AsQueryable();
+                var productIdsByColor = await _context.ProductVariant
+                                                   .Where(pv => colorNames.Contains(pv.Color.Name))
+                                                   .Select(pv => pv.ProductId)
+                                                   .Distinct()
+                                                   .ToListAsync(cancellationToken);
+
+                query = query.Where(p => productIdsByColor.Contains(p.Id));
+            }
+
+            // Lọc theo size
+            if (!string.IsNullOrEmpty(request.Sizes))
+            {
+                var sizeNames = request.Sizes.Split(',').Select(s => s.Trim()).ToList();
+
+                var productIdsBySize = await _context.ProductVariant
+                    .Where(pv => sizeNames.Contains(pv.Size.Name))
+                    .Select(pv => pv.ProductId)
+                    .Distinct()
+                    .ToListAsync(cancellationToken);
+
+                query = query.Where(p => productIdsBySize.Contains(p.Id));
+            }
+
             // Sắp xếp nếu có order
             if (!string.IsNullOrEmpty(request.Order))
             {
@@ -109,24 +158,52 @@ namespace Application.Features.Products.Queries
                     {
                         ("title", "asc") => query.OrderBy(x => x.Title),
                         ("title", "desc") => query.OrderByDescending(x => x.Title),
-                        ("viewcount", "asc") => query.OrderBy(x => x.ViewCount),
-                        ("viewcount", "desc") => query.OrderByDescending(x => x.ViewCount),
+                        ("price", "asc") => query.OrderBy(x => x.Price),
+                        ("price", "desc") => query.OrderByDescending(x => x.Price),
                         _ => query
                     };
+                }
+                else if (request.Order == "bestseller")
+                {
+                    query = query.OrderByDescending(p => _context.OrderDetail
+                        .Where(od => od.ProductVariant.ProductId == p.Id)
+                        .Sum(od => od.Quantity));
                 }
             }
             else
             {
-                query = query.OrderBy(x => x.Title);
+                query = query.OrderByDescending(x => x.CreatedAt);
             }
 
+            // phân trang
             var total = await query.CountAsync(cancellationToken);
             var items = await query
                 .Skip((request.Page - 1) * request.Limit)
                 .Take(request.Limit)
                 .ToListAsync(cancellationToken);
-            var dto = _mapper.Map<IEnumerable<ProductClientDto>>(items).ToList();
 
+            // mapping
+            var dto = _mapper.Map<List<ProductClientDto>>(items).ToList();
+            for (int i = 0; i < dto.Count; i++)
+            {
+                var product = items[i];
+                // Tính trung bình đánh giá
+                if (product.ReviewProducts != null && product.ReviewProducts.Any())
+                {
+                    dto[i].avgRate = (int)Math.Round(product.ReviewProducts.Average(r => r.Rate));
+                    dto[i].totalRate = product.ReviewProducts.Count();
+                }
+                else
+                {
+                    dto[i].avgRate = 0;
+                    dto[i].totalRate = 0;
+                }
+
+                // Tính tổng số đã bán từ OrderDetails nếu có
+                dto[i].totalSold = _context.OrderDetail
+                    .Where(od => od.ProductVariant.ProductId == product.Id)
+                    .Sum(od => od.Quantity);
+            }
             var pagedList = new PagedList<ProductClientDto>(dto, total, request.Page, request.Limit);
             return new GetProductByCategoryResult
             {
