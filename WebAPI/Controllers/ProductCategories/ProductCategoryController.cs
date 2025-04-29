@@ -67,6 +67,7 @@ namespace WebAPI.Controllers.ProductCategories
                 Content = response
             });
         }
+        [AllowAnonymous]
         [HttpGet("gettoken")]
         public async Task<ActionResult<ApiSuccessResult<GetProductCategoryNameResult>>> GetProductCategoryNameAsync(CancellationToken cancellationToken)
         {

@@ -79,6 +79,19 @@ namespace WebAPI.Controllers.Discounts
             });
         }
         [AllowAnonymous]
+        [HttpGet("GetStatusUserDiscount")]
+        public async Task<ActionResult<ApiSuccessResult<GetStatusUserDiscountResult>>> GetStatusUserDiscountAsync([FromQuery] GetStatusUserDiscountRequest request, CancellationToken cancellationToken)
+        {
+            var response = await _sender.Send(request, cancellationToken);
+
+            return Ok(new ApiSuccessResult<GetStatusUserDiscountResult>
+            {
+                Code = StatusCodes.Status200OK,
+                Message = $"Success executing {nameof(GetStatusUserDiscountAsync)}",
+                Content = response
+            });
+        }
+        [AllowAnonymous]
         [HttpPost("AddUserDiscount")]
         public async Task<ActionResult<ApiSuccessResult<AddUserDiscountResult>>> AddUserDiscountAsync(AddUserDiscountRequest request, CancellationToken cancellationToken)
         {

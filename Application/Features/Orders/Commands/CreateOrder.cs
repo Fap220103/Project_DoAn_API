@@ -98,7 +98,7 @@ namespace Application.Features.Orders.Commands
 
                 // xử lý số lượng discount
                 var userDiscountQuery = await _context.UserDiscount
-                                          .FirstOrDefaultAsync(x => x.UserId == request.CustomerId && x.Id == request.DiscountId);
+                                          .FirstOrDefaultAsync(x => x.UserId == request.CustomerId && x.DiscountId == request.DiscountId);
 
                 if (userDiscountQuery != null)
                 {
