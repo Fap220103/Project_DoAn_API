@@ -119,14 +119,7 @@ namespace Application.Features.Products.Commands
                     request.SalePercent,
                     request.ProductCategoryId
                     );
-            //if (string.IsNullOrEmpty(request.ProductCode)) 
-            //{
-            //    entity.ProductCode = _commonService.GenerateCode("PRO");
-            //}
-            //else
-            //{
-            //    entity.ProductCode = request.ProductCode;
-            //}
+         
             if (!string.IsNullOrEmpty(request.ProductCode))
             {
                 var existed = await _context.Product.FirstOrDefaultAsync(x => x.ProductCode == request.ProductCode, cancellationToken);
@@ -169,6 +162,10 @@ namespace Application.Features.Products.Commands
                     };
                     await _repoProductImage.CreateAsync(productImage, cancellationToken);
                 }
+            }
+            else
+            {
+                entity.Image = "";
             }
             await _unitOfWork.SaveAsync(cancellationToken);
 

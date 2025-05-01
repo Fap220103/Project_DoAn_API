@@ -19,13 +19,16 @@ namespace Application.Features.Products.Commands
     {
         private readonly ICommandContext _context;
         private readonly IExcelService _excelImportService;
+        private readonly ICommonService _commonService;
 
         public ImportProductsHandler(
             ICommandContext context,
-            IExcelService excelImportService)
+            IExcelService excelImportService,
+            ICommonService commonService)
         {
             _context = context;
             _excelImportService = excelImportService;
+            _commonService = commonService;
         }
 
         public async Task<Unit> Handle(ImportProductsRequest request, CancellationToken cancellationToken)
@@ -39,22 +42,54 @@ namespace Application.Features.Products.Commands
                 var exists = await _context.Product
                     .AnyAsync(x => x.ProductCode == dto.ProductCode, cancellationToken);
 
-                if (exists) continue; // Bỏ qua nếu đã tồn tại
+                if (exists) continue;
 
-                var product = new Product
+                // Tìm danh mục theo tên
+                var category = await _context.ProductCategory
+                    .FirstOrDefaultAsync(c => c.Title == dto.ProductCategoryName, cancellationToken);
+
+                if (category == null)
                 {
-                    ProductCode = dto.ProductCode,
-                    Title = dto.Title,
-                    Price = dto.Price ?? 0,
-                    Description = dto.Description
-                };
+                    // Có thể bỏ qua, hoặc báo lỗi nếu danh mục không tồn tại
+                    continue;
+                }
+
+                var product = new Product(
+                                userId: null,                             
+                                title: dto.Title ?? "",                   
+                                alias: _commonService.FilterChar(dto.Title),                              
+                                description: dto.Description,             
+                                seoTitle: dto.Title,                           
+                                seoDescription: null,                   
+                                seoKeywords: null,                      
+                                image: "",                              
+                                detail: dto.Detail ?? "",                 
+                                originalPrice: dto.OriginalPrice,        
+                                price: dto.Price,                       
+                                salePercent: dto.SalePercent,           
+                                productCategoryId: category?.Id ?? null   
+                            );
+                product.ProductCode = dto.ProductCode;
 
                 _context.Product.Add(product);
             }
 
-            await _context.SaveChangesAsync(cancellationToken);
+            try
+            {
+                await _context.SaveChangesAsync(cancellationToken);
+            }
+            catch (DbUpdateException dbEx)
+            {
+                var innerMessage = dbEx.InnerException?.Message ?? dbEx.Message;
+                throw new Exception($"Lỗi khi lưu dữ liệu vào database: {innerMessage}", dbEx);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Lỗi không xác định khi lưu dữ liệu: {ex.Message}", ex);
+            }
             return Unit.Value;
         }
+
     }
 
 }

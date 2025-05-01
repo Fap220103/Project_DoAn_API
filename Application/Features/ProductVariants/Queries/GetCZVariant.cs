@@ -42,8 +42,7 @@ namespace Application.Features.ProductVariants.Queries
         {
             var colors = await _context.ProductVariant
                                          .Include(pv => pv.Color)
-                                         .Include(pv => pv.Inventory)
-                                         .Where(pv => pv.ProductId == request.ProductId && pv.Inventory.Quantity > 0)
+                                         .Where(pv => pv.ProductId == request.ProductId && pv.Quantity > 0)
                                          .Select(pv => new Color{
                                             Id = pv.ColorId,
                                             Name = pv.Color.Name,
@@ -54,8 +53,7 @@ namespace Application.Features.ProductVariants.Queries
 
             var sizes = await _context.ProductVariant
                                     .Include(pv => pv.Size)
-                                    .Include(pv => pv.Inventory)
-                                    .Where(pv => pv.ProductId == request.ProductId && pv.Inventory.Quantity > 0)
+                                    .Where(pv => pv.ProductId == request.ProductId && pv.Quantity > 0)
                                     .Select(pv => new Size {
                                        Id= pv.SizeId,
                                        Name = pv.Size.Name

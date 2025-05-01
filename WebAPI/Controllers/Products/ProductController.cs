@@ -4,6 +4,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using OfficeOpenXml;
 using WebAPI.Common.Models;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -99,7 +100,7 @@ namespace WebAPI.Controllers.Products
                 Content = response
             });
         }
-        [HttpGet("export-excel")]
+        [HttpGet("export")]
         public async Task<IActionResult> ExportToExcel()
         {
             var result = await _sender.Send(new ExportProductsToExcelRequest());
@@ -108,16 +109,18 @@ namespace WebAPI.Controllers.Products
         }
 
         [HttpPost("import")]
-        public async Task<IActionResult> ImportExcel(IFormFile file)
+        public async Task<IActionResult> ImportExcel([FromForm] IFormFile file)
         {
             if (file == null || file.Length == 0)
                 return BadRequest("Vui lòng chọn file Excel.");
+
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
             using var stream = file.OpenReadStream();
             var command = new ImportProductsRequest { ExcelFileStream = stream };
 
             await _sender.Send(command);
-            return Ok("Import thành công!");
+            return Ok(new { message = "Import thành công!" });
         }
 
     }

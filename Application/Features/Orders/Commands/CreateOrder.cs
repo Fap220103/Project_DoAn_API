@@ -25,6 +25,7 @@ namespace Application.Features.Orders.Commands
     {
         public string Id { get; init; } = null!;
         public string Message { get; init; } = null!;
+        public string? PaymentUrl { get; init; } 
     }
 
     public class CreateOrderRequest : IRequest<CreateOrderResult>
@@ -161,16 +162,18 @@ namespace Application.Features.Orders.Commands
             }
 
             await _unitOfWork.SaveAsync(cancellationToken);
+            string? paymentUrl = null;
             if (request.TypePayment == 2)
             {
-                _vnPayService.UrlPayment(request.TypePayment, orderCode);
+                paymentUrl = _vnPayService.CreatePaymentUrl(order, request.TypePayment);
             }
 
 
             return new CreateOrderResult
             {
                 Id = order.Id,
-                Message = "Success"
+                Message = "Success",
+                PaymentUrl = paymentUrl
             };
         }
     }

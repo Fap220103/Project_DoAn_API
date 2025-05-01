@@ -23,6 +23,7 @@ namespace Application.Features.Orders.Queries
         public int Status { get; set; }
         public int TotalQuantity { get; set; }
         public string OrderCode { get; set; } = null!;
+        public int TypePayment { get; set; }
         public DateTime CreatedAt { get; set; }
         public List<OrderDetailDto> items { get; set; } = new();
         public ShippingAddressDto address { get; set; } = new();
@@ -86,6 +87,8 @@ namespace Application.Features.Orders.Queries
         public int Page { get; set; } = 1;
         public int Limit { get; set; } = 10;
         public string? userId { get; set; }
+        public int? Status { get; set; } 
+        public string? RecipientName { get; set; }
     }
 
     public class GetOrderHandler : IRequestHandler<GetOrderRequest, GetOrderResult>
@@ -110,13 +113,13 @@ namespace Application.Features.Orders.Queries
         {
             var query = _context.Order.Include(x => x.OrderDetails)
                                         .ThenInclude(od => od.ProductVariant)
-                                            .ThenInclude(pv => pv.Product) // Bao gồm thông tin sản phẩm
+                                            .ThenInclude(pv => pv.Product) 
                                         .Include(x => x.OrderDetails)
                                             .ThenInclude(od => od.ProductVariant)
-                                                .ThenInclude(pv => pv.Color)  // Bao gồm thông tin màu sắc
+                                                .ThenInclude(pv => pv.Color) 
                                         .Include(x => x.OrderDetails)
                                             .ThenInclude(od => od.ProductVariant)
-                                                .ThenInclude(pv => pv.Size)   // Bao gồm thông tin kích thước
+                                                .ThenInclude(pv => pv.Size) 
                                         .Include(x => x.ShippingAddress)
                                         .AsQueryable();
 
@@ -124,6 +127,19 @@ namespace Application.Features.Orders.Queries
             {
                 query = query.Where(x=> x.CustomerId == request.userId);
             }
+
+            if (!string.IsNullOrEmpty(request.RecipientName))
+            {
+                query = query.Where(x => x.ShippingAddress.RecipientName.ToLower().Contains(request.RecipientName.ToLower()));
+            }
+
+            if (request.Status.HasValue)
+            {
+                query = query.Where(x => x.Status == request.Status.Value);
+            }
+
+
+            query = query.OrderByDescending(x=> x.CreatedAt);
 
             // Phân trang
             var skip = (request.Page - 1) * request.Limit;

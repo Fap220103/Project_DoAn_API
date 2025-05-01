@@ -158,8 +158,8 @@ namespace Application.Features.Products.Queries
                     {
                         ("title", "asc") => query.OrderBy(x => x.Title),
                         ("title", "desc") => query.OrderByDescending(x => x.Title),
-                        ("price", "asc") => query.OrderBy(x => x.Price),
-                        ("price", "desc") => query.OrderByDescending(x => x.Price),
+                        ("price", "asc") => query.OrderBy(x => x.PriceSale),
+                        ("price", "desc") => query.OrderByDescending(x => x.PriceSale),
                         _ => query
                     };
                 }

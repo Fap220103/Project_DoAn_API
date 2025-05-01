@@ -10,6 +10,15 @@ using System.Threading.Tasks;
 
 namespace Application.Features.Products.Queries
 {
+    public class ProductExportDto
+    {
+        public string ProductCode { get; set; } = null!;
+        public string Title { get; set; } = null!;
+        public decimal OriginalPrice { get; init; }
+        public decimal Price { get; init; }
+        public decimal PriceSale { get; init; }
+        public string Description { get; set; } = null!;
+    }
     public class ExportProductsToExcelRequest : IRequest<byte[]>
     {
     }
@@ -27,11 +36,13 @@ namespace Application.Features.Products.Queries
         public async Task<byte[]> Handle(ExportProductsToExcelRequest request, CancellationToken cancellationToken)
         {
             var products = await _context.Product
-            .Select(p => new ProductDto
+            .Select(p => new ProductExportDto
             {
                 ProductCode = p.ProductCode,
                 Title = p.Title,
+                OriginalPrice = p.OriginalPrice,
                 Price = p.Price,
+                PriceSale = p.PriceSale,
                 Description = p.Description
             })
             .ToListAsync(cancellationToken);

@@ -1,64 +1,74 @@
-﻿//using Application.Services.Repositories;
-//using Domain.Entities;
-//using FluentValidation;
-//using MediatR;
-//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Text;
-//using System.Threading.Tasks;
+﻿using Application.Services.CQS.Commands;
+using Application.Services.Repositories;
+using Domain.Entities;
+using FluentValidation;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-//namespace Application.Features.Sizes.Commands
-//{
-//    public class CreateSizeResult
-//    {
-//        public string Id { get; init; } = null!;
-//        public string Message { get; init; } = null!;
-//    }
+namespace Application.Features.Sizes.Commands
+{
+    public class CreateSizeResult
+    {
+        public int Id { get; init; }
+        public string Message { get; init; } = null!;
+    }
 
-//    public class CreateSizeRequest : IRequest<CreateSizeResult>
-//    {
-//        public string SizeName { get; init; } = null!;
-//    }
+    public class CreateSizeRequest : IRequest<CreateSizeResult>
+    {
+        public string Name { get; init; } = null!;
+    }
 
-//    public class CreateSizeValidator : AbstractValidator<CreateSizeRequest>
-//    {
-//        public CreateSizeValidator()
-//        {
-//            RuleFor(x => x.SizeName)
-//                .NotEmpty();
-//        }
-//    }
+    public class CreateSizeValidator : AbstractValidator<CreateSizeRequest>
+    {
+        public CreateSizeValidator()
+        {
+            RuleFor(x => x.Name)
+                .NotEmpty();
+        }
+    }
 
 
-//    public class CreateSizeHandler : IRequestHandler<CreateSizeRequest, CreateSizeResult>
-//    {
-//        private readonly IBaseCommandRepository<Size> _repository;
-//        private readonly IUnitOfWork _unitOfWork;
+    public class CreateSizeHandler : IRequestHandler<CreateSizeRequest, CreateSizeResult>
+    {
+        private readonly ICommandContext _context;
+        private readonly IUnitOfWork _unitOfWork;
 
-//        public CreateSizeHandler(
-//            IBaseCommandRepository<Size> repository,
-//            IUnitOfWork unitOfWork
-//            )
-//        {
-//            _repository = repository;
-//            _unitOfWork = unitOfWork;
-//        }
+        public CreateSizeHandler(
+            ICommandContext context,
+            IUnitOfWork unitOfWork
+            )
+        {
+            _context = context;
+            _unitOfWork = unitOfWork;
+        }
 
-//        public async Task<CreateSizeResult> Handle(CreateSizeRequest request, CancellationToken cancellationToken = default)
-//        {
-//            var entity = new Size(
-//                    request.SizeName
-//                    );
+        public async Task<CreateSizeResult> Handle(CreateSizeRequest request, CancellationToken cancellationToken = default)
+        {
+            var isExist = await _context.Size.AnyAsync(s => s.Name == request.Name, cancellationToken);
+            if (isExist)
+            {
+                return new CreateSizeResult
+                {
+                    Id = 0,
+                    Message = "Size already exists"
+                };
+            }
 
-//            await _repository.CreateAsync(entity, cancellationToken);
-//            await _unitOfWork.SaveAsync(cancellationToken);
+            var entity = new Size { Name = request.Name };
 
-//            return new CreateSizeResult
-//            {
-//                Id = entity.Id,
-//                Message = "Success"
-//            };
-//        }
-//    }
-//}
+            _context.Size.Add(entity);
+            await _unitOfWork.SaveAsync(cancellationToken);
+
+            return new CreateSizeResult
+            {
+                Id = entity.Id,
+                Message = "Success"
+            };
+        }
+    }
+}

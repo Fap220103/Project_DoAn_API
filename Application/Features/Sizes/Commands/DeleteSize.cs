@@ -1,69 +1,71 @@
-﻿//using Application.Services.Repositories;
-//using Domain.Constants;
-//using Domain.Entities;
-//using FluentValidation;
-//using MediatR;
-//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Text;
-//using System.Threading.Tasks;
+﻿using Application.Services.CQS.Commands;
+using Application.Services.Repositories;
+using Domain.Constants;
+using Domain.Entities;
+using FluentValidation;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-//namespace Application.Features.Sizes.Commands
-//{
-//    public class DeleteSizeResult
-//    {
-//        public string Id { get; init; } = null!;
-//        public string Message { get; init; } = null!;
-//    }
+namespace Application.Features.Sizes.Commands
+{
+    public class DeleteSizeResult
+    {
+        public int Id { get; init; }
+        public string Message { get; init; } = null!;
+    }
 
-//    public class DeleteSizeRequest : IRequest<DeleteSizeResult>
-//    {
-//        public string SizeId { get; init; } = null!;
-//    }
+    public class DeleteSizeRequest : IRequest<DeleteSizeResult>
+    {
+        public int SizeId { get; init; } 
+    }
 
-//    public class DeleteSizeValidator : AbstractValidator<DeleteSizeRequest>
-//    {
-//        public DeleteSizeValidator()
-//        {
-//            RuleFor(x => x.SizeId)
-//                .NotEmpty();
-//        }
-//    }
+    public class DeleteSizeValidator : AbstractValidator<DeleteSizeRequest>
+    {
+        public DeleteSizeValidator()
+        {
+            RuleFor(x => x.SizeId)
+                .NotEmpty();
+        }
+    }
 
 
-//    public class DeleteSizeHandler : IRequestHandler<DeleteSizeRequest, DeleteSizeResult>
-//    {
-//        private readonly IBaseCommandRepository<Size> _repository;
-//        private readonly IUnitOfWork _unitOfWork;
+    public class DeleteSizeHandler : IRequestHandler<DeleteSizeRequest, DeleteSizeResult>
+    {
+        private readonly ICommandContext _context;
+        private readonly IUnitOfWork _unitOfWork;
 
-//        public DeleteSizeHandler(
-//            IBaseCommandRepository<Size> repository,
-//            IUnitOfWork unitOfWork
-//            )
-//        {
-//            _repository = repository;
-//            _unitOfWork = unitOfWork;
-//        }
+        public DeleteSizeHandler(
+            ICommandContext context,
+            IUnitOfWork unitOfWork
+            )
+        {
+            _context = context;
+            _unitOfWork = unitOfWork;
+        }
 
-//        public async Task<DeleteSizeResult> Handle(DeleteSizeRequest request, CancellationToken cancellationToken = default)
-//        {
+        public async Task<DeleteSizeResult> Handle(DeleteSizeRequest request, CancellationToken cancellationToken = default)
+        {
 
-//            var entity = await _repository.GetByIdAsync(request.SizeId);
+            var entity = await _context.Size.FindAsync(request.SizeId);
 
-//            if (entity == null)
-//            {
-//                throw new ApplicationException($"{ExceptionConsts.EntitiyNotFound} {request.SizeId}");
-//            }
+            if (entity == null)
+            {
+                throw new ApplicationException($"{ExceptionConsts.EntitiyNotFound} {request.SizeId}");
+            }
 
-//            _repository.Purge(entity);
-//            await _unitOfWork.SaveAsync(cancellationToken);
+            _context.Size.Remove(entity);
+            await _unitOfWork.SaveAsync(cancellationToken);
 
-//            return new DeleteSizeResult
-//            {
-//                Id = entity.Id,
-//                Message = "Success"
-//            };
-//        }
-//    }
-//}
+            return new DeleteSizeResult
+            {
+                Id = entity.Id,
+                Message = "Success"
+            };
+        }
+    }
+}

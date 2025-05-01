@@ -1,4 +1,5 @@
 ﻿
+using Application.Features.Sizes.Commands;
 using Application.Features.Sizes.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -14,18 +15,18 @@ namespace WebAPI.Controllers.Sizes
         public SizeController(ISender sender) : base(sender)
         {
         }
-        //[HttpPost("CreateSize")]
-        //public async Task<ActionResult<ApiSuccessResult<CreateSizeResult>>> CreateSizeAsync(CreateSizeRequest request, CancellationToken cancellationToken)
-        //{
-        //    var response = await _sender.Send(request, cancellationToken);
+        [HttpPost]
+        public async Task<ActionResult<ApiSuccessResult<CreateSizeResult>>> CreateSizeAsync(CreateSizeRequest request, CancellationToken cancellationToken)
+        {
+            var response = await _sender.Send(request, cancellationToken);
 
-        //    return Ok(new ApiSuccessResult<CreateSizeResult>
-        //    {
-        //        Code = StatusCodes.Status200OK,
-        //        Message = $"Success executing {nameof(CreateSizeAsync)}",
-        //        Content = response
-        //    });
-        //}
+            return Ok(new ApiSuccessResult<CreateSizeResult>
+            {
+                Code = StatusCodes.Status200OK,
+                Message = $"Success executing {nameof(CreateSizeAsync)}",
+                Content = response
+            });
+        }
         //[HttpPost("UpdateSize")]
         //public async Task<ActionResult<ApiSuccessResult<UpdateSizeResult>>> UpdateSizeAsync(UpdateSizeRequest request, CancellationToken cancellationToken)
         //{
@@ -39,18 +40,22 @@ namespace WebAPI.Controllers.Sizes
         //    });
         //}
 
-        //[HttpDelete("DeleteSize")]
-        //public async Task<ActionResult<ApiSuccessResult<DeleteSizeResult>>> DeleteSizeAsync(DeleteSizeRequest request, CancellationToken cancellationToken)
-        //{
-        //    var response = await _sender.Send(request, cancellationToken);
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<ApiSuccessResult<DeleteSizeResult>>> DeleteSizeAsync(int id, CancellationToken cancellationToken)
+        {
+            var request = new DeleteSizeRequest
+            {
+                SizeId = id
+            };
+            var response = await _sender.Send(request, cancellationToken);
 
-        //    return Ok(new ApiSuccessResult<DeleteSizeResult>
-        //    {
-        //        Code = StatusCodes.Status200OK,
-        //        Message = $"Success executing {nameof(DeleteSizeAsync)}",
-        //        Content = response
-        //    });
-        //}
+            return Ok(new ApiSuccessResult<DeleteSizeResult>
+            {
+                Code = StatusCodes.Status200OK,
+                Message = $"Success executing {nameof(DeleteSizeAsync)}",
+                Content = response
+            });
+        }
 
         [HttpGet]
         public async Task<ActionResult<ApiSuccessResult<GetSizeResult>>> GetSizeAsync(CancellationToken cancellationToken)

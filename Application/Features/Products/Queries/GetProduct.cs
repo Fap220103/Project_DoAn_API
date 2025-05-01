@@ -35,7 +35,7 @@ namespace Application.Features.Products.Queries
         public string SeoTitle { get; set; } = null!;
         public string SeoDescription { get; set; } = null!;
         public string SeoKeywords { get; set; } = null!;
-        public string imageDefault { get; set; } = null!;
+        public string? imageDefault { get; set; } = string.Empty;
     }
 
     public class GetProductProfile : Profile
@@ -46,7 +46,11 @@ namespace Application.Features.Products.Queries
                        .ForMember(dest => dest.ProductCategoryName,
                        opt => opt.MapFrom(src => src.ProductCategory.Title))
                           .ForMember(dest => dest.imageDefault,
-                       opt => opt.MapFrom(src => src.ProductImage.FirstOrDefault(x => x.IsDefault).Image));
+                       opt => opt.MapFrom(src =>
+                                src.ProductImage.FirstOrDefault(x => x.IsDefault && x.Image != null) != null
+                                    ? src.ProductImage.FirstOrDefault(x => x.IsDefault && x.Image != null)!.Image
+                                    : string.Empty
+                            ));
         }
     }
 
@@ -121,10 +125,12 @@ namespace Application.Features.Products.Queries
             }
 
             var total = await query.CountAsync(cancellationToken);
+
             var items = await query
                 .Skip((request.Page - 1) * request.Limit)
                 .Take(request.Limit)
                 .ToListAsync(cancellationToken);
+            
             var dto = _mapper.Map<IEnumerable<ProductDto>>(items).ToList();
 
             var pagedList = new PagedList<ProductDto>(dto, total, request.Page, request.Limit);
