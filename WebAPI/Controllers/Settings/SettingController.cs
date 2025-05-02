@@ -1,6 +1,7 @@
 ﻿using Application.Features.Colors.Queries;
 using Application.Features.Configs.Commands;
 using Application.Features.Settings.Commands;
+using Application.Features.Settings.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -58,6 +59,13 @@ namespace WebAPI.Controllers.Configs
                 Message = $"Success executing {nameof(GetSettingAsync)}",
                 Content = response
             });
+        }
+        [AllowAnonymous]
+        [HttpGet("GetGeneralSetting")]
+        public async Task<IActionResult> GetGeneralSettingAsync()
+        {
+            var result = await _sender.Send(new GetGeneralSettingRequest());
+            return Ok(result);
         }
     }
 }

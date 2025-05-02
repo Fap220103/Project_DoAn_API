@@ -88,7 +88,7 @@ namespace Application.Features.Orders.Queries
         public int Limit { get; set; } = 10;
         public string? userId { get; set; }
         public int? Status { get; set; } 
-        public string? RecipientName { get; set; }
+        public string? Search { get; set; }
     }
 
     public class GetOrderHandler : IRequestHandler<GetOrderRequest, GetOrderResult>
@@ -128,9 +128,13 @@ namespace Application.Features.Orders.Queries
                 query = query.Where(x=> x.CustomerId == request.userId);
             }
 
-            if (!string.IsNullOrEmpty(request.RecipientName))
+            if (!string.IsNullOrWhiteSpace(request.Search))
             {
-                query = query.Where(x => x.ShippingAddress.RecipientName.ToLower().Contains(request.RecipientName.ToLower()));
+                string searchKeyword = request.Search.Trim().ToLower();
+                query = query.Where(c =>
+                    c.ShippingAddress.RecipientName.ToLower().Contains(searchKeyword) ||
+                    c.Code.ToLower().Contains(searchKeyword)
+                );
             }
 
             if (request.Status.HasValue)

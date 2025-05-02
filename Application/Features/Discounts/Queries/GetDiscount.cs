@@ -45,7 +45,15 @@ namespace Application.Features.Discounts.Queries
         public async Task<GetDiscountResult> Handle(GetDiscountRequest request, CancellationToken cancellationToken)
         {
             var query = _context.Discount.AsQueryable();
-            
+
+            var now = DateTime.UtcNow;
+
+            query = query
+                    .Where(d =>
+                        d.IsActive &&
+                        d.EndDate > now &&
+                        (!d.UsageLimit.HasValue || d.UsedCount < d.UsageLimit.Value)
+                    );
 
             // Phân trang
             var skip = (request.Page - 1) * request.Limit;

@@ -29,6 +29,19 @@ namespace WebAPI.Controllers.Products
                 Content = response
             });
         }
+        [AllowAnonymous]
+        [HttpPost("AddViewCount")]
+        public async Task<ActionResult<ApiSuccessResult<AddViewCountResult>>> AddViewCountAsync(AddViewCountRequest request, CancellationToken cancellationToken)
+        {
+            var response = await _sender.Send(request, cancellationToken);
+
+            return Ok(new ApiSuccessResult<AddViewCountResult>
+            {
+                Code = StatusCodes.Status200OK,
+                Message = $"Success executing {nameof(AddViewCountAsync)}",
+                Content = response
+            });
+        }
         [HttpPut]
         [Consumes("multipart/form-data")]
         public async Task<ActionResult<ApiSuccessResult<UpdateProductResult>>> UpdateProductAsync([FromForm] UpdateProductRequest request, CancellationToken cancellationToken)
@@ -97,6 +110,19 @@ namespace WebAPI.Controllers.Products
             {
                 Code = StatusCodes.Status200OK,
                 Message = $"Success executing {nameof(GetProductByCategoryAsync)}",
+                Content = response
+            });
+        }
+        [AllowAnonymous]
+        [HttpGet("GetRsProduct")]
+        public async Task<ActionResult<ApiSuccessResult<GetRsProductResult>>> GetRsProductAsync([FromQuery] GetRsProductRequest request, CancellationToken cancellationToken)
+        {
+            var response = await _sender.Send(request, cancellationToken);
+
+            return Ok(new ApiSuccessResult<GetRsProductResult>
+            {
+                Code = StatusCodes.Status200OK,
+                Message = $"Success executing {nameof(GetRsProductAsync)}",
                 Content = response
             });
         }

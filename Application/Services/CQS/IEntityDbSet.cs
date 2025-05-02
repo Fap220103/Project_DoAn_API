@@ -14,6 +14,7 @@ namespace Application.Services.CQS
         public DbSet<Discount> Discount { get; set; }
         public DbSet<Setting> Setting { get; set; }
         public DbSet<Inventory> Inventory { get; set; }
+        public DbSet<News> News { get; set; }
         public DbSet<Order> Order { get; set; }
         public DbSet<OrderDetail> OrderDetail { get; set; }
         public DbSet<Product> Product { get; set; }

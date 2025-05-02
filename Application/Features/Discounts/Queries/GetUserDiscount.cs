@@ -12,6 +12,7 @@ using System.Linq;
 using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Application.Features.Discounts.Queries
 {
@@ -69,9 +70,15 @@ namespace Application.Features.Discounts.Queries
                 .Select(x => x.DiscountId);
 
             // Lấy tất cả Discount tương ứng
+            var now = DateTime.UtcNow;
+
             var discountQuery = _context.Discount
-                .Where(d => userDiscountQuery.Contains(d.Id) && d.IsActive)
+                .Where(d => userDiscountQuery.Contains(d.Id) &&
+                d.IsActive &&
+                d.EndDate > now && 
+                (!d.UsageLimit.HasValue || d.UsedCount < d.UsageLimit.Value))
                 .OrderByDescending(d => d.EndDate);
+
 
             // Phân trang
             var skip = (request.Page - 1) * request.Limit;

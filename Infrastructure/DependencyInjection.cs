@@ -6,6 +6,7 @@ using Infrastructure.EncryptionManagers;
 using Infrastructure.ExcelExportManagers;
 using Infrastructure.LoggingManagers.Serilogs;
 using Infrastructure.PhotoManagers;
+using Infrastructure.RecommentderSystem;
 using Infrastructure.SecurityManagers.AspNetIdentity;
 using Infrastructure.SecurityManagers.Navigations;
 using Infrastructure.SecurityManagers.RoleClaims;
@@ -72,6 +73,10 @@ namespace Infrastructure
 
             //>>> VnPayManager
             services.VnPayManager(configuration);
+
+            //>>> RsProductManager
+            services.RecommentderSystemManager(configuration);
+            
             return services;
         }
     }

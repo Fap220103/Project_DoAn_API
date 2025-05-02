@@ -25,6 +25,7 @@ namespace Infrastructure.DataAccessManagers.EFCores.Contexts
         public DbSet<Color> Color { get; set; }
         public DbSet<Discount> Discount { get; set; }
         public DbSet<Inventory> Inventory { get; set; }
+        public DbSet<News> News { get; set; }
         public DbSet<Order> Order { get ; set ; }
         public DbSet<OrderDetail> OrderDetail { get ; set ; }
         public DbSet<Product> Product { get ; set ; }
@@ -46,6 +47,7 @@ namespace Infrastructure.DataAccessManagers.EFCores.Contexts
             modelBuilder.ApplyConfiguration(new ColorConfiguration());
             modelBuilder.ApplyConfiguration(new DiscountConfiguration());
             modelBuilder.ApplyConfiguration(new InventoryConfiguration());
+            modelBuilder.ApplyConfiguration(new NewsConfiguration());
             modelBuilder.ApplyConfiguration(new OrderConfiguration());
             modelBuilder.ApplyConfiguration(new OrderDetailConfiguration());
             modelBuilder.ApplyConfiguration(new ProductConfiguration());
