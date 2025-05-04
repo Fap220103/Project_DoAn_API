@@ -87,6 +87,19 @@ namespace WebAPI.Controllers.Products
             });
         }
         [AllowAnonymous]
+        [HttpGet("GetSuggestProduct")]
+        public async Task<ActionResult<ApiSuccessResult<GetSuggestProductResult>>> GetSuggestProductAsync([FromQuery] GetSuggestProductRequest request, CancellationToken cancellationToken)
+        {
+            var response = await _sender.Send(request, cancellationToken);
+
+            return Ok(new ApiSuccessResult<GetSuggestProductResult>
+            {
+                Code = StatusCodes.Status200OK,
+                Message = $"Success executing {nameof(GetSuggestProductAsync)}",
+                Content = response
+            });
+        }
+        [AllowAnonymous]
         [HttpGet("GetById")]
         public async Task<ActionResult<ApiSuccessResult<GetProductByIdResult>>> GetProductByIdAsync([FromQuery] string ProductId,CancellationToken cancellationToken)
         {

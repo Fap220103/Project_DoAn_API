@@ -82,18 +82,7 @@ namespace Infrastructure.SecurityManagers.Navigations
               }
             ]
           },
-          {
-            ""ParentName"": ""Support"",
-            ""ParentCaption"": ""Hỗ trợ khách hàng"",
-            ""ParentUrl"": ""#"",
-            ""Children"": [
-              {
-                ""Name"": ""Messenger"",
-                ""Caption"": ""Tin nhắn"",
-                ""Url"": ""/admin/messenger""
-              }
-            ]
-          },
+         
           {
             ""ParentName"": ""Settings"",
             ""ParentCaption"": ""Cài đặt hệ thống"",

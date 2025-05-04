@@ -17,6 +17,7 @@ namespace Application.Services.Externals
         Task<UpdateUserResult> UpdateUserAsync(string id, string? username, string? phone, int status, IFormFile? image, List<string>? roles, CancellationToken cancellationToken = default);
         Task<DeleteUserResult> DeleteUserAsync(string userId, CancellationToken cancellationToken = default);
         Task<LoginUserResult> LoginAsync(string email, string password, CancellationToken cancellationToken = default);
+        Task<ExternalLoginResult> ExternalLoginAsync(string IdToken, CancellationToken cancellationToken = default);
         Task<LogoutUserResult> LogoutAsync(string userId, CancellationToken cancellationToken = default);
         Task<RegisterUserResult> RegisterUserAsync(string email, string password, CancellationToken cancellationToken = default);
         Task<string> ConfirmEmailAsync(string email, string code, CancellationToken cancellationToken = default);

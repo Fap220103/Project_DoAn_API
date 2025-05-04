@@ -29,6 +29,7 @@ namespace Infrastructure.SeedManagers
             var serviceProvider = scope.ServiceProvider;
 
             var context = serviceProvider.GetRequiredService<DataContext>();
+         
             if (!context.Setting.Any())
             {
                 var roleClaimSeeder = serviceProvider.GetRequiredService<RoleClaimSeeder>();

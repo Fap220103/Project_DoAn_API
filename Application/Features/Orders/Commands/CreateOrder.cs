@@ -1,10 +1,13 @@
-﻿using Application.Services.CQS.Commands;
+﻿using Application.Features.Accounts.Events;
+using Application.Features.Orders.Events;
+using Application.Services.CQS.Commands;
 using Application.Services.Externals;
 using Application.Services.Repositories;
 using Domain.Constants;
 using Domain.Entities;
 using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -20,7 +23,16 @@ namespace Application.Features.Orders.Commands
         public int Quantity { get; set; }
         public decimal Price { get; set; }
     }
-
+    public class CartDto
+    {
+        public string ProductVariantId { get; set; }
+        public string ProductName { get; set; }
+        public string SizeName { get; set; }
+        public string ColorName { get; set; }
+        public int Quantity { get; set; }
+        public decimal Price { get; set; }
+        public decimal TotalPrice { get; set; }
+    }
     public class CreateOrderResult
     {
         public string Id { get; init; } = null!;
@@ -60,6 +72,8 @@ namespace Application.Features.Orders.Commands
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICommonService _commonService;
         private readonly IVnPayService _vnPayService;
+        private readonly IMediator _mediator;
+        private readonly IIdentityService _identityService;
 
         public CreateOrderHandler(
             IBaseCommandRepository<Order> repository,
@@ -67,7 +81,9 @@ namespace Application.Features.Orders.Commands
             ICommandContext context,
             IUnitOfWork unitOfWork,
             ICommonService commonService,
-            IVnPayService vnPayService
+            IVnPayService vnPayService,
+            IMediator mediator,
+            IIdentityService identityService
             )
         {
             _repository = repository;
@@ -76,6 +92,8 @@ namespace Application.Features.Orders.Commands
             _unitOfWork = unitOfWork;
             _commonService = commonService;
             _vnPayService = vnPayService;
+            _mediator = mediator;
+            _identityService = identityService;
         }
 
         public async Task<CreateOrderResult> Handle(CreateOrderRequest request, CancellationToken cancellationToken)
@@ -138,6 +156,8 @@ namespace Application.Features.Orders.Commands
                 OrderId = order.Id,
             }).ToList();
 
+          
+
             await _repository.CreateAsync(order);
 
             foreach (var item in request.Items)
@@ -162,6 +182,43 @@ namespace Application.Features.Orders.Commands
             }
 
             await _unitOfWork.SaveAsync(cancellationToken);
+
+            // Send email for customer
+            var variantIds = request.Items.Select(i => i.ProductVariantId).ToList();
+
+            var variants = await _context.ProductVariant
+                .Include(v => v.Product)
+                .Include(v => v.Color)
+                .Include(v => v.Size)
+                .Where(v => variantIds.Contains(v.Id))
+                .ToListAsync();
+
+            var newCartDto = request.Items.Select(i =>
+            {
+                var variant = variants.FirstOrDefault(v => v.Id == i.ProductVariantId);
+
+                return new CartDto
+                {
+                    ProductVariantId = i.ProductVariantId,
+                    ProductName = variant?.Product?.Title ?? "N/A",
+                    ColorName = variant?.Color?.Name ?? "N/A",
+                    SizeName = variant?.Size?.Name ?? "N/A",
+                    Price = i.Price,
+                    Quantity = i.Quantity,
+                    TotalPrice = i.Price * i.Quantity
+                };
+            }).ToList();
+            var user = await _identityService.GetUserByIdAsync(request.CustomerId);
+            var addressOrder = _context.ShippingAddress.FirstOrDefault(x => x.Id == request.ShippingAddressId);
+            var registerUserEvent = new SendMailOrderEvent
+            (
+                newCartDto,
+                order,
+                addressOrder,
+                user.Email
+            );
+            await _mediator.Publish(registerUserEvent);
+
             string? paymentUrl = null;
             if (request.TypePayment == 2)
             {

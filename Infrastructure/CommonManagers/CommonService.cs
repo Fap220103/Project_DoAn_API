@@ -113,10 +113,13 @@ namespace Infrastructure.CommonManagers
             {
                 GT = Convert.ToDecimal(value);
             }
-            string thapPhan = new string('#', SoSauDauPhay);
-            string snumformat = "0:#,##0" + (thapPhan.Length > 0 ? "." + thapPhan : string.Empty);
+
+            string thapPhan = new string('0', SoSauDauPhay); // đổi từ '#' thành '0' nếu bạn luôn muốn đủ số chữ số
+            string snumformat = "#,##0" + (SoSauDauPhay > 0 ? "." + thapPhan : string.Empty);
+
             return GT.ToString(snumformat);
         }
+
 
         public string GenerateCode(string prefix)
         {

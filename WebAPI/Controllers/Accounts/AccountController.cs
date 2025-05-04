@@ -110,6 +110,58 @@ namespace WebAPI.Controllers.Accounts
                 Content = response
             });
         }
+
+        [HttpPost("external-login")]
+        public async Task<ActionResult<ApiSuccessResult<ExternalLoginResult>>> ExternalLoginAsync(ExternalLoginRequest request, CancellationToken cancellationToken)
+        {
+            var response = await _sender.Send(request, cancellationToken);
+
+            if (response == null)
+            {
+                throw new ApiException(
+                    StatusCodes.Status401Unauthorized,
+                    "Invalid or expired token"
+                    );
+            }
+
+            var accessToken = response.AccessToken;
+            var refreshToken = response.RefreshToken;
+
+            if (accessToken == null || refreshToken == null)
+            {
+                throw new ApiException(
+                    StatusCodes.Status401Unauthorized,
+                    "Access token or refresh token is null"
+                    );
+            }
+
+            var refreshTokenCookieName = _configuration["Jwt:refreshTokenCookieName"];
+            double expireInMinute;
+            if (!double.TryParse(_configuration["Jwt:ExpireInMinute"], out expireInMinute))
+            {
+                expireInMinute = 15.0;
+            }
+            response.expires_in_second = (int)(expireInMinute * 60);
+            if (refreshTokenCookieName != null)
+            {
+                HttpContext.Response.Cookies.Delete(refreshTokenCookieName);
+                HttpContext.Response.Cookies.Append(refreshTokenCookieName, refreshToken, new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.None,
+                    Expires = DateTime.UtcNow.AddDays(TokenConsts.ExpiryInDays)
+                });
+
+            }
+
+            return Ok(new ApiSuccessResult<ExternalLoginResult>
+            {
+                Code = StatusCodes.Status200OK,
+                Message = $"Success executing {nameof(ExternalLoginAsync)}",
+                Content = response
+            });
+        }
         [HttpPost("Logout")]
         public async Task<ActionResult<ApiSuccessResult<LogoutUserResult>>> LogoutAsync([FromQuery]string userId, CancellationToken cancellationToken)
         {

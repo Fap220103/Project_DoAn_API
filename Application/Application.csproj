@@ -8,12 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Features\Orders\Events\**" />
-    <EmbeddedResource Remove="Features\Orders\Events\**" />
-    <None Remove="Features\Orders\Events\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="13.0.1" />
     <PackageReference Include="CloudinaryDotNet" Version="1.27.4" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.11.0" />

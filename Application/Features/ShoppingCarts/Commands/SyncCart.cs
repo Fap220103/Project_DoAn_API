@@ -18,6 +18,7 @@ namespace Application.Features.ShoppingCarts.Commands
     public class SyncCartResult
     {
         public string Id { get; init; } = null!;
+        public int countCart { get; set; }
         public string Message { get; init; } = null!;
     }
 
@@ -58,10 +59,11 @@ namespace Application.Features.ShoppingCarts.Commands
             }
 
             await _cartService.SaveCartAsync(cart);
-
+            
             return new SyncCartResult
             {
                 Id = request.userId,
+                countCart = cart.Items.Count(),
                 Message = "Success"
             };
         }

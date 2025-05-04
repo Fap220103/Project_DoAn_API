@@ -6,9 +6,11 @@ using Application.Features.ProductCategories.Queries;
 using Application.Services.Externals;
 using Application.Services.Repositories;
 using AutoMapper;
+using CloudinaryDotNet.Actions;
 using Domain.Constants;
 using Domain.Entities;
 using Domain.Interfaces;
+using Google.Apis.Auth;
 using Infrastructure.DataAccessManagers.EFCores.Contexts;
 using Infrastructure.SecurityManagers.RoleClaims;
 using Infrastructure.SecurityManagers.Tokens;
@@ -17,8 +19,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Options;
 using Mysqlx.Crud;
+using OfficeOpenXml.Packaging.Ionic.Zip;
 using Org.BouncyCastle.Asn1.Ocsp;
 using System;
 using System.Collections.Generic;
@@ -274,6 +278,60 @@ namespace Infrastructure.SecurityManagers.AspNetIdentity
             await _unitOfWork.SaveAsync(cancellationToken);
 
             return new LoginUserResult
+            {
+                AccessToken = accessToken,
+                RefreshToken = refreshToken,
+                UserId = user.Id,
+                Email = user.Email,
+                MainNavigations = mainNavs.MainNavigations
+            };
+        }
+
+        public async Task<ExternalLoginResult> ExternalLoginAsync(string IdToken, CancellationToken cancellationToken = default)
+        {
+            GoogleJsonWebSignature.Payload payload;
+            try
+            {
+                payload = await GoogleJsonWebSignature.ValidateAsync(IdToken);
+            }
+            catch (InvalidJwtException)
+            {
+                throw new IdentityException("Invalid Google ID token.");
+            }
+            var user = await _userManager.FindByEmailAsync(payload.Email);
+            bool isNewUser = false;
+
+            if (user == null)
+            {
+                user = new ApplicationUser(payload.Email, payload.Name);
+                var result = await _userManager.CreateAsync(user);
+
+                if (!result.Succeeded)
+                {
+                    var errors = string.Join("; ", result.Errors.Select(e => e.Description));
+                    throw new IdentityException($"Failed to create user: {errors}");
+                }
+
+                await _userManager.AddToRoleAsync(user, "Basic");
+                isNewUser = true;
+            }
+
+            var mainNavs = await _navigationService.GenerateMainNavAsync(user.Id, cancellationToken);
+
+            var accessToken = await _tokenService.GenerateToken(user);
+            var refreshToken = _tokenService.GenerateRefreshToken();
+
+            var tokens = await _tokenRepository.GetByUserIdAsync(user.Id, cancellationToken);
+            foreach (var tokenItem in tokens)
+            {
+                _tokenRepository.Purge(tokenItem);
+            }
+
+            var token = new Token(user.Id, refreshToken);
+            await _tokenRepository.CreateAsync(token, cancellationToken);
+            await _unitOfWork.SaveAsync(cancellationToken);
+
+            return new ExternalLoginResult
             {
                 AccessToken = accessToken,
                 RefreshToken = refreshToken,

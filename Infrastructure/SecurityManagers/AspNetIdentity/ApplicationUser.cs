@@ -30,5 +30,17 @@ namespace Infrastructure.SecurityManagers.AspNetIdentity
             UserName = Email;         
         }
 
+        public ApplicationUser(
+          string email,
+          string userName
+          )
+        {
+            EmailConfirmed = true;
+            IsBlocked = false;
+            IsDeleted = false;
+            CreatedAt = DateTime.UtcNow;
+            Email = email.Trim();
+            UserName = userName;
+        }
     }
 }

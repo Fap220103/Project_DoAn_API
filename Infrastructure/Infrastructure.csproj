@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <PackageReference Include="EPPlus" Version="6.2.19" />
+    <PackageReference Include="Google.Apis.Auth" Version="1.69.0" />
     <PackageReference Include="MailKit" Version="4.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.30" />
     <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.3.0" />
@@ -40,6 +41,10 @@
     <PackageReference Include="Serilog.Settings.Configuration" Version="3.4.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
     <PackageReference Include="StackExchange.Redis" Version="2.8.31" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="EmailManagers\EmailTemplates\" />
   </ItemGroup>
 
 </Project>
