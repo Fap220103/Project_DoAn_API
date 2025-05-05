@@ -66,6 +66,19 @@ namespace WebAPI.Controllers.Discounts
             });
         }
         [AllowAnonymous]
+        [HttpGet("GetDiscountAdmin")]
+        public async Task<ActionResult<ApiSuccessResult<GetDiscountAdminResult>>> GetDiscountAdminAsync([FromQuery] GetDiscountAdminRequest request, CancellationToken cancellationToken)
+        {
+            var response = await _sender.Send(request, cancellationToken);
+
+            return Ok(new ApiSuccessResult<GetDiscountAdminResult>
+            {
+                Code = StatusCodes.Status200OK,
+                Message = $"Success executing {nameof(GetDiscountAdminAsync)}",
+                Content = response
+            });
+        }
+        [AllowAnonymous]
         [HttpGet("GetUserDiscount")]
         public async Task<ActionResult<ApiSuccessResult<GetUserDiscountResult>>> GetUserDiscountAsync([FromQuery] GetUserDiscountRequest request, CancellationToken cancellationToken)
         {
