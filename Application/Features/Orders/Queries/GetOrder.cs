@@ -20,6 +20,7 @@ namespace Application.Features.Orders.Queries
         public string OrderId { get; set; } = null!;
         public string CustomerId { get; set; } = null!;
         public decimal TotalAmount { get; set; }
+        public decimal TotalDiscount { get; set; }
         public int Status { get; set; }
         public int TotalQuantity { get; set; }
         public string OrderCode { get; set; } = null!;
@@ -89,6 +90,8 @@ namespace Application.Features.Orders.Queries
         public string? userId { get; set; }
         public int? Status { get; set; } 
         public string? Search { get; set; }
+        public string? FromDate { get; set; }
+        public string? ToDate { get; set; }
     }
 
     public class GetOrderHandler : IRequestHandler<GetOrderRequest, GetOrderResult>
@@ -126,6 +129,19 @@ namespace Application.Features.Orders.Queries
             if (!string.IsNullOrEmpty(request.userId))
             {
                 query = query.Where(x=> x.CustomerId == request.userId);
+            }
+
+
+            // Lọc theo FromDate và ToDate nếu có
+            if (!string.IsNullOrEmpty(request.FromDate) && DateTime.TryParse(request.FromDate, out DateTime fromDate))
+            {
+                query = query.Where(x => x.CreatedAt >= fromDate.Date);
+            }
+
+            if (!string.IsNullOrEmpty(request.ToDate) && DateTime.TryParse(request.ToDate, out DateTime toDate))
+            {
+                var endDate = toDate.Date.AddDays(1); // Bao gồm cả ngày kết thúc
+                query = query.Where(x => x.CreatedAt < endDate);
             }
 
             if (!string.IsNullOrWhiteSpace(request.Search))

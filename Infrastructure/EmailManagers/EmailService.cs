@@ -65,7 +65,7 @@ namespace Infrastructure.EmailManagers
             }
         }
 
-        public async Task SendEmailOrderAsync(List<CartDto> items, Order order, ShippingAddress addressOrder, string email)
+        public async Task SendEmailOrderAsync(List<CartDto> items, Order order, ShippingAddress addressOrder, string email, decimal totalDiscount)
         {
             var strSanPham = "";
             var thanhtien = decimal.Zero;
@@ -82,7 +82,7 @@ namespace Infrastructure.EmailManagers
                 strSanPham += "</tr>";
                 thanhtien += sp.Price * sp.Quantity;
             }
-            TongTien = thanhtien;
+            TongTien = thanhtien - totalDiscount;
             string orderAddress = addressOrder.AddressLine + " - " + addressOrder.Province + " - " + addressOrder.District + " - " + addressOrder.Ward;
             string templatePath = Path.Combine(_env.ContentRootPath, "EmailTemplates", "send2.html");
             string contentCustomer = await File.ReadAllTextAsync(templatePath);
@@ -94,6 +94,7 @@ namespace Infrastructure.EmailManagers
             contentCustomer = contentCustomer.Replace("{{Email}}", email);
             contentCustomer = contentCustomer.Replace("{{DiaChiNhanHang}}", orderAddress);
             contentCustomer = contentCustomer.Replace("{{ThanhTien}}", _commonService.FormatNumber(thanhtien, 0));
+            contentCustomer = contentCustomer.Replace("{{GiamGia}}", _commonService.FormatNumber(totalDiscount, 0));
             contentCustomer = contentCustomer.Replace("{{TongTien}}", _commonService.FormatNumber(TongTien, 0));
             await SendEmailAsync(email, "Đơn hàng #" + order.Code, contentCustomer.ToString());
         }

@@ -15,18 +15,20 @@ namespace Application.Features.Orders.Events
         public Order order { get; }
         public ShippingAddress shippingAddress { get; }
         public string email { get; }
-
+        public decimal totalDiscount { get; }
 
         public SendMailOrderEvent(
             List<CartDto> cart,
             Order order,
             ShippingAddress shippingAddress,
-            string email)
+            string email,
+            decimal totalDiscount)
         {
             this.cart = cart;
             this.order = order;
             this.shippingAddress = shippingAddress;
             this.email = email;
+            this.totalDiscount = totalDiscount;
         }
     }
 }

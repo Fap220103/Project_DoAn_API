@@ -25,5 +25,18 @@ namespace WebAPI.Controllers.Reports
                 Content = response
             });
         }
+        [HttpGet("BestSeller")]
+        public async Task<ActionResult<ApiSuccessResult<BestSellerResult>>> BestSellerAsync(CancellationToken cancellationToken)
+        {
+            var request = new BestSellerRequest();
+            var response = await _sender.Send(request, cancellationToken);
+
+            return Ok(new ApiSuccessResult<BestSellerResult>
+            {
+                Code = StatusCodes.Status200OK,
+                Message = $"Success executing {nameof(BestSellerAsync)}",
+                Content = response
+            });
+        }
     }
 }

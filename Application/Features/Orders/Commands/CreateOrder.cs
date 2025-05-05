@@ -101,15 +101,17 @@ namespace Application.Features.Orders.Commands
             var orderCode = _commonService.GenerateCode("DH");
             var totalAmount = request.Items.Sum(x => x.Quantity * x.Price);
             var totalQuantity = request.Items.Sum(x => x.Quantity);
-
+            decimal totalDiscount = 0;
             if (request.DiscountValue > 0)
             {
                 if (request.DiscountType == 0)
                 {
-                    totalAmount -= totalAmount * request.DiscountValue / 100;
+                    totalDiscount = totalAmount * request.DiscountValue / 100;
+                    totalAmount -= totalDiscount;
                 }
                 else if (request.DiscountType == 1)
                 {
+                    totalDiscount = request.DiscountValue;
                     totalAmount -= request.DiscountValue;
                 }
 
@@ -142,6 +144,7 @@ namespace Application.Features.Orders.Commands
                 request.CustomerId,
                 orderCode,
                 totalAmount,
+                totalDiscount,
                 totalQuantity,
                 request.TypePayment,
                 status,
@@ -215,7 +218,8 @@ namespace Application.Features.Orders.Commands
                 newCartDto,
                 order,
                 addressOrder,
-                user.Email
+                user.Email,
+                totalDiscount
             );
             await _mediator.Publish(registerUserEvent);
 

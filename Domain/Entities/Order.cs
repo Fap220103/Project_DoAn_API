@@ -15,6 +15,7 @@ namespace Domain.Entities
         public string Code { get; set; } = null!;
         public string CustomerId { get; set; }
         public decimal TotalAmount { get; set; }
+        public decimal TotalDiscount { get; set; }
         public int Quantity { get; set; }
         public int TypePayment { get; set; }
         public int Status { get; set; }
@@ -26,6 +27,7 @@ namespace Domain.Entities
             string? userId,
             string code,
             decimal totalAmount,
+            decimal totalDiscount,
             int quantity,
             int typePayment,
             int status,
@@ -34,6 +36,7 @@ namespace Domain.Entities
         {
             Code = code.Trim();
             TotalAmount = totalAmount;
+            TotalDiscount = totalDiscount;
             Quantity = quantity;
             TypePayment = typePayment;
             Status = status;
@@ -44,6 +47,7 @@ namespace Domain.Entities
             string? userId,
             string code,
             decimal totalAmount,
+            decimal totalDiscount,
             int quantity,
             int typePayment,
             string customerId,
@@ -53,6 +57,7 @@ namespace Domain.Entities
         {
             Code = code.Trim();
             TotalAmount = totalAmount;
+            TotalDiscount = totalDiscount;
             Quantity = quantity;
             TypePayment = typePayment;
             Status = status;

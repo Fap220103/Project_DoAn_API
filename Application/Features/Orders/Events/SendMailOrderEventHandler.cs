@@ -20,7 +20,7 @@ namespace Application.Features.Orders.Events
 
         public async Task Handle(SendMailOrderEvent notification, CancellationToken cancellationToken)
         {
-           await _emailService.SendEmailOrderAsync(notification.cart, notification.order, notification.shippingAddress, notification.email);
+           await _emailService.SendEmailOrderAsync(notification.cart, notification.order, notification.shippingAddress, notification.email, notification.totalDiscount);
         }
     }
 }

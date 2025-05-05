@@ -89,5 +89,17 @@ namespace WebAPI.Controllers.Orders
                 Content = response
             });
         }
+        [HttpGet("GetInvoice")]
+        public async Task<ActionResult<ApiSuccessResult<GetInvoiceResult>>> GetInvoiceAsync([FromQuery] GetInvoiceRequest request, CancellationToken cancellationToken)
+        {
+            var response = await _sender.Send(request, cancellationToken);
+
+            return Ok(new ApiSuccessResult<GetInvoiceResult>
+            {
+                Code = StatusCodes.Status200OK,
+                Message = $"Success executing {nameof(GetInvoiceAsync)}",
+                Content = response
+            });
+        }
     }
 }
