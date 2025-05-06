@@ -703,6 +703,13 @@ namespace Infrastructure.SecurityManagers.AspNetIdentity
 
             return email;
         }
+
+        public async Task<int> CountUserAsync(CancellationToken cancellationToken = default)
+        {
+            var totalUser = await _queryContext.Users.CountAsync();
+
+            return totalUser;
+        }
     }
 
 }

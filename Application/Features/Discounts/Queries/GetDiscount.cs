@@ -12,8 +12,6 @@ using System.Threading.Tasks;
 
 namespace Application.Features.Discounts.Queries
 {
-
-
     public class GetDiscountResult
     {
         public PagedList<Discount> Data { get; init; } = null!;

@@ -38,5 +38,17 @@ namespace WebAPI.Controllers.Reports
                 Content = response
             });
         }
+        [HttpGet]
+        public async Task<ActionResult<ApiSuccessResult<GetReportResult>>> GetReportAsync([FromQuery] GetReportRequest request, CancellationToken cancellationToken)
+        {
+            var response = await _sender.Send(request, cancellationToken);
+
+            return Ok(new ApiSuccessResult<GetReportResult>
+            {
+                Code = StatusCodes.Status200OK,
+                Message = $"Success executing {nameof(GetReportAsync)}",
+                Content = response
+            });
+        }
     }
 }

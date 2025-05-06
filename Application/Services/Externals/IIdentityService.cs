@@ -30,5 +30,6 @@ namespace Application.Services.Externals
         Task<ApplicationUserDto> GetUserByIdAsync(string userId, CancellationToken cancellationToken = default);
         Task<UpdateProfileResult> UpdateProfileAsync(string id, string username, string phone, IFormFile image, CancellationToken cancellationToken = default);
         Task<ChangePassResult> ChangePasswordAsync(string currentPass, string newPass, string userId, CancellationToken cancellationToken = default);
+        Task<int> CountUserAsync(CancellationToken cancellationToken = default);
     }
 }
