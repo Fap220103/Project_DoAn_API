@@ -139,6 +139,19 @@ namespace WebAPI.Controllers.Products
                 Content = response
             });
         }
+        [AllowAnonymous]
+        [HttpGet("GetGeneralReview")]
+        public async Task<ActionResult<ApiSuccessResult<GetGeneralReviewResult>>> GetGeneralReviewAsync([FromQuery] GetGeneralReviewRequest request, CancellationToken cancellationToken)
+        {
+            var response = await _sender.Send(request, cancellationToken);
+
+            return Ok(new ApiSuccessResult<GetGeneralReviewResult>
+            {
+                Code = StatusCodes.Status200OK,
+                Message = $"Success executing {nameof(GetGeneralReviewAsync)}",
+                Content = response
+            });
+        }
         [HttpGet("export")]
         public async Task<IActionResult> ExportToExcel()
         {

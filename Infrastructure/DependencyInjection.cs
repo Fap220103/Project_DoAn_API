@@ -4,6 +4,7 @@ using Infrastructure.DataAccessManagers.EFCores;
 using Infrastructure.EmailManagers;
 using Infrastructure.EncryptionManagers;
 using Infrastructure.ExcelExportManagers;
+using Infrastructure.GeneralReview;
 using Infrastructure.LoggingManagers.Serilogs;
 using Infrastructure.PhotoManagers;
 using Infrastructure.RecommentderSystem;
@@ -76,7 +77,10 @@ namespace Infrastructure
 
             //>>> RsProductManager
             services.RecommentderSystemManager(configuration);
-            
+
+            //>>> GeneralReviewManager
+            services.GeneralReviewManager(configuration);
+
             return services;
         }
     }
