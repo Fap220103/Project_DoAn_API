@@ -60,28 +60,6 @@ namespace Infrastructure.DataAccessManagers.EFCores.Contexts
             modelBuilder.ApplyConfiguration(new TokenConfiguration());
             modelBuilder.ApplyConfiguration(new UserDiscountConfiguration());
 
-            modelBuilder.Entity<Color>().HasData(
-                new Color { Id = 1, Name = "Đỏ", HexCode = "#FF0000" },
-                new Color { Id = 2, Name = "Xanh lá", HexCode = "#008000" },
-                new Color { Id = 3, Name = "Xanh dương", HexCode = "#0000FF" },
-                new Color { Id = 4, Name = "Đen", HexCode = "#000000" },
-                new Color { Id = 5, Name = "Trắng", HexCode = "#FFFFFF" },
-                new Color { Id = 6, Name = "Xám", HexCode = "#808080" },
-                new Color { Id = 7, Name = "Vàng", HexCode = "#FFFF00" },
-                new Color { Id = 8, Name = "Cam", HexCode = "#FFA500" },
-                new Color { Id = 9, Name = "Tím", HexCode = "#800080" },
-                new Color { Id = 10, Name = "Hồng", HexCode = "#FFC0CB" },
-                new Color { Id = 11, Name = "Nâu", HexCode = "#A52A2A" },
-                new Color { Id = 12, Name = "Lục lam", HexCode = "#00FFFF" }
-            );
-
-            modelBuilder.Entity<Size>().HasData(
-                new Size { Id = 1, Name = "S" },
-                new Size { Id = 2, Name = "M" },
-                new Size { Id = 3, Name = "L" },
-                new Size { Id = 4, Name = "XL" },
-                new Size { Id = 5, Name = "XXL" }
-            );
         }
     }
 }

@@ -27,18 +27,6 @@ namespace WebAPI.Controllers.Sizes
                 Content = response
             });
         }
-        //[HttpPost("UpdateSize")]
-        //public async Task<ActionResult<ApiSuccessResult<UpdateSizeResult>>> UpdateSizeAsync(UpdateSizeRequest request, CancellationToken cancellationToken)
-        //{
-        //    var response = await _sender.Send(request, cancellationToken);
-
-        //    return Ok(new ApiSuccessResult<UpdateSizeResult>
-        //    {
-        //        Code = StatusCodes.Status200OK,
-        //        Message = $"Success executing {nameof(UpdateSizeAsync)}",
-        //        Content = response
-        //    });
-        //}
 
         [HttpDelete("{id}")]
         public async Task<ActionResult<ApiSuccessResult<DeleteSizeResult>>> DeleteSizeAsync(int id, CancellationToken cancellationToken)

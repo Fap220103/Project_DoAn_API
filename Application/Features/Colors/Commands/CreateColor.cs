@@ -10,22 +10,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Features.Sizes.Commands
+namespace Application.Features.Colors.Commands
 {
-    public class CreateSizeResult
+    public class CreateColorResult
     {
         public int Id { get; init; }
         public string Message { get; init; } = null!;
     }
 
-    public class CreateSizeRequest : IRequest<CreateSizeResult>
+    public class CreateColorRequest : IRequest<CreateColorResult>
     {
         public string Name { get; init; } = null!;
+        public string HexCode { get; init; } = null!;
     }
 
-    public class CreateSizeValidator : AbstractValidator<CreateSizeRequest>
+    public class CreateColorValidator : AbstractValidator<CreateColorRequest>
     {
-        public CreateSizeValidator()
+        public CreateColorValidator()
         {
             RuleFor(x => x.Name)
                 .NotEmpty();
@@ -33,35 +34,35 @@ namespace Application.Features.Sizes.Commands
     }
 
 
-    public class CreateSizeHandler : IRequestHandler<CreateSizeRequest, CreateSizeResult>
+    public class CreateColorHandler : IRequestHandler<CreateColorRequest, CreateColorResult>
     {
         private readonly ICommandContext _context;
 
-        public CreateSizeHandler(
+        public CreateColorHandler(
             ICommandContext context
             )
         {
             _context = context;
         }
 
-        public async Task<CreateSizeResult> Handle(CreateSizeRequest request, CancellationToken cancellationToken = default)
+        public async Task<CreateColorResult> Handle(CreateColorRequest request, CancellationToken cancellationToken = default)
         {
-            var isExist = await _context.Size.AnyAsync(s => s.Name == request.Name, cancellationToken);
+            var isExist = await _context.Color.AnyAsync(s => s.Name == request.Name, cancellationToken);
             if (isExist)
             {
-                return new CreateSizeResult
+                return new CreateColorResult
                 {
                     Id = 0,
-                    Message = "Size already exists"
+                    Message = "Color already exists"
                 };
             }
 
-            var entity = new Size { Name = request.Name };
+            var entity = new Color { Name = request.Name, HexCode = request.HexCode };
 
-            _context.Size.Add(entity);
+            _context.Color.Add(entity);
             await _context.SaveChangesAsync();
 
-            return new CreateSizeResult
+            return new CreateColorResult
             {
                 Id = entity.Id,
                 Message = "Success"

@@ -30,6 +30,16 @@ namespace Infrastructure.SecurityManagers.Navigations
                 ""Name"": ""ProductVariant"",
                 ""Caption"": ""Biến thể"",
                 ""Url"": ""/admin/productvariant""
+              },
+              {
+                ""Name"": ""Color"",
+                ""Caption"": ""Màu sắc"",
+                ""Url"": ""/admin/color""
+              },
+              {
+                ""Name"": ""Size"",
+                ""Caption"": ""Kích cỡ"",
+                ""Url"": ""/admin/size""
               }
             ]
           },

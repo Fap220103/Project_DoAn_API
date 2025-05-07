@@ -59,7 +59,7 @@ namespace Application.Features.Sizes.Commands
             }
 
             _context.Size.Remove(entity);
-            await _unitOfWork.SaveAsync(cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken);
 
             return new DeleteSizeResult
             {

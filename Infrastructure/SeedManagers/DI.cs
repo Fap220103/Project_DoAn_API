@@ -18,7 +18,8 @@ namespace Infrastructure.SeedManagers
         {
             services.AddScoped<RoleClaimSeeder>();
             services.AddScoped<SettingSeeder>();
-            //services.AddScoped<ConfigSeeder>();
+            services.AddScoped<ColorSeeder>();
+            services.AddScoped<SizeSeeder>();
             return services;
         }
 
@@ -37,6 +38,12 @@ namespace Infrastructure.SeedManagers
 
                 var configSeeder = serviceProvider.GetRequiredService<SettingSeeder>();
                 configSeeder.GenerateDataAsync().GetAwaiter().GetResult();
+
+                var colorSeeder = serviceProvider.GetRequiredService<ColorSeeder>();
+                colorSeeder.GenerateDataAsync().GetAwaiter().GetResult();
+
+                var sizeSeeder = serviceProvider.GetRequiredService<SizeSeeder>();
+                sizeSeeder.GenerateDataAsync().GetAwaiter().GetResult();
 
                 var ClaimSeeder = serviceProvider.GetRequiredService<RoleClaimSeeder>();
                 ClaimSeeder.GenerateDataAsync_v2().GetAwaiter().GetResult();
