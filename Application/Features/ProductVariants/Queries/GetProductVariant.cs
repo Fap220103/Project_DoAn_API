@@ -47,6 +47,7 @@ namespace Application.Features.ProductVariants.Queries
         public string? Search { get; set; }
         public int? ColorId { get; set; }
         public int? SizeId { get; set; }
+        public bool IsOutOfStock { get; set; } = false;
     }
 
     public class GetProductVariantHandler : IRequestHandler<GetProductVariantRequest, GetProductVariantResult>
@@ -94,6 +95,10 @@ namespace Application.Features.ProductVariants.Queries
                 );
             }
 
+            if(request.IsOutOfStock)
+            {
+                query = query.Where(x => x.Quantity < 5);
+            }
             query = query.OrderByDescending(x => x.Product.Title); // mặc định
             
             // Phân trang

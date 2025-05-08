@@ -50,5 +50,18 @@ namespace WebAPI.Controllers.Reports
                 Content = response
             });
         }
+        [HttpGet("BadProduct")]
+        public async Task<ActionResult<ApiSuccessResult<GetBadProductResult>>> GetBadProductAsync(CancellationToken cancellationToken)
+        {
+            var request = new GetBadProductRequest();
+            var response = await _sender.Send(request, cancellationToken);
+
+            return Ok(new ApiSuccessResult<GetBadProductResult>
+            {
+                Code = StatusCodes.Status200OK,
+                Message = $"Success executing {nameof(GetBadProductAsync)}",
+                Content = response
+            });
+        }
     }
 }
