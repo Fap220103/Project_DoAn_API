@@ -84,6 +84,7 @@ namespace Application.Features.Report.Queries
 
             // Lấy top 5 sản phẩm có tỷ lệ đánh giá tiêu cực cao nhất
             var top5BadProducts = resultList
+                .Where(x => x.negativePercent > 0.5) 
                 .OrderByDescending(x => x.negativePercent)
                 .ThenBy(x => x.ProductName)
                 .Take(5)
