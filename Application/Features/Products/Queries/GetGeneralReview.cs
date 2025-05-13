@@ -67,7 +67,7 @@ namespace Application.Features.Products.Queries
 
             int positivePercent = 0;
             int negativePercent = 0;
-            string suggest = "Chưa đủ dữ liệu đánh giá";
+            string suggest = "Chưa có đánh giá";
 
             if (totalCount > 0)
             {
