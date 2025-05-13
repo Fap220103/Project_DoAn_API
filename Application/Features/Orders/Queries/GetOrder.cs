@@ -21,6 +21,7 @@ namespace Application.Features.Orders.Queries
         public string CustomerId { get; set; } = null!;
         public decimal TotalAmount { get; set; }
         public decimal TotalDiscount { get; set; }
+        public decimal Total => TotalAmount + TotalDiscount;
         public int Status { get; set; }
         public int TotalQuantity { get; set; }
         public string OrderCode { get; set; } = null!;

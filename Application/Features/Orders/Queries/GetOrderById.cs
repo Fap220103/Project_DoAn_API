@@ -58,18 +58,15 @@ namespace Application.Features.Orders.Queries
     public class GetOrderByIdHandler : IRequestHandler<GetOrderByIdRequest, GetOrderByIdResult>
     {
         private readonly IQueryContext _context;
-        private readonly IIdentityService _identityService;
         private readonly IMapper _mapper;
 
         public GetOrderByIdHandler(
             IQueryContext context,
-            IIdentityService identityService,
             IMapper mapper
 
             )
         {
             _context = context;
-            _identityService = identityService;
             _mapper = mapper;
         }
 
@@ -85,7 +82,7 @@ namespace Application.Features.Orders.Queries
                                             .ThenInclude(od => od.ProductVariant)
                                                 .ThenInclude(pv => pv.Size)   // Bao gồm thông tin kích thước
                                         .Include(x => x.ShippingAddress)
-                                        .FirstOrDefault(x=> x.Id == request.orderId);
+                                        .FirstOrDefault(x=> x.Id == request.orderId || x.Code == request.orderId);
 
          
             var dto = _mapper.Map<OrderDto>(query);

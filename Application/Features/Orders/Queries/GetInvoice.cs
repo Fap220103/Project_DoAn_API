@@ -24,6 +24,7 @@ namespace Application.Features.Orders.Queries
         public decimal TotalAmount { get; set; }
         public decimal TotalDiscount { get; set; }
         public decimal Total { get; set; }
+        public ShippingAddress address { get; set; }
     }
 
     public class InvoiceItemDto
@@ -41,6 +42,13 @@ namespace Application.Features.Orders.Queries
         public InvoiceDto Data { get; init; } = null!;
 
         public string Message { get; init; } = null!;
+    }
+    public class GetInvoiceProfile : Profile
+    {
+        public GetInvoiceProfile()
+        {
+            CreateMap<ShippingAddress, ShippingAddressDto>();
+        }
     }
 
     public class GetInvoiceRequest : IRequest<GetInvoiceResult>
@@ -92,7 +100,8 @@ namespace Application.Features.Orders.Queries
                 }).ToList(),
                 TotalAmount = order.TotalDiscount + order.TotalAmount,
                 TotalDiscount = order.TotalDiscount,
-                Total = order.TotalAmount
+                Total = order.TotalAmount,
+                address = order.ShippingAddress
             };
             return new GetInvoiceResult
             {

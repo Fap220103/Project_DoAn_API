@@ -232,7 +232,7 @@ namespace Application.Features.Orders.Commands
 
             return new CreateOrderResult
             {
-                Id = order.Id,
+                Id = order.Code,
                 Message = "Success",
                 PaymentUrl = paymentUrl
             };

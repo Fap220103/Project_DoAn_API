@@ -21,7 +21,7 @@ namespace WebAPI.Controllers.Payments
 
             if (success)
             {
-                return Redirect($"http://localhost:4200/payment-success?amount={amount}&orderId={orderId}&message={Uri.EscapeDataString(message)}");
+                return Redirect($"http://localhost:4200/checkoutsuccess/{orderId}");
             }
 
             return Redirect($"http://localhost:4200/payment-failure?message={Uri.EscapeDataString(message)}");
