@@ -24,17 +24,17 @@ namespace Infrastructure.SeedManagers.Systems
         }
         public async Task GenerateDataAsync()
         {
-            var adminRole = "Admin";
-            if (!await _roleManager.RoleExistsAsync(adminRole))
+            var managerRole = "Manager";
+            if (!await _roleManager.RoleExistsAsync(managerRole))
             {
-                await _roleManager.CreateAsync(new IdentityRole(adminRole));
+                await _roleManager.CreateAsync(new IdentityRole(managerRole));
                 
             }
 
-            var basicRole = "Basic";
-            if (!await _roleManager.RoleExistsAsync(basicRole))
+            var customerRole = "Customer";
+            if (!await _roleManager.RoleExistsAsync(customerRole))
             {
-                await _roleManager.CreateAsync(new IdentityRole(basicRole));
+                await _roleManager.CreateAsync(new IdentityRole(customerRole));
              
             }
 
@@ -51,31 +51,20 @@ namespace Infrastructure.SeedManagers.Systems
             {
                 return;
             }
-            var adminRole = "Admin";
-            var roleAdmin = await _roleManager.FindByNameAsync(adminRole);
-            if (roleAdmin != null)
+            var managerRole = "Manager";
+            var roleManager = await _roleManager.FindByNameAsync(managerRole);
+            if (roleManager != null)
             {
 
                 foreach (var item in NavigationBuilder
                     .BuildFinalNavigations()
                     .SelectMany(x => x.Children))
                 {
-                    await _roleManager.AddClaimAsync(roleAdmin, new Claim("Permission", $"{item.Name}:Create"));
-                    await _roleManager.AddClaimAsync(roleAdmin, new Claim("Permission", $"{item.Name}:Read"));
-                    await _roleManager.AddClaimAsync(roleAdmin, new Claim("Permission", $"{item.Name}:Update"));
-                    await _roleManager.AddClaimAsync(roleAdmin, new Claim("Permission", $"{item.Name}:Delete"));
+                    await _roleManager.AddClaimAsync(roleManager, new Claim("Permission", $"{item.Name}:Create"));
+                    await _roleManager.AddClaimAsync(roleManager, new Claim("Permission", $"{item.Name}:Read"));
+                    await _roleManager.AddClaimAsync(roleManager, new Claim("Permission", $"{item.Name}:Update"));
+                    await _roleManager.AddClaimAsync(roleManager, new Claim("Permission", $"{item.Name}:Delete"));
                 }
-            }
-
-
-            var basicRole = "Basic";
-            var roleBasic = await _roleManager.FindByNameAsync(basicRole);
-            if (roleBasic != null)
-            {
-                await _roleManager.AddClaimAsync(roleBasic, new Claim("Permission", $"UserProfile:Create"));
-                await _roleManager.AddClaimAsync(roleBasic, new Claim("Permission", $"UserProfile:Read"));
-                await _roleManager.AddClaimAsync(roleBasic, new Claim("Permission", $"UserProfile:Update"));
-                await _roleManager.AddClaimAsync(roleBasic, new Claim("Permission", $"UserProfile:Delete"));
             }
 
             var staffRole = "Staff";
@@ -91,8 +80,6 @@ namespace Infrastructure.SeedManagers.Systems
                 await _roleManager.AddClaimAsync(roleStaff, new Claim("Permission", $"Order:Read"));
                 await _roleManager.AddClaimAsync(roleStaff, new Claim("Permission", $"Order:Update"));
                 await _roleManager.AddClaimAsync(roleStaff, new Claim("Permission", $"Order:Delete"));
-
-
             }
 
         }

@@ -9,7 +9,7 @@ using WebAPI.Common.Models;
 
 namespace WebAPI.Controllers.ProductVariants
 {
-    [Authorize(Roles = "Admin,Staff")]
+    [Authorize(Roles = "Manager,Staff")]
     public class ProductVariantController : BaseApiController
     {
         public ProductVariantController(ISender sender) : base(sender)

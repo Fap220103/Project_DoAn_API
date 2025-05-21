@@ -23,25 +23,18 @@ namespace Infrastructure.SeedManagers.Demos
         public async Task GenerateDataAsync()
         {
             if (_userManager.Users.Any()) { return; }
-            var adminRole = "Admin";
+            var managerRole = "Manager";
             var staffRole = "Staff";
-            var basicRole = "Basic";
+            var customerRole = "Customer";
 
-            var users = new List<(string Email, string Password)>
+            var staffUsers = new List<(string Email, string Password)>
             {
-                ("nguyenvana@gmail.com", "123456"),
-                ("nguyenvanb@gmail.com", "123456"),
-                ("nguyenvanc@gmail.com", "123456"),
-                ("nguyenvand@gmail.com", "123456"),
-                ("nguyenvane@gmail.com", "123456"),
-                ("nguyenvanf@example.com", "123456"),
-                ("nguyenvang@example.com", "123456"),
-                ("nguyenvanh@example.com", "123456"),
-                ("nguyenvani@example.com", "123456"),
-            
+                ("staff1@gmail.com", "123456"),
+                ("staff2@gmail.com", "123456"),
+                ("staff3@gmail.com", "123456"),
             };
 
-            foreach (var (email, password) in users)
+            foreach (var (email, password) in staffUsers)
             {
                 if (await _userManager.FindByEmailAsync(email) == null)
                 {
@@ -57,10 +50,32 @@ namespace Infrastructure.SeedManagers.Demos
                     {
                         await _userManager.AddToRoleAsync(applicationUser, staffRole);
                     }
-                    //if (!await _userManager.IsInRoleAsync(applicationUser, basicRole))
-                    //{
-                    //    await _userManager.AddToRoleAsync(applicationUser, basicRole);
-                    //}
+                }
+            }
+
+            var customerUsers = new List<(string Email, string Password)>
+            {
+                ("customer1@gmail.com", "123456"),
+                ("customer2@gmail.com", "123456"),
+                ("customer3@gmail.com", "123456"),
+            };
+
+            foreach (var (email, password) in staffUsers)
+            {
+                if (await _userManager.FindByEmailAsync(email) == null)
+                {
+                    var applicationUser = new ApplicationUser(
+                        email
+                    );
+
+                    applicationUser.EmailConfirmed = true;
+
+                    await _userManager.CreateAsync(applicationUser, password);
+
+                    if (!await _userManager.IsInRoleAsync(applicationUser, customerRole))
+                    {
+                        await _userManager.AddToRoleAsync(applicationUser, customerRole);
+                    }
                 }
             }
 
@@ -72,16 +87,16 @@ namespace Infrastructure.SeedManagers.Demos
                 var applicationUser = new ApplicationUser(
                     adminEmail
                     );
-                applicationUser.UserName = "Admin";
+                applicationUser.UserName = "Manager";
                 applicationUser.EmailConfirmed = true;
 
                 //create user Root Admin
                 await _userManager.CreateAsync(applicationUser, adminPassword);
 
                 //add Admin role to Root Admin
-                if (!await _userManager.IsInRoleAsync(applicationUser, adminRole))
+                if (!await _userManager.IsInRoleAsync(applicationUser, managerRole))
                 {
-                    await _userManager.AddToRoleAsync(applicationUser, adminRole);
+                    await _userManager.AddToRoleAsync(applicationUser, managerRole);
                 }
             }
         }

@@ -40,7 +40,7 @@ namespace WebAPI.Controllers.UserProfiles
                 Content = response
             });
         }
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Manager")]
         [HttpPost]
         public async Task<ActionResult<ApiSuccessResult<CreateUserResult>>> CreateUserAsync(CreateUserRequest request, CancellationToken cancellationToken)
         {
@@ -53,7 +53,7 @@ namespace WebAPI.Controllers.UserProfiles
                 Content = response
             });
         }
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Manager")]
         [HttpPut]
         public async Task<ActionResult<ApiSuccessResult<UpdateUserResult>>> UpdateUserAsync([FromForm] UpdateUserRequest request, CancellationToken cancellationToken)
         {
@@ -78,7 +78,7 @@ namespace WebAPI.Controllers.UserProfiles
                 Content = response
             });
         }
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Manager")]
         [HttpDelete("{userId}")]
         public async Task<ActionResult<ApiSuccessResult<DeleteUserResult>>> DeleteUserAsync(string userId, CancellationToken cancellationToken)
         {

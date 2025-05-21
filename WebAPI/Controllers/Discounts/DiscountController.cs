@@ -8,7 +8,7 @@ using WebAPI.Common.Models;
 
 namespace WebAPI.Controllers.Discounts
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Manager")]
     public class DiscountController : BaseApiController
     {
         public DiscountController(ISender sender) : base(sender)

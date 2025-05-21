@@ -37,7 +37,7 @@ namespace Infrastructure.SecurityManagers.RoleClaims
 
         public static async Task AddAdminRoleToUser(UserManager<ApplicationUser> userManager, ApplicationUser user)
         {
-            var roles = new List<string> { "Admin" };
+            var roles = new List<string> { "Manager" };
             foreach (var role in roles)
             {
                 if (!await userManager.IsInRoleAsync(user, role))
@@ -54,7 +54,7 @@ namespace Infrastructure.SecurityManagers.RoleClaims
 
         public static async Task AddBasicRoleToUser(UserManager<ApplicationUser> userManager, ApplicationUser user)
         {
-            var roles = new List<string> { "Basic" };
+            var roles = new List<string> { "Customer" };
             foreach (var role in roles)
             {
                 if (!await userManager.IsInRoleAsync(user, role))
@@ -68,6 +68,21 @@ namespace Infrastructure.SecurityManagers.RoleClaims
                 }
             }
         }
-
+        //public static async Task AddBasicRoleToUser(UserManager<ApplicationUser> userManager, ApplicationUser user)
+        //{
+        //    var roles = new List<string> { "Basic" };
+        //    foreach (var role in roles)
+        //    {
+        //        if (!await userManager.IsInRoleAsync(user, role))
+        //        {
+        //            var result = await userManager.AddToRoleAsync(user, role);
+        //            if (!result.Succeeded)
+        //            {
+        //                var errorMessages = string.Join("; ", result.Errors.Select(e => e.Description));
+        //                throw new RoleClaimException($"Error adding role '{role}' to user: {errorMessages}");
+        //            }
+        //        }
+        //    }
+        //}
     }
 }
