@@ -82,6 +82,7 @@ namespace Infrastructure.SeedManagers.Systems
             var roleStaff = await _roleManager.FindByNameAsync(staffRole);
             if (roleStaff != null)
             {
+                await _roleManager.AddClaimAsync(roleStaff, new Claim("Permission", $"Product:Read"));
                 await _roleManager.AddClaimAsync(roleStaff, new Claim("Permission", $"ProductVariant:Create"));
                 await _roleManager.AddClaimAsync(roleStaff, new Claim("Permission", $"ProductVariant:Read"));
                 await _roleManager.AddClaimAsync(roleStaff, new Claim("Permission", $"ProductVariant:Update"));

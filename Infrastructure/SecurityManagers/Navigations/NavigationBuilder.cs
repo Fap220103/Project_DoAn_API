@@ -28,7 +28,7 @@ namespace Infrastructure.SecurityManagers.Navigations
               },
               {
                 ""Name"": ""ProductVariant"",
-                ""Caption"": ""Biến thể"",
+                ""Caption"": ""Tồn kho"",
                 ""Url"": ""/admin/productvariant""
               },
               {
@@ -77,6 +77,18 @@ namespace Infrastructure.SecurityManagers.Navigations
                 ""Name"": ""Discount"",
                 ""Caption"": ""Khuyến mãi"",
                 ""Url"": ""/admin/discount""
+              }
+            ]
+          },
+          {
+            ""ParentName"": ""News"",
+            ""ParentCaption"": ""Bài viết"",
+            ""ParentUrl"": ""#"",
+            ""Children"": [           
+              {
+                ""Name"": ""News"",
+                ""Caption"": ""Tin tức"",
+                ""Url"": ""/admin/news""
               }
             ]
           },

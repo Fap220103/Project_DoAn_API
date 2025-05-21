@@ -29,16 +29,16 @@ namespace Infrastructure.SeedManagers.Demos
 
             var users = new List<(string Email, string Password)>
             {
-                ("alex.taylor@example.com", "123456"),
-                ("jordan.morgan@example.com", "123456"),
-                ("taylor.lee@example.com", "123456"),
-                ("cameron.drew@example.com", "123456"),
-                ("casey.reese@example.com", "123456"),
-                ("skyler.morgan@example.com", "123456"),
-                ("avery.quinn@example.com", "123456"),
-                ("charlie.harper@example.com", "123456"),
-                ("jamie.riley@example.com", "123456"),
-                ("riley.jordan@example.com", "123456"),
+                ("nguyenvana@gmail.com", "123456"),
+                ("nguyenvanb@gmail.com", "123456"),
+                ("nguyenvanc@gmail.com", "123456"),
+                ("nguyenvand@gmail.com", "123456"),
+                ("nguyenvane@gmail.com", "123456"),
+                ("nguyenvanf@example.com", "123456"),
+                ("nguyenvang@example.com", "123456"),
+                ("nguyenvanh@example.com", "123456"),
+                ("nguyenvani@example.com", "123456"),
+            
             };
 
             foreach (var (email, password) in users)
@@ -57,10 +57,10 @@ namespace Infrastructure.SeedManagers.Demos
                     {
                         await _userManager.AddToRoleAsync(applicationUser, staffRole);
                     }
-                    if (!await _userManager.IsInRoleAsync(applicationUser, basicRole))
-                    {
-                        await _userManager.AddToRoleAsync(applicationUser, basicRole);
-                    }
+                    //if (!await _userManager.IsInRoleAsync(applicationUser, basicRole))
+                    //{
+                    //    await _userManager.AddToRoleAsync(applicationUser, basicRole);
+                    //}
                 }
             }
 

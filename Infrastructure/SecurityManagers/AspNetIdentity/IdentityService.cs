@@ -197,6 +197,12 @@ namespace Infrastructure.SecurityManagers.AspNetIdentity
                 query = query.OrderByDescending(x => x.CreatedAt); 
             }
 
+            //var adminUserIds = (await _userManager.GetUsersInRoleAsync("Admin"))
+            //                    .Select(u => u.Id)
+            //                    .ToList();
+
+            //query = query.Where(u => !adminUserIds.Contains(u.Id));
+
             var total = await query.CountAsync(cancellationToken);
             var items = await query
                 .Skip((page - 1) * limit)
