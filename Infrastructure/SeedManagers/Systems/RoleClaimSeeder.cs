@@ -56,30 +56,54 @@ namespace Infrastructure.SeedManagers.Systems
             if (roleManager != null)
             {
 
-                foreach (var item in NavigationBuilder
-                    .BuildFinalNavigations()
-                    .SelectMany(x => x.Children))
-                {
-                    await _roleManager.AddClaimAsync(roleManager, new Claim("Permission", $"{item.Name}:Create"));
-                    await _roleManager.AddClaimAsync(roleManager, new Claim("Permission", $"{item.Name}:Read"));
-                    await _roleManager.AddClaimAsync(roleManager, new Claim("Permission", $"{item.Name}:Update"));
-                    await _roleManager.AddClaimAsync(roleManager, new Claim("Permission", $"{item.Name}:Delete"));
-                }
+                //foreach (var item in NavigationBuilder
+                //    .BuildFinalNavigations()
+                //    .SelectMany(x => x.Children))
+                //{
+                //    await _roleManager.AddClaimAsync(roleManager, new Claim("Permission", $"{item.Name}:Create"));
+                //    await _roleManager.AddClaimAsync(roleManager, new Claim("Permission", $"{item.Name}:Read"));
+                //    await _roleManager.AddClaimAsync(roleManager, new Claim("Permission", $"{item.Name}:Update"));
+                //    await _roleManager.AddClaimAsync(roleManager, new Claim("Permission", $"{item.Name}:Delete"));
+                //}
+
+                await _roleManager.AddClaimAsync(roleManager, new Claim("Permission", $"Report:Read"));
+                await _roleManager.AddClaimAsync(roleManager, new Claim("Permission", $"Report:Export"));
+                await _roleManager.AddClaimAsync(roleManager, new Claim("Permission", $"UserProfile:Create"));
+                await _roleManager.AddClaimAsync(roleManager, new Claim("Permission", $"UserProfile:Read"));
+                await _roleManager.AddClaimAsync(roleManager, new Claim("Permission", $"UserProfile:Update"));
+                await _roleManager.AddClaimAsync(roleManager, new Claim("Permission", $"UserProfile:Delete"));
             }
 
             var staffRole = "Staff";
             var roleStaff = await _roleManager.FindByNameAsync(staffRole);
             if (roleStaff != null)
             {
-                await _roleManager.AddClaimAsync(roleStaff, new Claim("Permission", $"Product:Read"));
-                await _roleManager.AddClaimAsync(roleStaff, new Claim("Permission", $"ProductVariant:Create"));
-                await _roleManager.AddClaimAsync(roleStaff, new Claim("Permission", $"ProductVariant:Read"));
-                await _roleManager.AddClaimAsync(roleStaff, new Claim("Permission", $"ProductVariant:Update"));
-                await _roleManager.AddClaimAsync(roleStaff, new Claim("Permission", $"ProductVariant:Delete"));
-                await _roleManager.AddClaimAsync(roleStaff, new Claim("Permission", $"Order:Create"));
-                await _roleManager.AddClaimAsync(roleStaff, new Claim("Permission", $"Order:Read"));
-                await _roleManager.AddClaimAsync(roleStaff, new Claim("Permission", $"Order:Update"));
-                await _roleManager.AddClaimAsync(roleStaff, new Claim("Permission", $"Order:Delete"));
+                foreach (var item in NavigationBuilder
+                    .BuildFinalNavigations()
+                    .SelectMany(x => x.Children))
+                {
+                    if(item.Name == "Report" || item.Name == "UserProfile")
+                    {
+                        continue;
+                    }
+                       
+                    await _roleManager.AddClaimAsync(roleStaff, new Claim("Permission", $"{item.Name}:Create"));
+                    await _roleManager.AddClaimAsync(roleStaff, new Claim("Permission", $"{item.Name}:Read"));
+                    await _roleManager.AddClaimAsync(roleStaff, new Claim("Permission", $"{item.Name}:Update"));
+                    await _roleManager.AddClaimAsync(roleStaff, new Claim("Permission", $"{item.Name}:Delete"));
+                }
+                //await _roleManager.AddClaimAsync(roleStaff, new Claim("Permission", $"Product:Create"));
+                //await _roleManager.AddClaimAsync(roleStaff, new Claim("Permission", $"Product:Read"));
+                //await _roleManager.AddClaimAsync(roleStaff, new Claim("Permission", $"Product:Update"));
+                //await _roleManager.AddClaimAsync(roleStaff, new Claim("Permission", $"Product:Delete"));
+                //await _roleManager.AddClaimAsync(roleStaff, new Claim("Permission", $"ProductVariant:Create"));
+                //await _roleManager.AddClaimAsync(roleStaff, new Claim("Permission", $"ProductVariant:Read"));
+                //await _roleManager.AddClaimAsync(roleStaff, new Claim("Permission", $"ProductVariant:Update"));
+                //await _roleManager.AddClaimAsync(roleStaff, new Claim("Permission", $"ProductVariant:Delete"));
+                //await _roleManager.AddClaimAsync(roleStaff, new Claim("Permission", $"Order:Create"));
+                //await _roleManager.AddClaimAsync(roleStaff, new Claim("Permission", $"Order:Read"));
+                //await _roleManager.AddClaimAsync(roleStaff, new Claim("Permission", $"Order:Update"));
+                //await _roleManager.AddClaimAsync(roleStaff, new Claim("Permission", $"Order:Delete"));
             }
 
         }

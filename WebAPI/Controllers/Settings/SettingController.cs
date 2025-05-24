@@ -11,7 +11,7 @@ using WebAPI.Common.Models;
 
 namespace WebAPI.Controllers.Configs
 {
-    [Authorize(Roles = "Manager")]
+    [Authorize(Roles = "Staff")]
     public class SettingController : BaseApiController
     {
         public SettingController(ISender sender) : base(sender)

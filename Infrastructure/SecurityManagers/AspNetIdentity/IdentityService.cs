@@ -245,7 +245,7 @@ namespace Infrastructure.SecurityManagers.AspNetIdentity
                 throw new UnauthorizedAccessException("Invalid login credentials.");
             }
 
-            if (user.IsBlocked)
+            if (user.Status == 2)
             {
                 throw new UnauthorizedAccessException($"User is blocked. {email}");
             }

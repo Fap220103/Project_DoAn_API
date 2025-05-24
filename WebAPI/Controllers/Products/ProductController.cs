@@ -10,7 +10,7 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace WebAPI.Controllers.Products
 {
-    [Authorize(Roles = "Manager")]
+    [Authorize(Roles = "Staff")]
     public class ProductController : BaseApiController
     {
         public ProductController(ISender sender) : base(sender)
