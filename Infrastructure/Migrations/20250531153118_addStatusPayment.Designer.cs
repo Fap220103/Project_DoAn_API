@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20250507045914_addGenerateId")]
-    partial class addGenerateId
+    [Migration("20250531153118_addStatusPayment")]
+    partial class addStatusPayment
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -197,6 +197,9 @@ namespace Infrastructure.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StatusPayment")
                         .HasColumnType("int");
 
                     b.Property<decimal>("TotalAmount")

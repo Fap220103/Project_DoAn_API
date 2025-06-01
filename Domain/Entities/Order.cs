@@ -1,4 +1,5 @@
 ﻿using Domain.Bases;
+using Domain.Enums;
 using Domain.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -18,7 +19,8 @@ namespace Domain.Entities
         public decimal TotalDiscount { get; set; }
         public int Quantity { get; set; }
         public int TypePayment { get; set; }
-        public int Status { get; set; }
+        public OrderStatus Status { get; set; } // trạng thái xử lý đơn hàng
+        public StatusPayment StatusPayment { get; set; } // trạng thái thanh toán
         public string ShippingAddressId { get; set; }
         public ShippingAddress ShippingAddress { get; set; }
         public ICollection<OrderDetail> OrderDetails { get; set; } = new Collection<OrderDetail>();
@@ -30,7 +32,8 @@ namespace Domain.Entities
             decimal totalDiscount,
             int quantity,
             int typePayment,
-            int status,
+            OrderStatus status,
+            StatusPayment statusPayment,
             string shippingAddressId
             ) : base(userId)
         {
@@ -40,6 +43,7 @@ namespace Domain.Entities
             Quantity = quantity;
             TypePayment = typePayment;
             Status = status;
+            StatusPayment = statusPayment;
             CustomerId = userId;
             ShippingAddressId = shippingAddressId;
         }
@@ -51,7 +55,8 @@ namespace Domain.Entities
             int quantity,
             int typePayment,
             string customerId,
-            int status,
+            OrderStatus status,
+            StatusPayment statusPayment,
             string shippingAddressId
           )
         {
@@ -61,6 +66,7 @@ namespace Domain.Entities
             Quantity = quantity;
             TypePayment = typePayment;
             Status = status;
+            StatusPayment = statusPayment;
             ShippingAddressId = shippingAddressId;
             SetAudit(userId);
         }

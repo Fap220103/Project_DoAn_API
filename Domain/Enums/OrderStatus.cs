@@ -12,6 +12,5 @@ namespace Domain.Enums
         Shipping = 2,           // Đang giao hàng
         Delivered = 3,          // Đã giao hàng
         Cancelled = 4,          // Đã hủy
-        Success = 5,            // Đã thanh toán
     }
 }

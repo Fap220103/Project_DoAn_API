@@ -21,20 +21,6 @@ namespace Infrastructure.DataAccessManagers.EFCores.Configurations
             builder.Property(o => o.TotalAmount)
                    .HasPrecision(18, 2);
 
-            //builder.Property(x => x.CustomerName)
-            //    .IsRequired();
-
-            //builder.Property(x => x.Email)
-            //  .IsRequired();
-
-            //builder.Property(x => x.Phone)
-            //    .IsRequired()
-            //    .HasMaxLength(LengthConsts.S);
-
-            //builder.Property(x => x.Address)
-            //    .IsRequired()
-            //    .HasMaxLength(LengthConsts.M);
-
             builder.HasIndex(e => e.Code).HasDatabaseName("IX_Order_Code");
 
         }

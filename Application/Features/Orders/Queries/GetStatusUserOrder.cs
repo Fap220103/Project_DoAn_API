@@ -6,6 +6,7 @@ using Application.Services.CQS.Queries;
 using Application.Services.Externals;
 using AutoMapper;
 using Domain.Entities;
+using Domain.Enums;
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -54,7 +55,7 @@ namespace Application.Features.Orders.Queries
 
         public async Task<GetStatusUserOrderResult> Handle(GetStatusUserOrderRequest request, CancellationToken cancellationToken)
         {
-            var hasOrdered = await _context.Order.Where(x=> x.CustomerId == request.UserId && x.Status == 3)
+            var hasOrdered = await _context.Order.Where(x=> x.CustomerId == request.UserId && x.Status == OrderStatus.Delivered)
                                                     .AnyAsync(x=> x.OrderDetails
                                                     .Any(od => od.ProductVariant.ProductId == request.ProductId), cancellationToken);
 

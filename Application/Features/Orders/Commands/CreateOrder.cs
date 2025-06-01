@@ -5,6 +5,7 @@ using Application.Services.Externals;
 using Application.Services.Repositories;
 using Domain.Constants;
 using Domain.Entities;
+using Domain.Enums;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -45,7 +46,6 @@ namespace Application.Features.Orders.Commands
         public string CustomerId { get; set; } = null!;
         public int TypePayment { get; set; }
         public string ShippingAddressId { get; set; } = null!;
-
         public List<OrderItemDto> Items { get; set; } = new();
         public string DiscountId { get; set; }
         public decimal DiscountValue { get; set; } = 0;
@@ -139,7 +139,8 @@ namespace Application.Features.Orders.Commands
                 await _context.SaveChangesAsync();
             }
 
-            var status = 1;
+            var status = OrderStatus.Pending;
+            var statusPayment = StatusPayment.NotPaid;
             var order = new Order(
                 request.CustomerId,
                 orderCode,
@@ -148,6 +149,7 @@ namespace Application.Features.Orders.Commands
                 totalQuantity,
                 request.TypePayment,
                 status,
+                statusPayment,
                 request.ShippingAddressId
             );
             order.OrderDetails = request.Items.Select(i => new OrderDetail

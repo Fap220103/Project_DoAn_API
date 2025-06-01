@@ -2,6 +2,7 @@
 using Application.Services.Repositories;
 using Domain.Constants;
 using Domain.Entities;
+using Domain.Enums;
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -63,15 +64,12 @@ namespace Application.Features.Orders.Commands
                 throw new ApplicationException($"{ExceptionConsts.EntitiyNotFound}");
             }
 
-            // Chỉ cho phép hủy nếu đơn đang ở trạng thái chờ xử lý (ví dụ status == 1)
-            if (order.Status != 1)
+            if (order.Status != OrderStatus.Pending)
             {
                 throw new ApplicationException("Đơn hàng không thể hủy ở trạng thái hiện tại.");
             }
 
-            // Cập nhật trạng thái đơn thành HỦY (ví dụ status == 0)
-            order.Status = 4; // bạn định nghĩa trong bảng constant status đơn hàng nhé
-
+            order.Status = OrderStatus.Cancelled; 
             _orderRepository.Update(order);
 
             // Cập nhật lại tồn kho sản phẩm (trả lại số lượng)

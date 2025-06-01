@@ -41,6 +41,19 @@ namespace WebAPI.Controllers.Orders
             });
         }
 
+        [HttpPut("UpdateStatusPayment")]
+        public async Task<ActionResult<ApiSuccessResult<UpdateStatusPaymentResult>>> UpdateStatusPaymentAsync(UpdateStatusPaymentRequest request, CancellationToken cancellationToken)
+        {
+            var response = await _sender.Send(request, cancellationToken);
+
+            return Ok(new ApiSuccessResult<UpdateStatusPaymentResult>
+            {
+                Code = StatusCodes.Status200OK,
+                Message = $"Success executing {nameof(UpdateStatusPaymentAsync)}",
+                Content = response
+            });
+        }
+
         [HttpPost("CancelOrder")]
         public async Task<ActionResult<ApiSuccessResult<CancelOrderResult>>> CancelOrderAsync(CancelOrderRequest request, CancellationToken cancellationToken)
         {

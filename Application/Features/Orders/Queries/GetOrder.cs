@@ -5,6 +5,7 @@ using Application.Services.CQS.Queries;
 using Application.Services.Externals;
 using AutoMapper;
 using Domain.Entities;
+using Domain.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -23,6 +24,7 @@ namespace Application.Features.Orders.Queries
         public decimal TotalDiscount { get; set; }
         public decimal Total => TotalAmount + TotalDiscount;
         public int Status { get; set; }
+        public int StatusPayment { get; set; }
         public int TotalQuantity { get; set; }
         public string OrderCode { get; set; } = null!;
         public int TypePayment { get; set; }
@@ -89,7 +91,8 @@ namespace Application.Features.Orders.Queries
         public int Page { get; set; } = 1;
         public int Limit { get; set; } = 10;
         public string? userId { get; set; }
-        public int? Status { get; set; } 
+        public OrderStatus? Status { get; set; }
+        public StatusPayment? StatusPayment { get; set; }
         public string? Search { get; set; }
         public string? FromDate { get; set; }
         public string? ToDate { get; set; }
@@ -132,8 +135,6 @@ namespace Application.Features.Orders.Queries
                 query = query.Where(x=> x.CustomerId == request.userId);
             }
 
-
-            // Lọc theo FromDate và ToDate nếu có
             if (!string.IsNullOrEmpty(request.FromDate) && DateTime.TryParse(request.FromDate, out DateTime fromDate))
             {
                 query = query.Where(x => x.CreatedAt >= fromDate.Date);
@@ -141,7 +142,7 @@ namespace Application.Features.Orders.Queries
 
             if (!string.IsNullOrEmpty(request.ToDate) && DateTime.TryParse(request.ToDate, out DateTime toDate))
             {
-                var endDate = toDate.Date.AddDays(1); // Bao gồm cả ngày kết thúc
+                var endDate = toDate.Date.AddDays(1); 
                 query = query.Where(x => x.CreatedAt < endDate);
             }
 
@@ -159,6 +160,10 @@ namespace Application.Features.Orders.Queries
                 query = query.Where(x => x.Status == request.Status.Value);
             }
 
+            if (request.StatusPayment.HasValue)
+            {
+                query = query.Where(x => x.StatusPayment == request.StatusPayment.Value);
+            }
 
             query = query.OrderByDescending(x=> x.CreatedAt);
 

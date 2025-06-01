@@ -12,21 +12,21 @@ using System.Threading.Tasks;
 
 namespace Application.Features.ProductCategories.Commands
 {
-    public class UpdateOrderStatusResult
+    public class UpdateStatusPaymentResult
     {
         public string Id { get; init; } = null!;
         public string Message { get; init; } = null!;
     }
 
-    public class UpdateOrderStatusRequest : IRequest<UpdateOrderStatusResult>
+    public class UpdateStatusPaymentRequest : IRequest<UpdateStatusPaymentResult>
     {
         public string OrderId { get; init; }
-        public OrderStatus Status { get; init; }
+        public StatusPayment Status { get; init; }
     }
 
-    public class UpdateOrderStatusValidator : AbstractValidator<UpdateOrderStatusRequest>
+    public class UpdateStatusPaymentValidator : AbstractValidator<UpdateStatusPaymentRequest>
     {
-        public UpdateOrderStatusValidator()
+        public UpdateStatusPaymentValidator()
         {
             RuleFor(x => x.OrderId)
                 .NotEmpty();
@@ -36,12 +36,12 @@ namespace Application.Features.ProductCategories.Commands
     }
 
 
-    public class UpdateOrderStatusHandler : IRequestHandler<UpdateOrderStatusRequest, UpdateOrderStatusResult>
+    public class UpdateStatusPaymentHandler : IRequestHandler<UpdateStatusPaymentRequest, UpdateStatusPaymentResult>
     {
         private readonly IBaseCommandRepository<Order> _repository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public UpdateOrderStatusHandler(
+        public UpdateStatusPaymentHandler(
             IBaseCommandRepository<Order> repository,
             IUnitOfWork unitOfWork
             )
@@ -50,7 +50,7 @@ namespace Application.Features.ProductCategories.Commands
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<UpdateOrderStatusResult> Handle(UpdateOrderStatusRequest request, CancellationToken cancellationToken)
+        public async Task<UpdateStatusPaymentResult> Handle(UpdateStatusPaymentRequest request, CancellationToken cancellationToken)
         {
 
             var entity = await _repository.GetByIdAsync(request.OrderId, cancellationToken);
@@ -60,12 +60,12 @@ namespace Application.Features.ProductCategories.Commands
                 throw new ApplicationException($"{ExceptionConsts.EntitiyNotFound} {request.OrderId}");
             }
 
-            entity.Status = request.Status;
+            entity.StatusPayment = request.Status;
 
             _repository.Update(entity);
             await _unitOfWork.SaveAsync(cancellationToken);
 
-            return new UpdateOrderStatusResult
+            return new UpdateStatusPaymentResult
             {
                 Id = entity.Id,
                 Message = "Success"

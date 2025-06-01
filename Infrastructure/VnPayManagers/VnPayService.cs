@@ -1,6 +1,7 @@
 ﻿using Application.Services.CQS.Commands;
 using Application.Services.Externals;
 using Domain.Entities;
+using Domain.Enums;
 using Infrastructure.VnPayManagers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -75,7 +76,7 @@ namespace Infrastructure.VnPayService
                 var order = _context.Order.FirstOrDefault(o => o.Code == orderCode);
                 if (order != null)
                 {
-                    order.Status = 5; // Đã thanh toán
+                    order.StatusPayment = StatusPayment.Paid; // Đã thanh toán
                     _context.Order.Update(order);
                     _context.SaveChangesAsync();
                 }
