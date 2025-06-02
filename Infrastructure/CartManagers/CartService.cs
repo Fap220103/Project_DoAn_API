@@ -1,5 +1,7 @@
 ﻿using Application.Services.Externals;
 using Domain.Entities;
+using Infrastructure.EmailManagers;
+using Microsoft.Extensions.Options;
 using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
@@ -14,10 +16,12 @@ namespace Infrastructure.CartManagers
     public class CartService : ICartService
     {
         private readonly IDatabase _redisDb;
+        private readonly CartSettings _cartSettings;
 
-        public CartService(IConnectionMultiplexer redis)
+        public CartService(IConnectionMultiplexer redis, IOptions<CartSettings> cartSettings)
         {
             _redisDb = redis.GetDatabase();
+            _cartSettings = cartSettings.Value;
         }
 
         private string GetCartKey(string userId) => $"cart:{userId}";
@@ -31,7 +35,7 @@ namespace Infrastructure.CartManagers
         public async Task SaveCartAsync(Cart cart)
         {
             var serialized = JsonSerializer.Serialize(cart);
-            await _redisDb.StringSetAsync(GetCartKey(cart.UserId), serialized);
+            await _redisDb.StringSetAsync(GetCartKey(cart.UserId), serialized, TimeSpan.FromDays(_cartSettings.CartExpirationDays));
         }
 
         public async Task DeleteCartAsync(string userId)

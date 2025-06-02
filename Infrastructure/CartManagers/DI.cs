@@ -15,6 +15,9 @@ namespace Infrastructure.CartManagers
     {
         public static IServiceCollection RegisterCartManager(this IServiceCollection services, IConfiguration configuration)
         {
+            var cartSectionName = "CartSettings";
+            services.Configure<CartSettings>(options => configuration.GetSection(cartSectionName).Bind(options));
+            services.AddScoped<CartSettings>();
             services.AddTransient<ICartService, CartService>();
             services.AddSingleton<IConnectionMultiplexer>(sp =>
             {
